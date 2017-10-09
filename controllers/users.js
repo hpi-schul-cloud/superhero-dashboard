@@ -132,6 +132,7 @@ const getDeleteHandler = (service) => {
     };
 };
 
+const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
 
 // secure routes
 router.use(authHelper.authChecker);
@@ -144,7 +145,7 @@ router.get('/search' , function (req, res, next) {
     api(req).get('/users/', {
             qs: {
                 firstName: {
-                    $regex: req.query.q
+                    $regex: capitalize(req.query.q)
                 },
                 $populate: ['roles', 'schoolId'],
                 $limit: itemsPerPage,
