@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{#if title}}{{title}} - {{/if}}SuperHero</title>
+
+    {{#block "meta"}}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="#b10438">
+        <meta name="apple-mobile-web-app-title" content="Schul-Cloud">
+        <meta name="theme-color" content="#b10438">
+    {{/block}}
+
+    {{#block "styles"}}
+        <link rel="preload" href="/fonts/ptsans/ptsans-regular.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/ptsans/ptsans-bold.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/ptsans/ptsans-italic.woff" as="font" type="font/woff" crossorigin>
+        <link rel="preload" href="/fonts/fontawesome/fontawesome-webfont.woff" as="font" type="font/woff" crossorigin>
+        <link rel="stylesheet" href="/fonts/ptsans/ptsans.css" />
+        <link rel="stylesheet" href="/fonts/fontawesome/fontawesome.css" />
+        <link rel="stylesheet" href="/styles/lib/base.css" />
+    {{/block}}
+
+    {{#block "scripts"}}
+        <script src="/scripts/all.js" type="text/javascript" defer></script>
+    {{/block}}
+
+</head>
+<body>
+    {{#block "body"}}{{/block}}
+
+</body>
+</html>

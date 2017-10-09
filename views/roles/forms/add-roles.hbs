@@ -1,0 +1,16 @@
+<div class="form-group">
+    <label class="control-label" for="name">Name</label>
+    <input type="text" name="name" id="name" class="form-control" placeholder="Matrix Monday Fever" required>
+</div>
+<div class="form-group">
+    <label class="control-label" for="roles">Vererbte Rollen</label>
+    <select name="roles" multiple>
+        {{#each roles}}
+            <option value="{{this._id}}">{{this.name}}</option>
+        {{/each}}
+    </select>
+</div>
+<div class="form-group">
+    <label class="control-label" for="permissions">Permissions as comma seperated list</label>
+    <input class="form-control" name="permissions[]" id="permissions" type="text">
+</div>

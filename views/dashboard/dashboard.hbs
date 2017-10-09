@@ -1,0 +1,54 @@
+{{#extend "lib/loggedin"}}
+
+    {{#content "styles" mode="append"}}
+        <link rel="stylesheet" href="/styles/dashboard/dashboard.css"/>
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="row mobile-no-margin-right">
+            <div class="row card-deck-row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="card h-100">
+                        <div class="card-block">
+                            <h4 class="card-title"><i class="fa fa-user"></i> Schulen</h4>
+                            <div class="card-text">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary btn-block" href="/schools/">Seite öffnen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="card h-100">
+                        <div class="card-block">
+                            <h4 class="card-title"><i class="fa fa-graduation-cap"></i> Users</h4>
+                            <div class="card-text">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary btn-block" href="/users/">Seite öffnen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="card h-100">
+                        <div class="card-block">
+                            <h4 class="card-title"><i class="fa fa-graduation-cap"></i> Rollen</h4>
+                            <div class="card-text">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-primary btn-block" href="/roles/">Seite öffnen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{/content}}
+{{/extend}}
