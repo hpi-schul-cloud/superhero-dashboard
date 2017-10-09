@@ -92,7 +92,7 @@ router.all('/', function (req, res, next) {
             qs: {
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
-                $sort: 'order',
+                $sort: req.query.sort,
                 $populate: 'federalState'
             }
         }).then(data => {

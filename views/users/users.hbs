@@ -11,6 +11,18 @@
     {{#content "page"}}
             <div class="container-fluid">
                 <div class="row">
+                    <div class="col-sm-3 hide-inline">
+                        <form class="search-wrapper" action="/users/search/" method="get">
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control search-field {{searchClass}}" placeholder="{{#if searchLabel}}{{searchLabel}}{{else}}Suche nach...{{/if}}" name="q" />
+                                <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-secondary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                            </div>
+                        </form>
+                    </div>
                     <div class="col-sm-12 no-padding">
                         {{> "lib/components/table" head=head body=body}}
                     </div>

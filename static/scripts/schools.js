@@ -44,4 +44,36 @@ $(document).ready(function () {
             $deleteModal.modal('show');
         });
     });
+
+    const dictionary = {
+        'Vorname': 'firstName',
+        'Nachname': 'lastName',
+        'E-Mail': 'e-mail',
+        'Rollen': 'roles',
+        'Rolen': 'roles',
+        'Schule': 'schoolId',
+        'Name': 'name',
+        'ID': '_id',
+        'Bundesland': 'federalState',
+        'Permissions': 'permissions',
+        'Geerbt von': 'roles'
+    };
+
+    $('tr th').each(function(i,j) {
+        $(j).on('click', function (e) {
+            let location = window.location.search.split('&');
+            let contained = false;
+            console.log(location);
+            location = location.map(entity => {
+                if (entity.includes('sort')) {
+                    entity = 'sort=' + dictionary[$(j).text()];
+                    contained = true;
+                }
+                return entity;
+            });
+            if (!contained)
+                location.push('sort=' + dictionary[$(j).text()]);
+            window.location.search = location.join('&');
+        });    });
+
 });

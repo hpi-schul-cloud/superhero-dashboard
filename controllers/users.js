@@ -136,6 +136,67 @@ const getDeleteHandler = (service) => {
 // secure routes
 router.use(authHelper.authChecker);
 
+
+router.get('/search' , function (req, res, next) {
+    const itemsPerPage = 10;
+    const currentPage = parseInt(req.query.p) || 1;
+
+    api(req).get('/users/', {
+            qs: {
+                firstName: {
+                    $regex: req.query.q
+                },
+                $populate: ['roles', 'schoolId'],
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort
+            }
+        }
+    ).then(data => {
+        api(req).get('/roles')
+            .then(role => {
+                const head = [
+                    'Vorname',
+                    'Nachname',
+                    'E-Mail',
+                    'Rolen',
+                    'Schule',
+                    ''
+                ];
+
+                const body = data.data.map(item => {
+                    let roles = '';
+                    item.roles.map(role => {
+                        roles = roles + ' ' + role.name
+                    });
+                    return [
+                        item.firstName,
+                        item.lastName,
+                        item.email,
+                        roles,
+                        item.schoolId.name,
+                        getTableActions(item, '/users/')
+                    ];
+                });
+
+                const pagination = {
+                    currentPage,
+                    numPages: Math.ceil(data.total / itemsPerPage),
+                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}'
+                };
+
+                res.render('users/users', {
+                    title: 'Users',
+                    head,
+                    body,
+                    pagination,
+                    role: role.data,
+                    user: res.locals.currentUser
+                });
+        });
+    });
+});
+
 router.patch('/:id', getUpdateHandler('users'));
 router.get('/:id', getDetailHandler('users'));
 router.delete('/:id', getDeleteHandler('users'));
@@ -151,7 +212,7 @@ router.get('/', function (req, res, next) {
             qs: {
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
-                $sort: 'order',
+                $sort: req.query.sort,
                 $populate: 'roles'
             }
         }).then(data => {
