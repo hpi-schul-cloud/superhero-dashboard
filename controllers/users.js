@@ -141,10 +141,6 @@ router.use(authHelper.authChecker);
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
-
-    const dictionary = {
-      firstName: "firstName"
-    };
     
     api(req).get('/users/', {
             qs: {

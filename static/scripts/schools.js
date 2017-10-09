@@ -66,7 +66,11 @@ $(document).ready(function () {
 
             location = location.map(entity => {
                 if (entity.includes('sort')) {
-                    entity = 'sort=' + dictionary[$(j).text()];
+                    if (entity === 'sort=' + dictionary[$(j).text()]) {
+                        entity = 'sort=-' + dictionary[$(j).text()]
+                    } else {
+                        entity = 'sort=' + dictionary[$(j).text()];
+                    }
                     contained = true;
                 }
                 return entity;
