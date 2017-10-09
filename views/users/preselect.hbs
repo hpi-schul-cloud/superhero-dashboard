@@ -11,6 +11,19 @@
     {{#content "page"}}
         <div class="container-fluid">
             <div class="row">
+                <div class="col-sm-9"></div>
+                <div class="col-sm-3" style="padding-bottom: 20px">
+                    <form class="search-wrapper" action="/users/search/" method="get">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control search-field" placeholder="Suche nach Nutzern..." name="q" />
+                            <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-secondary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                        </div>
+                    </form>
+                </div>
                 <div class="col-sm-12 no-padding">
                     <form action="/users/" method="get">
                     <select name="schoolId">

@@ -11,10 +11,11 @@
     {{#content "page"}}
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-3 hide-inline">
+                    <div class="col-sm-9"></div>
+                    <div class="col-sm-3" style="padding-bottom: 20px">
                         <form class="search-wrapper" action="/users/search/" method="get">
                             <div class="input-group input-group-sm">
-                                <input type="text" class="form-control search-field {{searchClass}}" placeholder="{{#if searchLabel}}{{searchLabel}}{{else}}Suche nach...{{/if}}" name="q" />
+                                <input type="text" class="form-control search-field" placeholder="Suche nach Nutzern..." name="q" />
                                 <span class="input-group-btn">
                                             <button type="submit" class="btn btn-secondary">
                                                 <i class="fa fa-search"></i>
