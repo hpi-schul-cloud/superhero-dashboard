@@ -49,8 +49,13 @@ const populateCurrentUser = (req, res) => {
 
     if(payload.userId) {
         return api(req).get('/users/' + payload.userId + '?$populate=roles').then(data => {
-            if (data.roles[0].name !== 'superhero') {
-                res.redirect('/login');
+            let access = false;
+            data.roles.map(role => {
+                if (role.name === 'superhero')
+                    access = true;
+            });
+            if (!access) {
+                res.redirect('/logout');
             }
             res.locals.currentUser = data;
            return data;
