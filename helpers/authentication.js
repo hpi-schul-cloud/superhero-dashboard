@@ -68,7 +68,7 @@ const restrictSidebar = (req, res) => {
         link: '/dashboard/',
     }, {
         name: 'Schulen',
-        icon: 'calendar',
+        icon: 'graduation-cap',
         link: '/schools/'
     },
     {
@@ -80,6 +80,11 @@ const restrictSidebar = (req, res) => {
         name: 'Rollen',
         icon: 'superpowers',
         link: '/roles/'
+    },
+    {
+        name: 'Allg. Verwaltung',
+        icon: 'gear',
+        link: '/management'
     }
     ];
 };
