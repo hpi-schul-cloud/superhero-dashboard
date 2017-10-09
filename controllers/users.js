@@ -179,10 +179,15 @@ router.get('/search' , function (req, res, next) {
                     ];
                 });
 
+                let sortQuery = '';
+                if (req.query.sort) {
+                    sortQuery = '&sort=' + req.query.sort;
+                }
+
                 const pagination = {
                     currentPage,
                     numPages: Math.ceil(data.total / itemsPerPage),
-                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}'
+                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
                 };
 
                 res.render('users/users', {
@@ -240,10 +245,15 @@ router.get('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}'
+                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}' + sortQuery
             };
 
             res.render('users/users', {title: 'Users', head, body, pagination, schoolId: res.req.query.schoolId, role: role.data, user: res.locals.currentUser});

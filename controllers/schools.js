@@ -112,10 +112,15 @@ router.all('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/schools/?p={{page}}'
+                baseUrl: '/schools/?p={{page}}' + sortQuery
             };
 
             res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser});

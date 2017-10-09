@@ -130,10 +130,15 @@ router.all('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/roles/?p={{page}}'
+                baseUrl: '/roles/?p={{page}}' + sortQuery
             };
 
             res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser});
