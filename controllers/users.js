@@ -142,10 +142,14 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
+    const dictionary = {
+      firstName: "firstName"
+    };
+    
     api(req).get('/users/', {
             qs: {
                 firstName: {
-                    $regex: capitalize(req.query.q)
+                    $regex: _.escapeRegExp(capitalize(req.query.q))
                 },
                 $populate: ['roles', 'schoolId'],
                 $limit: itemsPerPage,

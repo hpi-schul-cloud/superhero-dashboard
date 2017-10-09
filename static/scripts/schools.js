@@ -48,7 +48,7 @@ $(document).ready(function () {
     const dictionary = {
         'Vorname': 'firstName',
         'Nachname': 'lastName',
-        'E-Mail': 'e-mail',
+        'E-Mail': 'email',
         'Rollen': 'roles',
         'Rolen': 'roles',
         'Schule': 'schoolId',
@@ -63,7 +63,7 @@ $(document).ready(function () {
         $(j).on('click', function (e) {
             let location = window.location.search.split('&');
             let contained = false;
-            console.log(location);
+
             location = location.map(entity => {
                 if (entity.includes('sort')) {
                     entity = 'sort=' + dictionary[$(j).text()];
