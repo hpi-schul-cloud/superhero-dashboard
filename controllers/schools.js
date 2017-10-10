@@ -74,15 +74,12 @@ const getDeleteHandler = (service) => {
     };
 };
 
+const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
 
 // secure routes
 router.use(authHelper.authChecker);
 
-router.patch('/:id', getUpdateHandler('schools'));
-router.get('/:id', getDetailHandler('schools'));
-router.delete('/:id', getDeleteHandler('schools'));
-router.post('/', getCreateHandler('schools'));
-router.all('/', function (req, res, next) {
+router.get('/search' , function (req, res, next) {
 
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
@@ -90,9 +87,12 @@ router.all('/', function (req, res, next) {
     api(req).get('/federalStates').then(federalStates => {
         api(req).get('/schools', {
             qs: {
+                name: {
+                    $regex: _.escapeRegExp(capitalize(req.query.q))
+                },
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
-                $sort: 'order',
+                $sort: req.query.sort,
                 $populate: 'federalState'
             }
         }).then(data => {
@@ -112,10 +112,65 @@ router.all('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/schools/?p={{page}}'
+                baseUrl: '/schools/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
+            };
+
+            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser});
+            });
+    });
+});
+
+router.patch('/:id', getUpdateHandler('schools'));
+router.get('/:id', getDetailHandler('schools'));
+router.delete('/:id', getDeleteHandler('schools'));
+router.post('/', getCreateHandler('schools'));
+router.all('/', function (req, res, next) {
+
+    const itemsPerPage = 10;
+    const currentPage = parseInt(req.query.p) || 1;
+
+    api(req).get('/federalStates').then(federalStates => {
+        api(req).get('/schools', {
+            qs: {
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort,
+                $populate: 'federalState'
+            }
+        }).then(data => {
+            const head = [
+                'ID',
+                'Name',
+                'Bundesland',
+                ''
+            ];
+
+            const body = data.data.map(item => {
+                return [
+                    item._id,
+                    item.name,
+                    (item.federalState || {}).name,
+                    getTableActions(item, '/schools/')
+                ];
+            });
+
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
+            const pagination = {
+                currentPage,
+                numPages: Math.ceil(data.total / itemsPerPage),
+                baseUrl: '/schools/?p={{page}}' + sortQuery
             };
 
             res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser});

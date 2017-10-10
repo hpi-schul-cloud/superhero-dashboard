@@ -125,16 +125,89 @@ const getDetailHandler = (service) => {
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
         api(req).delete('/' + service + '/' + req.params.id).then(_ => {
-            res.redirect(req.header('Referer'));
+            api(req).get('/accounts/', { qs: { userId: req.params.id }})
+                .then(account => {
+                    api(req).delete('/accounts/' + account[0]._id)
+                        .then(_ => {
+                            res.redirect(req.header('Referer'));
+                        });
+                });
         }).catch(err => {
             next(err);
         });
     };
 };
 
+const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
 
 // secure routes
 router.use(authHelper.authChecker);
+
+
+router.get('/search' , function (req, res, next) {
+    const itemsPerPage = 10;
+    const currentPage = parseInt(req.query.p) || 1;
+    
+    api(req).get('/users/', {
+            qs: {
+                firstName: {
+                    $regex: _.escapeRegExp(capitalize(req.query.q))
+                },
+                $populate: ['roles', 'schoolId'],
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort
+            }
+        }
+    ).then(data => {
+        api(req).get('/roles')
+            .then(role => {
+                const head = [
+                    'Vorname',
+                    'Nachname',
+                    'E-Mail',
+                    'Rolen',
+                    'Schule',
+                    ''
+                ];
+
+                const body = data.data.map(item => {
+                    let roles = '';
+                    item.roles.map(role => {
+                        roles = roles + ' ' + role.name;
+                    });
+                    return [
+                        item.firstName,
+                        item.lastName,
+                        item.email,
+                        roles,
+                        item.schoolId.name,
+                        getTableActions(item, '/users/')
+                    ];
+                });
+
+                let sortQuery = '';
+                if (req.query.sort) {
+                    sortQuery = '&sort=' + req.query.sort;
+                }
+
+                const pagination = {
+                    currentPage,
+                    numPages: Math.ceil(data.total / itemsPerPage),
+                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
+                };
+
+                res.render('users/users', {
+                    title: 'Users',
+                    head,
+                    body,
+                    pagination,
+                    role: role.data,
+                    user: res.locals.currentUser
+                });
+        });
+    });
+});
 
 router.patch('/:id', getUpdateHandler('users'));
 router.get('/:id', getDetailHandler('users'));
@@ -151,7 +224,7 @@ router.get('/', function (req, res, next) {
             qs: {
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
-                $sort: 'order',
+                $sort: req.query.sort,
                 $populate: 'roles'
             }
         }).then(data => {
@@ -167,7 +240,7 @@ router.get('/', function (req, res, next) {
             const body = data.data.map(item => {
                 let roles = '';
                 item.roles.map(role => {
-                    roles = roles + ' ' + role.name
+                    roles = roles + ' ' + role.name;
                 });
                 return [
                     item._id,
@@ -179,14 +252,31 @@ router.get('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}'
+                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}' + sortQuery
             };
 
-            res.render('users/users', {title: 'Users', head, body, pagination, schoolId: res.req.query.schoolId, role: role.data, user: res.locals.currentUser});
-        });
+            api(req).get('/schools/' + req.query.schoolId)
+                .then(schoolData => {
+                    res.render('users/users', {
+                        title: 'Users',
+                        head,
+                        body,
+                        pagination,
+                        schoolId: res.req.query.schoolId,
+                        role: role.data,
+                        user: res.locals.currentUser,
+                        school: schoolData
+                    });
+                });
+                });
         });
     } else {
         api(req).get('/schools/').then(schools => {

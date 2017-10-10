@@ -104,7 +104,7 @@ router.all('/', function (req, res, next) {
             qs: {
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
-                $sort: 'order',
+                $sort: req.query.sort,
                 $populate: 'roles'
             }
         }).then(data => {
@@ -119,7 +119,7 @@ router.all('/', function (req, res, next) {
             const body = data.data.map(item => {
                 let permissions = "";
                 item.permissions.map(permission => {
-                    permissions = permissions + ' | ' + permission
+                    permissions = permissions + ' | ' + permission;
                 });
                 return [
                     item._id,
@@ -130,10 +130,15 @@ router.all('/', function (req, res, next) {
                 ];
             });
 
+            let sortQuery = '';
+            if (req.query.sort) {
+                sortQuery = '&sort=' + req.query.sort;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/roles/?p={{page}}'
+                baseUrl: '/roles/?p={{page}}' + sortQuery
             };
 
             res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser});

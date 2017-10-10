@@ -23,7 +23,7 @@ router.get('/releases', function (req, res, next) {
             res.render('management/management', {
                 title: 'Allgemeine Verwaltung',
                 user: res.locals.currentUser
-            });	 })
+            });	 });
 });
 
 router.get('/', function (req, res, next) {
