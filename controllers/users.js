@@ -125,7 +125,13 @@ const getDetailHandler = (service) => {
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
         api(req).delete('/' + service + '/' + req.params.id).then(_ => {
-            res.redirect(req.header('Referer'));
+            api(req).get('/accounts/', { qs: { userId: req.params.id }})
+                .then(account => {
+                    api(req).delete('/accounts/' + account[0]._id)
+                        .then(_ => {
+                            res.redirect(req.header('Referer'));
+                        });
+                });
         }).catch(err => {
             next(err);
         });
