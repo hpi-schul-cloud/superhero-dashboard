@@ -168,7 +168,7 @@ router.get('/search' , function (req, res, next) {
                 const body = data.data.map(item => {
                     let roles = '';
                     item.roles.map(role => {
-                        roles = roles + ' ' + role.name
+                        roles = roles + ' ' + role.name;
                     });
                     return [
                         item.firstName,
@@ -234,7 +234,7 @@ router.get('/', function (req, res, next) {
             const body = data.data.map(item => {
                 let roles = '';
                 item.roles.map(role => {
-                    roles = roles + ' ' + role.name
+                    roles = roles + ' ' + role.name;
                 });
                 return [
                     item._id,
@@ -257,8 +257,20 @@ router.get('/', function (req, res, next) {
                 baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}' + sortQuery
             };
 
-            res.render('users/users', {title: 'Users', head, body, pagination, schoolId: res.req.query.schoolId, role: role.data, user: res.locals.currentUser});
-        });
+            api(req).get('/schools/' + req.query.schoolId)
+                .then(schoolData => {
+                    res.render('users/users', {
+                        title: 'Users',
+                        head,
+                        body,
+                        pagination,
+                        schoolId: res.req.query.schoolId,
+                        role: role.data,
+                        user: res.locals.currentUser,
+                        school: schoolData
+                    });
+                });
+                });
         });
     } else {
         api(req).get('/schools/').then(schools => {

@@ -119,7 +119,7 @@ router.all('/', function (req, res, next) {
             const body = data.data.map(item => {
                 let permissions = "";
                 item.permissions.map(permission => {
-                    permissions = permissions + ' | ' + permission
+                    permissions = permissions + ' | ' + permission;
                 });
                 return [
                     item._id,

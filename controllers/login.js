@@ -10,7 +10,6 @@ const authHelper = require('../helpers/authentication');
 // Login
 
 router.post('/login/', function (req, res, next) {
-    console.log(req.body);
     const username = req.body.email; // TODO: sanitize
     const password = req.body.password; // TODO: sanitize
 

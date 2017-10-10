@@ -11,7 +11,13 @@
     {{#content "page"}}
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-sm-9"></div>
+                    <div class="col-sm-9">
+                        {{#if school}}
+                            <h5>
+                                {{school.name}}
+                            </h5>
+                        {{/if}}
+                    </div>
                     <div class="col-sm-3" style="padding-bottom: 20px">
                         <form class="search-wrapper" action="/users/search/" method="get">
                             <div class="input-group input-group-sm">
