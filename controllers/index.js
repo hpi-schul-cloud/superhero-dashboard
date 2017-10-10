@@ -11,5 +11,6 @@ router.use('/schools/', require('./schools'));
 router.use('/users/', require('./users'));
 router.use('/roles/', require('./roles'));
 router.use('/management', require('./management'));
+router.use('/helpdesk', require('./helpdesk'));
 
 module.exports = router;

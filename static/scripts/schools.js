@@ -56,7 +56,13 @@ $(document).ready(function () {
         'ID': '_id',
         'Bundesland': 'federalState',
         'Permissions': 'permissions',
-        'Geerbt von': 'roles'
+        'Geerbt von': 'roles',
+        'Titel': 'subject',
+        'Kategorie': 'category',
+        'Ist-Zustand': 'currentState',
+        'Soll-Zustand': 'targetState',
+        'Status': 'state',
+        'Anmerkungen': 'notes'
     };
 
     $('tr th').each(function(i,j) {
