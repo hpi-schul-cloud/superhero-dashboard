@@ -74,6 +74,8 @@ const getDeleteHandler = (service) => {
     };
 };
 
+router.use(authHelper.authChecker);
+
 router.patch('/:id', getUpdateHandler('federalstates'));
 router.get('/:id', getDetailHandler('federalstates'));
 router.delete('/:id', getDeleteHandler('federalstates'));
