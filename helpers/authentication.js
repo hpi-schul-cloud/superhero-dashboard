@@ -92,6 +92,11 @@ const restrictSidebar = (req, res) => {
       link: '/helpdesk/'
     },
     {
+        name: 'Bundesländer',
+        icon: 'globe',
+        link: '/federalstates/'
+    },
+    {
         name: 'Allg. Verwaltung',
         icon: 'gear',
         link: '/management/'

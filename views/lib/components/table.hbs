@@ -32,7 +32,13 @@
                                 {{/each}}
                             </td>
                         {{else}}
-                            <td>{{this}}</td>
+                            <td>
+                                {{#if this.url}}
+                                    <img src="{{this.url}}" width="{{this.width}}" height="{{this.height}}" />
+                                {{else}}
+                                    {{this}}
+                                {{/if}}
+                            </td>
                         {{/ifArray}}
                     {{/each}}
                 </tr>

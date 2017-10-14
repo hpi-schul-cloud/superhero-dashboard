@@ -62,7 +62,9 @@ $(document).ready(function () {
         'Ist-Zustand': 'currentState',
         'Soll-Zustand': 'targetState',
         'Status': 'state',
-        'Anmerkungen': 'notes'
+        'Anmerkungen': 'notes',
+        'Abkürzung': 'abbreviation',
+        'Logo': 'logoUrl'
     };
 
     $('tr th').each(function(i,j) {
