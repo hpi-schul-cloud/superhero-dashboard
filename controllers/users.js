@@ -147,12 +147,13 @@ router.use(authHelper.authChecker);
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
-    
+
     api(req).get('/users/', {
             qs: {
                 firstName: {
                     $regex: _.escapeRegExp(capitalize(req.query.q))
                 },
+                schoolId: (req.query.schoolId) ? req.query.schoolId : undefined,
                 $populate: ['roles', 'schoolId'],
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
@@ -165,8 +166,8 @@ router.get('/search' , function (req, res, next) {
                 const head = [
                     'Vorname',
                     'Nachname',
-                    'E-Mail',
-                    'Rolen',
+                    'E-Mail-Adresse',
+                    'Rollen',
                     'Schule',
                     ''
                 ];
@@ -203,7 +204,8 @@ router.get('/search' , function (req, res, next) {
                     body,
                     pagination,
                     role: role.data,
-                    user: res.locals.currentUser
+                    user: res.locals.currentUser,
+                    schoolId: req.query.schoolId
                 });
         });
     });
@@ -232,8 +234,8 @@ router.get('/', function (req, res, next) {
                 'ID',
                 'Vorname',
                 'Nachname',
-                'E-Mail',
-                'Rolen',
+                'E-Mail-Adresse',
+                'Rollen',
                 ''
             ];
 

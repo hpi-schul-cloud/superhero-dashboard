@@ -64,11 +64,43 @@ $(document).ready(function () {
         'Status': 'state',
         'Anmerkungen': 'notes',
         'Abkürzung': 'abbreviation',
-        'Logo': 'logoUrl'
+        'Logo': 'logoUrl',
+        'E-Mail-Adresse': 'email',
+        'Klassen': 'classIds',
+        'Lehrer': 'teacherIds',
+        'Klasse(n)': 'classIds',
+        'Bezeichnung': 'name',
+        'Typ': 'type',
+        'Url': 'url',
+        'Alias': 'alias',
+
+        'subject': 'Titel',
+        'firstName': 'Vorname',
+        'lastName': 'Nachname',
+        'roles': 'Rollen',
+        'schoolId': 'Schule',
+        'name': 'Name',
+        '_id': 'ID',
+        'federalState': 'Bundesland',
+        'category': 'Kategorie',
+        'currentState': 'Ist-Zustand',
+        'targetState': 'Soll-Zustand',
+        'state': 'Status',
+        'notes': 'Anmerkungen',
+        'logoUrl': 'Logo',
+        'abbreviation': 'Abkürzung',
+        'type': 'Typ',
+        'url': 'Url',
+        'alias': 'Alias',
+        'permissions': 'Permissions',
+        'teacherIds': 'Lehrer',
+        'classIds': 'Klasse(n)',
+        'email': 'E-Mail-Adresse'
     };
 
     $('tr th').each(function(i,j) {
         $(j).on('click', function (e) {
+
             let location = window.location.search.split('&');
             let contained = false;
 
@@ -86,6 +118,28 @@ $(document).ready(function () {
             if (!contained)
                 location.push('sort=' + dictionary[$(j).text()]);
             window.location.search = location.join('&');
-        });    });
+        });
+    });
+
+    let location = window.location.search.split('&');
+    location.map(entity => {
+        if (entity.includes('sort')) {
+            let queryParam = entity.split('=');
+            queryParam = queryParam[1].toString();
+
+            let asc = true;
+
+            if (queryParam.charAt(0) === '-') {
+                asc = false;
+                queryParam = queryParam.slice(1);
+            }
+
+            if (asc) {
+                $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-down" aria-hidden="true"></i>');
+            } else {
+                $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-up" aria-hidden="true"></i>');
+            }
+        }
+    });
 
 });
