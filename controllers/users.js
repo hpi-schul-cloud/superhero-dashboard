@@ -239,7 +239,7 @@ router.get('/', function (req, res, next) {
         const itemsPerPage = 10;
         const currentPage = parseInt(req.query.p) || 1;
 
-        api(req).get('/roles').then(role => {
+        api(req).get('/roles', {qs: {$limit: 25}}).then(role => {
         api(req).get('/users?schoolId=' + res.req.query.schoolId, {
             qs: {
                 $limit: itemsPerPage,
