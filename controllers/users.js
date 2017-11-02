@@ -40,7 +40,7 @@ const sendMailHandler = (user, req) => {
     let content = {
         "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
         "Sie wurden in die Schul-Cloud eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-        (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id + "\n\n" +
+        (process.env.HOST || 'https://schul-cloud.org') + "/register/account/" + createdUser._id + "\n\n" +
         "Mit Freundlichen Grüßen" + "\nIhr Schul-Cloud Team"
     };
     api(req).post('/mails', {
@@ -153,12 +153,13 @@ router.use(authHelper.authChecker);
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
-    
+
     api(req).get('/users/', {
             qs: {
                 firstName: {
                     $regex: _.escapeRegExp(capitalize(req.query.q))
                 },
+                schoolId: (req.query.schoolId) ? req.query.schoolId : undefined,
                 $populate: ['roles', 'schoolId'],
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
@@ -171,8 +172,8 @@ router.get('/search' , function (req, res, next) {
                 const head = [
                     'Vorname',
                     'Nachname',
-                    'E-Mail',
-                    'Rolen',
+                    'E-Mail-Adresse',
+                    'Rollen',
                     'Schule',
                     ''
                 ];
@@ -209,7 +210,8 @@ router.get('/search' , function (req, res, next) {
                     body,
                     pagination,
                     role: role.data,
-                    user: res.locals.currentUser
+                    user: res.locals.currentUser,
+                    schoolId: req.query.schoolId
                 });
         });
     });
@@ -252,8 +254,8 @@ router.get('/', function (req, res, next) {
                 'ID',
                 'Vorname',
                 'Nachname',
-                'E-Mail',
-                'Rolen',
+                'E-Mail-Adresse',
+                'Rollen',
                 ''
             ];
 
