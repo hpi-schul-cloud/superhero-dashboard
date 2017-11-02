@@ -24,6 +24,12 @@ const getTableActions = (item, path) => {
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete'
+        },
+        {
+            link: path + 'jwt/' + item._id,
+            class: 'btn-jwt',
+            icon: 'sign-in',
+            method: 'get'
         }
     ];
 };
@@ -207,6 +213,20 @@ router.get('/search' , function (req, res, next) {
                 });
         });
     });
+});
+
+router.get('/jwt/:id', function (req, res, next) {
+    api(req).post('/accounts/jwt', {json: { userId: req.params.id }})
+        .then(jwt => {
+            api(req).get('/users/' + req.params.id)
+                .then(user => {
+                    res.render('users/jwt', {
+                        title: 'JWT',
+                        jwt: jwt,
+                        user: user
+            });
+            });
+        });
 });
 
 router.patch('/:id', getUpdateHandler('users'));

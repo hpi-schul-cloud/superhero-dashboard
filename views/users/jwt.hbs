@@ -1,0 +1,65 @@
+{{#extend "lib/loggedin"}}
+
+    {{#content "styles" mode="append"}}
+        <link rel="stylesheet" href="/styles/events/events.css"/>
+    {{/content}}
+
+    {{#content "scripts" mode="append"}}
+        <script>
+            function copyToClipboard(element) {
+                var $temp = $("<input>");
+                $("body").append($temp);
+                $temp.val($(element).text()).select();
+                document.execCommand("copy");
+                $temp.remove();
+            }
+        </script>
+        <script>
+            function setCookie(element) {
+                document.cookie = "jwt={{jwt}};domain=" + $(element).val() + " ; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+            }
+        </script>
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="container-fluid">
+            <div class="row mobile-no-margin-right">
+                <h5>JWT für {{user.displayName}}</h5>
+                <div class="row card-deck-row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="card h-100">
+                        <div class="card-block">
+                            <h5 class="card-title"><i class="fa fa-user"></i>JWT kopieren und selbst einfügen</h5>
+                            <div class="card-text">
+                                <input value="{{jwt}}" style="width: 100%;">
+                                <p id="jwt" hidden>{{jwt}}</p>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block" onclick="copyToClipboard('#jwt')">
+                                <i class="fa fa-clipboard" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="card h-100">
+                        <div class="card-block">
+                            <h5 class="card-title"><i class="fa fa-user"></i>Cookie für eine Domain setzen</h5>
+                            <div class="card-text">
+                                <input id="cookie" placeholder="schul-cloud.org" style="width: 100%">
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary btn-block" onclick="setCookie('#cookie')">
+                                    <i class="fa fa-sign-in" aria-hidden="true"></i>
+                                </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    {{/content}}
+{{/extend}}
