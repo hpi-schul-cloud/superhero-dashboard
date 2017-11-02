@@ -218,9 +218,13 @@ router.get('/search' , function (req, res, next) {
 router.get('/jwt/:id', function (req, res, next) {
     api(req).post('/accounts/jwt', {json: { userId: req.params.id }})
         .then(jwt => {
-            res.render('users/jwt', {
-                title: 'JWT',
-                jwt: jwt
+            api(req).get('/users/' + req.params.id)
+                .then(user => {
+                    res.render('users/jwt', {
+                        title: 'JWT',
+                        jwt: jwt,
+                        user: user
+            });
             });
         });
 });
