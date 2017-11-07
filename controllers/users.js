@@ -30,6 +30,12 @@ const getTableActions = (item, path) => {
             class: 'btn-jwt',
             icon: 'sign-in',
             method: 'get'
+        },
+        {
+            link: '/accounts/account/' + item._id,
+            class: 'btn-account',
+            icon: 'address-card',
+            method: 'get'
         }
     ];
 };

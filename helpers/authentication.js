@@ -82,6 +82,11 @@ const restrictSidebar = (req, res) => {
         link: '/users/'
     },
     {
+        name: 'Accounts',
+        icon: 'address-card',
+        link: '/accounts/'
+    },
+    {
         name: 'Rollen',
         icon: 'superpowers',
         link: '/roles/'
