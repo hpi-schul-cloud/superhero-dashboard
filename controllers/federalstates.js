@@ -82,7 +82,7 @@ router.delete('/:id', getDeleteHandler('federalstates'));
 router.post('/', getCreateHandler('federalstates'));
 router.get('/', function (req, res, next) {
 
-    const itemsPerPage = 10;
+    const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
     api(req).get('/federalstates', {
@@ -115,10 +115,15 @@ router.get('/', function (req, res, next) {
             sortQuery = '&sort=' + req.query.sort;
         }
 
+        let limitQuery = '';
+        if (req.query.limit) {
+            limitQuery = '&limit=' + req.query.limit;
+        }
+
         const pagination = {
             currentPage,
             numPages: Math.ceil(data.total / itemsPerPage),
-            baseUrl: '/federalstates/?p={{page}}' + sortQuery
+            baseUrl: '/federalstates/?p={{page}}' + sortQuery + limitQuery
         };
 
         res.render('federalstates/federalstates', {
@@ -126,7 +131,8 @@ router.get('/', function (req, res, next) {
             head,
             body,
             pagination,
-            user: res.locals.currentUser
+            user: res.locals.currentUser,
+            limit: true
         });
     });
 });
