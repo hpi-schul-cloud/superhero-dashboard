@@ -194,7 +194,7 @@ router.delete('/:id', getDisableHandler('helpdesk'));
 router.post('/:id', getSendHelper('helpdesk'));
 router.get('/', function (req, res, next) {
 
-    const itemsPerPage = 10;
+    const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
     api(req).get('/helpdesk', {
@@ -226,13 +226,18 @@ router.get('/', function (req, res, next) {
             ];
         });
 
+        let limitQuery = '';
+        if (req.query.limit) {
+            limitQuery = '&limit=' + req.query.limit;
+        }
+
         const pagination = {
             currentPage,
             numPages: Math.ceil(data.total / itemsPerPage),
-            baseUrl: '/helpdesk/?p={{page}}'
+            baseUrl: '/helpdesk/?p={{page}}' + limitQuery
         };
 
-        res.render('helpdesk/helpdesk', {title: 'Helpdesk', head, body, pagination});
+        res.render('helpdesk/helpdesk', {title: 'Helpdesk', head, body, pagination, limit: true});
     });
 });
 

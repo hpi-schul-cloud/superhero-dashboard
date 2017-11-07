@@ -151,7 +151,7 @@ router.use(authHelper.authChecker);
 
 
 router.get('/search' , function (req, res, next) {
-    const itemsPerPage = 10;
+    const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
     api(req).get('/users/', {
@@ -198,10 +198,15 @@ router.get('/search' , function (req, res, next) {
                     sortQuery = '&sort=' + req.query.sort;
                 }
 
+                let limitQuery = '';
+                if (req.query.limit) {
+                    limitQuery = '&limit=' + req.query.limit;
+                }
+
                 const pagination = {
                     currentPage,
                     numPages: Math.ceil(data.total / itemsPerPage),
-                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
+                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery + limitQuery
                 };
 
                 res.render('users/users', {
@@ -211,7 +216,8 @@ router.get('/search' , function (req, res, next) {
                     pagination,
                     role: role.data,
                     user: res.locals.currentUser,
-                    schoolId: req.query.schoolId
+                    schoolId: req.query.schoolId,
+                    limit: true
                 });
         });
     });
@@ -238,7 +244,7 @@ router.post('/', getCreateHandler('users'));
 
 router.get('/', function (req, res, next) {
     if (res.req.query.schoolId) {
-        const itemsPerPage = 10;
+        const itemsPerPage = (req.query.limit || 10);
         const currentPage = parseInt(req.query.p) || 1;
 
         api(req).get('/roles', {qs: {$limit: 25}}).then(role => {
@@ -279,10 +285,15 @@ router.get('/', function (req, res, next) {
                 sortQuery = '&sort=' + req.query.sort;
             }
 
+            let limitQuery = '';
+            if (req.query.limit) {
+                limitQuery = '&limit=' + req.query.limit;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}' + sortQuery
+                baseUrl: '/users/?schoolId=' + res.req.query.schoolId + '&p={{page}}' + sortQuery + limitQuery
             };
 
             api(req).get('/schools/' + req.query.schoolId)
@@ -295,7 +306,8 @@ router.get('/', function (req, res, next) {
                         schoolId: res.req.query.schoolId,
                         role: role.data,
                         user: res.locals.currentUser,
-                        school: schoolData
+                        school: schoolData,
+                        limit: true
                     });
                 });
                 });

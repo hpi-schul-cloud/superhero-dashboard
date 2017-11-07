@@ -97,7 +97,7 @@ router.delete('/:id', getDeleteHandler('roles'));
 router.post('/', getCreateHandler('roles'));
 router.all('/', function (req, res, next) {
 
-    const itemsPerPage = 10;
+    const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
         api(req).get('/roles', {
@@ -135,13 +135,18 @@ router.all('/', function (req, res, next) {
                 sortQuery = '&sort=' + req.query.sort;
             }
 
+            let limitQuery = '';
+            if (req.query.limit) {
+                limitQuery = '&limit=' + req.query.limit;
+            }
+
             const pagination = {
                 currentPage,
                 numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/roles/?p={{page}}' + sortQuery
+                baseUrl: '/roles/?p={{page}}' + sortQuery + limitQuery
             };
 
-            res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser});
+            res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser, limit: true});
         });
 });
 
