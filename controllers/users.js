@@ -155,6 +155,75 @@ const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLo
 // secure routes
 router.use(authHelper.authChecker);
 
+router.get('/user/:id' , function (req, res, next) {
+    const itemsPerPage = (req.query.limit || 10);
+    const currentPage = parseInt(req.query.p) || 1;
+
+    api(req).get('/users/', {
+            qs: {
+                _id: req.params.id,
+                $populate: ['roles', 'schoolId'],
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort
+            }
+        }
+    ).then(data => {
+        api(req).get('/roles')
+            .then(role => {
+                const head = [
+                    'Vorname',
+                    'Nachname',
+                    'E-Mail-Adresse',
+                    'Rollen',
+                    'Schule',
+                    ''
+                ];
+
+                const body = data.data.map(item => {
+                    let roles = '';
+                    item.roles.map(role => {
+                        roles = roles + ' ' + role.name;
+                    });
+                    return [
+                        item.firstName,
+                        item.lastName,
+                        item.email,
+                        roles,
+                        item.schoolId.name,
+                        getTableActions(item, '/users/')
+                    ];
+                });
+
+                let sortQuery = '';
+                if (req.query.sort) {
+                    sortQuery = '&sort=' + req.query.sort;
+                }
+
+                let limitQuery = '';
+                if (req.query.limit) {
+                    limitQuery = '&limit=' + req.query.limit;
+                }
+
+                const pagination = {
+                    currentPage,
+                    numPages: Math.ceil(data.total / itemsPerPage),
+                    baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery + limitQuery
+                };
+
+                res.render('users/users', {
+                    title: 'Users',
+                    head,
+                    body,
+                    pagination,
+                    role: role.data,
+                    user: res.locals.currentUser,
+                    schoolId: req.query.schoolId,
+                    limit: true
+                });
+            });
+    });
+});
 
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = (req.query.limit || 10);
