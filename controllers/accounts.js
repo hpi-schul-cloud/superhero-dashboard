@@ -22,6 +22,12 @@ const getTableActions = (item, path) => {
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete'
+        },
+        {
+            link: '/users/user/' + item.userId,
+            class: 'btn-account',
+            icon: 'address-card',
+            method: 'get'
         }
     ];
 };
@@ -112,6 +118,7 @@ router.get('/search' , function (req, res, next) {
             'ID',
             'Username',
             'Aktiviert',
+            'UserId',
             ''
         ];
 
@@ -120,6 +127,7 @@ router.get('/search' , function (req, res, next) {
                 item._id,
                 item.username,
                 item.activated,
+                item.userId,
                 getTableActions(item, '/accounts/')
             ];
         });
