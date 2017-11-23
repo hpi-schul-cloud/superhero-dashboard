@@ -14,5 +14,6 @@ router.use('/management', require('./management'));
 router.use('/helpdesk', require('./helpdesk'));
 router.use('/federalstates', require('./federalstates'));
 router.use('/accounts', require('./accounts'));
+router.use('/statistics', require('./statistics'));
 
 module.exports = router;
