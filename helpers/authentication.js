@@ -71,6 +71,10 @@ const restrictSidebar = (req, res) => {
         name: 'Übersicht',
         icon: 'th-large',
         link: '/dashboard/',
+    },{
+        name: 'Statistiken',
+        icon: 'line-chart',
+        link: '/statistics/',
     }, {
         name: 'Schulen',
         icon: 'graduation-cap',

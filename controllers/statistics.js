@@ -13,68 +13,55 @@ moment.locale('de');
 let options = [
     {
         name: 'users',
-        icon: 'users',
-        action: ''
+        icon: 'users'
     },
     {
         name: 'schools',
-        icon: 'institution',
-        action: ''
+        icon: 'institution'
     },
     {
         name: 'accounts',
-        icon: 'user-secret',
-        action: ''
+        icon: 'user-secret'
     },
     {
         name: 'homework',
-        icon: 'tasks',
-        action: ''
+        icon: 'tasks'
     },
     {
         name: 'submissions',
-        icon: 'hourglass',
-        action: ''
+        icon: 'hourglass'
     },
     {
         name: 'comments',
-        icon: 'comments-o',
-        action: ''
+        icon: 'comments-o'
     },
     {
         name: 'lessons',
-        icon: 'lemon',
-        action: ''
+        icon: 'lemon'
     },
     {
         name: 'classes',
-        icon: 'odnoklassniki',
-        action: ''
+        icon: 'odnoklassniki'
     },
     {
         name: 'courses',
-        icon: 'graduation-cap',
-        action: ''
+        icon: 'graduation-cap'
     },
     {
         name: 'teachers',
-        icon: 'user',
-        action: ''
+        icon: 'user'
     },
     {
         name: 'students',
-        icon: 'user',
-        action: ''
+        icon: 'user'
     },
     {
         name: 'files',
-        icon: 'files-o',
-        action: ''
+        icon: 'files-o'
     },
     {
         name: 'directories',
-        icon: 'folder-o',
-        action: ''
+        icon: 'folder-o'
     },
 ];
 
@@ -104,6 +91,7 @@ router.get('/', function (req, res, next) {
                 if (stats.hasOwnProperty(key)) {
                     let obj = _.find(options, {name: key});
                     Object.assign(obj, {value: stats[key]});
+                    obj.action = 'statistics/' + obj.name;
                     finalStats.push(obj);
                 }
             }
