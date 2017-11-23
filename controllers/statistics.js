@@ -85,15 +85,12 @@ router.get('/:id', function (req, res, next) {
    api(req).get('/statistics/' + req.params.id, {qs: {returnArray: true}})
        .then(stats => {
 
-           stats.x = stats.x.map(x => {
-               return '"' + x + '"';
-           });
+           let finStat = [{"x": Array.from(stats.x), "y": Array.from(stats.y)}];
 
            res.render('statistic/plottedStat', {
                title: 'Statistiken',
                user: res.locals.currentUser,
-               x: Array.from(stats.x),
-               y: Array.from(stats.y)
+               stats: JSON.stringify(finStat)
            });
        });
 });

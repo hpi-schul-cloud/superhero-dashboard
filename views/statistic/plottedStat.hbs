@@ -1,33 +1,16 @@
 {{#extend "lib/loggedin"}}
 
     {{#content "styles" mode="append"}}
-
+        <link rel="import" href="/vendor/m.e.i.n.e.l/linechart.html">
     {{/content}}
 
     {{#content "scripts" mode="append"}}
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script
-                src="https://code.jquery.com/jquery-3.2.1.min.js"
-                integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-                crossorigin="anonymous"></script>
-        <script>
-            $(document).ready(function () {
-                let trace = {
-                    x: [{{{x}}}],
-                    y: [{{y}}],
-                    type: 'scatter',
-                    line: {color: '#b10438'},
-                    fill: 'tozeroy'
-                };
-                let data = [trace];
-                Plotly.newPlot('myDiv', data);
-            });
-        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.19/webcomponents-lite.js" defer></script>
     {{/content}}
 
     {{#content "page"}}
-        <div class="row">
-            <div id="myDiv"></div>
-        </div>
-    {{/content}}
+
+        <linechart-basic scrollzoom="true" data="{{stats}}"></linechart-basic>
+
+        {{/content}}
 {{/extend}}
