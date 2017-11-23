@@ -72,12 +72,24 @@ router.get('/:id', function (req, res, next) {
    api(req).get('/statistics/' + req.params.id, {qs: {returnArray: true}})
        .then(stats => {
 
-           let finStat = [{"x": Array.from(stats.x), "y": Array.from(stats.y)}];
+           let finStat = [{
+               "x": Array.from(stats.x),
+               "y": Array.from(stats.y),
+               line: {color: '#b10438'},
+               fill: 'tozeroy'
+           }];
+
+           let position = _.findIndex(options, {name: req.params.id});
+           let next = ((position + 1) > options.length - 1) ? options[0].name : options[position + 1].name;
+           let prev = ((position - 1) < 0) ? options[options.length - 1].name : options[position - 1].name;
 
            res.render('statistic/plottedStat', {
                title: 'Statistiken',
                user: res.locals.currentUser,
-               stats: JSON.stringify(finStat)
+               stats: JSON.stringify(finStat),
+               name: req.params.id,
+               prev: prev,
+               next: next
            });
        });
 });

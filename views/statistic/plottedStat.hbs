@@ -2,6 +2,7 @@
 
     {{#content "styles" mode="append"}}
         <link rel="import" href="/vendor/m.e.i.n.e.l/linechart.html">
+        <link rel="stylesheet" href="/styles/statistics/statistics.css">
     {{/content}}
 
     {{#content "scripts" mode="append"}}
@@ -10,7 +11,24 @@
 
     {{#content "page"}}
 
-        <linechart-basic scrollzoom="true" data="{{stats}}"></linechart-basic>
+        <linechart-basic scrollzoom="true" data="{{stats}}" title="{{name}}"></linechart-basic>
+
+        <div class="row" style="width: 100%; position: relative">
+            <div style="position: absolute">
+                <a href="/statistics/{{prev}}">
+                    <button class="button type2">
+                        <span class="fa fa-arrow-left"></span>
+                    </button>
+                </a>
+            </div>
+            <div style="position: absolute; right: 10px">
+                <a href="/statistics/{{next}}">
+                    <button class="button type2">
+                        <span class="fa fa-arrow-right"></span>
+                    </button>
+                </a>
+            </div>
+        </div>
 
         {{/content}}
 {{/extend}}

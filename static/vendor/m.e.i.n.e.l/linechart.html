@@ -9572,6 +9572,10 @@ var e,r,n=t[0].trace,a=i.select(this),o=u.hasMarkers(n),c=u.hasText(n),f=y(n),d=
                     value: 100,
                     reflectToAttribute: true,
                 },
+                title: {
+                    type: String,
+                    reflectToAttribute: true
+                }
             },
 
             /** This is called by Polymer after the component instance is attached to the document. */
@@ -9621,9 +9625,7 @@ var e,r,n=t[0].trace,a=i.select(this),o=u.hasMarkers(n),c=u.hasText(n),f=y(n),d=
                 var gd = gd3.node();
 
                 var layout = {
-                    type: 'scatter',
-                    line: {color: '#b10438'},
-                    fill: 'tozeroy',
+                    title: this.title,
                     xaxis: {
                         tickmode: "auto",
                         tickfont: {
