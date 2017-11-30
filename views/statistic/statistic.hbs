@@ -1,0 +1,16 @@
+{{#extend "lib/loggedin"}}
+
+    {{#content "styles" mode="append"}}
+
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="row mobile-no-margin-right">
+            <div class="row card-deck-row">
+                {{#each stats}}
+                    {{> 'statistic/components/single-value-card'}}
+                {{/each}}
+            </div>
+        </div>
+    {{/content}}
+{{/extend}}
