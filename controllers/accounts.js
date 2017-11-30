@@ -79,14 +79,11 @@ const getDetailHandler = (service) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(_ => {
-            api(req).get('/accounts/', { qs: { userId: req.params.id }})
-                .then(account => {
-                    api(req).delete('/accounts/' + account[0]._id)
-                        .then(_ => {
-                            res.redirect(req.header('Referer'));
-                        });
-                });
+        api(req).delete('/' + service + '/' + req.params.id).then(account => {
+                api(req).delete('/users/' + account.userId)
+                    .then(_ => {
+                        res.redirect(req.header('Referer'));
+                    });
         }).catch(err => {
             next(err);
         });
@@ -113,7 +110,6 @@ router.get('/search' , function (req, res, next) {
             }
         }
     ).then(data => {
-        console.log(data);
         const head = [
             'ID',
             'Username',

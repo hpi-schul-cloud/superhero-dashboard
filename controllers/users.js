@@ -143,6 +143,9 @@ const getDeleteHandler = (service) => {
                         .then(_ => {
                             res.redirect(req.header('Referer'));
                         });
+                })
+                .catch(_ => {
+                    res.redirect(req.header('Referer'));
                 });
         }).catch(err => {
             next(err);
