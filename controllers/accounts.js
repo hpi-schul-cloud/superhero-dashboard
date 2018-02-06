@@ -40,8 +40,6 @@ const getCreateHandler = (service) => {
             // TODO: sanitize
             json: req.body
         }).then(data => {
-            if (req.body.silent !== 'on')
-                sendMailHandler(data, req);
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -152,7 +150,7 @@ router.get('/search' , function (req, res, next) {
 router.patch('/:id', getUpdateHandler('accounts'));
 router.get('/:id', getDetailHandler('accounts'));
 router.delete('/:id', getDeleteHandler('accounts'));
-router.post('/', getCreateHandler('accounts'));
+router.post('/search/', getCreateHandler('accounts'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;

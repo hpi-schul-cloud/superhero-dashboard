@@ -21,7 +21,14 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" method="patch" role=role class="edit-modal"}}
+        <button class="btn btn-primary btn-create-school">Neuen Account erstellen</button>
+
+        {{#embed "lib/components/modal-form" method="create" class="add-modal"}}
+            {{#content "fields"}}
+                {{> "accounts/forms/add-account"}}
+            {{/content}}
+        {{/embed}}
+        {{#embed "lib/components/modal-form" method="patch" class="edit-modal"}}
             {{#content "fields"}}
                 {{> "accounts/forms/add-account"}}
             {{/content}}
