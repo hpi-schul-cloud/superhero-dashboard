@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+
+  superhero-dashboard:
+    image: superhero-dashboard:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      BACKEND_URL: http://127.0.0.1:3030/
+    networks:
+      - default
+    ports:
+      - 3033:3033
+    volumes:
+      - .:/app
+    command: npm run start
