@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "gulp && node ./bin/www",
+    "start": "node ./bin/www",
     "watch": "nodemon --watch ./ --watch views/ --watch controllers/ --watch build/ ./bin/www",
     "lint": "eslint ./bin ./controllers ./helpers ./test ./api.js ./app.js --ext .js --fix",
     "startd": "echo 'Do you mean 'npm run watch'?'",

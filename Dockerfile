@@ -11,6 +11,9 @@ ENV NODE_PATH=/opt/node_modules
 # Copy current directory to container
 COPY . /app
 
+# Run gulp
+RUN  cd /app && gulp
+
 WORKDIR /app
 
 EXPOSE 3033
