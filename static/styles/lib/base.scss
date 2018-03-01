@@ -1,5 +1,6 @@
 @import "./colors";
 @import "components";
+@import "./sc-theme/sc-theme";
 
 @import "./tether/tether.min.css";
 @import "./bootstrap/scss/bootstrap-flex";
@@ -11,19 +12,24 @@
 /* customize bootstrap stuff in /bootstrap/scss/_custom.scss */
 
 * {
-	-webkit-font-smoothing: antialiased;
-	-webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    hyphens: auto;
 }
 
 a {
-	text-decoration: none;
-	&:hover {
-		text-decoration: none;
-	}
+    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
 }
 
-a {
-	color: $colorPromotrSecond;
+a[data-toggle="collapse"],
+a[data-toggle="collapse"]:hover,
+a[data-toggle="collapse"]:active,
+a[data-toggle="collapse"]:focus{
+    color: inherit;
+    text-decoration:none !important;
 }
 
 p.small {
@@ -52,6 +58,11 @@ label {
 	width: 100%;
 }
 
+label,
+.noselect{
+    user-select: none;
+}
+
 .btn-loading {
 	font-size: 0px !important;
 	transition: width 0.3s;
@@ -68,7 +79,7 @@ label {
 	}
 }
 
-footer {
+footer.small-footer {
 	width: 100%;
 	margin-top: 40px;
 	position: inherit;
@@ -78,7 +89,7 @@ footer {
 	left: 0;
 	clear: both;
 	padding: 30px 0px;
-
+	font-size: 0.9em;
 	@include media-breakpoint-down(xs) {
 		background: $colorBeige;
 
@@ -94,6 +105,12 @@ footer {
 			text-align: center;
 			align-items: center;
 		}
+        img{
+            width: auto;
+            max-width: 175px;
+            height: auto;
+            max-height: 44px;
+        }
 	}
 }
 
@@ -156,8 +173,10 @@ form.inline {
 }
 
 .collapse-icon {
-	margin-left: 10px;
-	vertical-align: middle;
+	display:inline-block;
+    vertical-align: baseline;
+    text-align: center;
+    width: 1em;
 }
 
 .window-inline .hide-inline {
@@ -165,7 +184,6 @@ form.inline {
 }
 
 .card-deck-row {
-    width: 100%;
 
 	& > div {
 		margin-bottom: 30px;
@@ -176,10 +194,6 @@ form.inline {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
-
-		p {
-			word-wrap: break-word;
-		}
 
 		.card-block {
 			max-width: 100%;
@@ -195,17 +209,31 @@ form.inline {
 	}
 }
 
-.btn-primary {
-	background-color: $colorPromotrMain !important;
-	border-color: $colorPromotrMain !important;
+.print-only{display:none;}
+@media print {
+    .print-only{display:initial;}
 }
 
-.btn-primary:hover {
-	background-color: $colorPromotrMainDark !important;
-	border-color: $colorPromotrMainDark !important;
-
+.ckcontent {
+    margin: 10px 0;
+    color: #373a3c;
+    text-decoration:none;
+    &:hover{text-decoration:none;}
+    h1 {font-size: 1.3rem;font-weight:bold}
+    h2 {font-size: 1.2rem;font-weight:bold;font-style:italic}
+    h3 {font-size: 1.1rem;font-style:italic;text-decoration:underline}
+    p  {font-size: 1rem;margin-bottom:.25rem;}
+    img, video{max-width: 100%;}
+    table{display: block; max-width:100%; overflow: auto;}
+    blockquote{
+      color: grey;
+      margin-left: 1rem;
+      border-left: 2px solid grey;
+      padding-left: 5px;
+    }
 }
 
-h5 {
-	color: $colorPromotrMainDark !important;
+.container .jumbotron{
+	padding: 2rem 2rem;
+	margin: 2rem 0rem;
 }

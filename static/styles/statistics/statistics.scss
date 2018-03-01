@@ -42,7 +42,7 @@
   height: 100%;
 }
 .button.type2 {
-  color: #b10438;
+  color: $primaryColor;
 }
 .button.type2.type2:after, .button.type2.type2:before {
   content: "";
@@ -52,7 +52,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #b10438;
+  background-color: $primaryColor;
   transition: all 0.3s ease;
   transform: scale(0.85);
 }

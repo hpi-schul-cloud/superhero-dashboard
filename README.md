@@ -12,12 +12,19 @@
 
 ## Run
 
-1. Start the [schulcloud-server](https://github.com/schul-cloud/schulcloud-server)
+1. Start the [schul-cloud server](https://github.com/schulcloud/schulcloud-server)
 2. Go into project folder
 3. run `gulp watch` to run gulp
 4. run `npm run watch` to boot the application
 5. go to `http://localhost:3033`
 
+## Theming
+
+Add Themes to /theme directory. Call gulp and node with SC_THEME set to name of directory.
+then clear build files and gulp cache with `gulp clear`
+
+### Windows
+ run `set SC_THEME={themeName}` without spaces around the equal sign!
 
 ## How to name your branch
 
