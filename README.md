@@ -30,7 +30,7 @@ then clear build files and gulp cache with `gulp clear`
 - SC_NAV_TITLE
 - HOST
 - PORT
-- SC_THEME (gulp only)
+- SC_THEME
 - BACKEND_URL
 
 ## How to name your branch
