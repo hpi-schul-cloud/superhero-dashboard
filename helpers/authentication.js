@@ -113,7 +113,6 @@ const restrictSidebar = (req, res) => {
     ];
 };
 
-
 module.exports = {
     isJWT,
     authChecker,

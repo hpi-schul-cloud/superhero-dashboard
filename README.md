@@ -26,6 +26,13 @@ then clear build files and gulp cache with `gulp clear`
 ### Windows
  run `set SC_THEME={themeName}` without spaces around the equal sign!
 
+## Environment Variables
+- SC_NAV_TITLE
+- HOST
+- PORT
+- SC_THEME (gulp only)
+- BACKEND_URL
+
 ## How to name your branch
 
 1. Take the last part of the url of your Trello ticket (e.g. "8-setup-feathers-js")

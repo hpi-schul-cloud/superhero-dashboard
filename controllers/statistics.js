@@ -71,11 +71,14 @@ router.use(authHelper.authChecker);
 router.get('/:id', function (req, res, next) {
    api(req).get('/statistics/' + req.params.id, {qs: {returnArray: true}})
        .then(stats => {
+           let colourLine = '#b10438';
+           if (process.env.SC_NAV_TITLE)
+               colourLine = '#78aae5';
 
            let finStat = [{
                "x": Array.from(stats.x),
                "y": Array.from(stats.y),
-               line: {color: '#b10438'},
+               line: {color: colourLine},
                fill: 'tozeroy'
            }];
 
@@ -89,7 +92,8 @@ router.get('/:id', function (req, res, next) {
                stats: JSON.stringify(finStat),
                name: req.params.id,
                prev: prev,
-               next: next
+               next: next,
+               themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
            });
        });
 });
@@ -111,7 +115,8 @@ router.get('/', function (req, res, next) {
             res.render('statistic/statistic', {
                 title: 'Statistiken',
                 user: res.locals.currentUser,
-                stats: finalStats
+                stats: finalStats,
+                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
             });
     });
 });
