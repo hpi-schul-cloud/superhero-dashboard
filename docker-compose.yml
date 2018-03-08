@@ -8,7 +8,10 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      BACKEND_URL: http://127.0.0.1:3030/
+      BACKEND_URL: https://schul-cloud.org:8080/
+      SC_NAV_TITLE: 
+      HOST: 
+      SC_THEME: 
     networks:
       - default
     ports:
