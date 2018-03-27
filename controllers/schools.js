@@ -18,11 +18,37 @@ const getTableActions = (item, path) => {
             icon: 'edit'
         },
         {
+            link: path + item._id + '/bucket',
+            class: 'btn-bucket',
+            icon: 'bitbucket',
+            method: 'post'
+        },
+        {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete'
         }
+    ];
+};
+
+const createBucket = (req, res, next) => {
+        Promise.all([
+            api(req).post('/fileStorage', {
+                json: {fileStorageType: req.body.fileStorageType, schoolId: req.params.id}
+            }),
+            api(req).patch('/schools/' + req.params.id, {
+                json: req.body
+            })]).then(data => {
+            res.redirect(req.header('Referer'));
+        }).catch(err => {
+            next(err);
+        });
+};
+
+const getStorageProviders = () => {
+    return [
+        {label: 'AWS S3', value: 'awsS3'}
     ];
 };
 
@@ -131,6 +157,7 @@ router.get('/search' , function (req, res, next) {
 router.patch('/:id', getUpdateHandler('schools'));
 router.get('/:id', getDetailHandler('schools'));
 router.delete('/:id', getDeleteHandler('schools'));
+router.post('/:id/bucket', createBucket);
 router.post('/', getCreateHandler('schools'));
 router.all('/', function (req, res, next) {
 
@@ -146,10 +173,23 @@ router.all('/', function (req, res, next) {
                 $populate: 'federalState'
             }
         }).then(data => {
+
+            let provider = getStorageProviders();
+            provider = (provider || []).map(prov => {
+                if (prov.value == data.fileStorageType) {
+                    return Object.assign(prov, {
+                        selected: true
+                    });
+                } else {
+                    return prov;
+                }
+            });
+
             const head = [
                 'ID',
                 'Name',
                 'Bundesland',
+                'Filestorage',
                 ''
             ];
 
@@ -158,6 +198,7 @@ router.all('/', function (req, res, next) {
                     item._id,
                     item.name,
                     (item.federalState || {}).name,
+                    (item.fileStorageType || ""),
                     getTableActions(item, '/schools/')
                 ];
             });
@@ -178,7 +219,7 @@ router.all('/', function (req, res, next) {
                 baseUrl: '/schools/?p={{page}}' + sortQuery + limitQuery
             };
 
-            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
+            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, provider, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
         });
     });
 });

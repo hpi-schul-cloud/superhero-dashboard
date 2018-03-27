@@ -10,3 +10,11 @@
         {{/each}}
     </select>
 </div>
+<div class="form-group">
+    <label class="control-label" for="fileStorageType">FileStorageTyp</label>
+    <select name="fileStorageType" type="text">
+        {{#each provider}}
+            <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{this.label}}</option>
+        {{/each}}
+    </select>
+</div>
