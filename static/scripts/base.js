@@ -73,6 +73,8 @@ function populateModalForm(modal, data) {
 }
 
 $(document).ready(function () {
+    // Bootstrap Tooltips
+    $('[data-toggle="tooltip"]').tooltip();
 
     // notification stuff
     var $notification = $('.notification');
@@ -100,6 +102,7 @@ $(document).ready(function () {
 
     $notification.find('.close').click(window.$.hideNotification);
 
+
     // Initialize bootstrap-select
     $('select').not('.no-bootstrap').chosen({
         width: "100%",
@@ -118,6 +121,7 @@ $(document).ready(function () {
             $collapseToggle.find('.collapse-icon').addClass("fa-chevron-right");
         }
     });
+
 
     // Init mobile nav
     $('.mobile-nav-toggle').click(function (e) {
@@ -146,25 +150,21 @@ $(document).ready(function () {
     var $modals = $('.modal');
     var $deleteModal = $('.delete-modal');
 
-    const nextPage = function(href=null) {
-        if(href==null){
-            window.location.reload();
-        }else{
+    const nextPage = function(href) {
+        if(href){
             window.location.href = href;
+        }else{
+            window.location.reload();
         }
     };
 
     function showAJAXError(req, textStatus, errorThrown) {
+        $deleteModal.modal('hide');
         if(textStatus==="timeout") {
-            $.showNotification("Zeitüberschreitung der Anfrage", "warn", true);
+            $.showNotification("Zeitüberschreitung der Anfrage", "warn", 30000);
         } else {
-            $.showNotification(errorThrown, "danger", true);
+            $.showNotification(errorThrown, "danger");
         }
-    }
-
-    function showAJAXSuccess(message, modal) {
-        modal.modal('hide');
-        $.showNotification(message, "success", true);
     }
 
     $('a[data-method="delete-material"]').on('click', function(e) {
@@ -193,4 +193,17 @@ $(document).ready(function () {
     $modals.find('.close, .btn-close').on('click', function() {
         $modals.modal('hide');
     });
+
+    // Print Button
+    $('.print .btn-print').click(function () {
+        $(this).html("");
+        w = window.open();
+        w.document.write($(this).parent(".print").html());
+        w.print();
+        w.close();
+        $(this).html("<i class='fa fa-print'></i> Drucken");
+    });
+    
+    $(".chosen-container-multi").off( "touchstart");
+    $(".chosen-container-multi").off( "touchend");
 });

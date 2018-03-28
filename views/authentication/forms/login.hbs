@@ -1,0 +1,19 @@
+<section id="loginarea" class="card">
+    <div class="card-block">
+        <h4 class="card-title">Login</h4>
+        <div class="card-text form-wrapper">
+            {{> "lib/components/notification"}}
+
+            <form method="post" action="/login/" class="login-form">
+                <div class="form-group">
+                    <input type="text" name="username" class="form-control form-control-lg" placeholder="Email-Adresse oder Nutzername" required>
+                    <input type="password" name="password" class="form-control form-control-lg" placeholder="Passwort" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-block btn-primary btn-login" value="Anmelden" />
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

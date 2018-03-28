@@ -1,1 +1,0 @@
-gulp && BACKEND_URL=http://31.14.134.198:3032 pm2 start ./bin/www

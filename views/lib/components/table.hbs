@@ -1,12 +1,12 @@
 {{#if limit}}
     <div class="col-md-4" style="float:right;padding-bottom: 10px;padding-right:0px !important;">
-        <select id="limit">
-            <option value="">Anzahl der Einträge</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>
+    <select id="limit">
+        <option value="">Anzahl der Einträge</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
     </div>
 {{/if}}
 <table class="{{#if class}}{{class}}{{else}}table table-hover table-bordered{{/if}}">
@@ -19,6 +19,7 @@
             </tr>
         </thead>
     {{/if}}
+
 
     {{#if body}}
         <tbody>
@@ -43,13 +44,7 @@
                                 {{/each}}
                             </td>
                         {{else}}
-                            <td>
-                                {{#if this.url}}
-                                    <img src="{{this.url}}" width="{{this.width}}" height="{{this.height}}" />
-                                {{else}}
-                                    {{this}}
-                                {{/if}}
-                            </td>
+                            <td>{{{this}}}</td>
                         {{/ifArray}}
                     {{/each}}
                 </tr>

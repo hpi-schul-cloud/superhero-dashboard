@@ -2,6 +2,7 @@
 
     {{#content "styles" mode="append"}}
         <link rel="stylesheet" href="/styles/authentication/login.css"/>
+        <link rel="stylesheet" href="/vendor/animate.css"/>
     {{/content}}
 
     {{#content "scripts" mode="append"}}
@@ -13,7 +14,7 @@
             <div class="row">
                 <div class="col-md-6 offset-md-3">
                     <hgroup class="huge-gap">
-                        <h3>SuperHero-Dashboard <sup>ALPHA</sup></h3>
+                        <h2 class="animated jackInTheBox" id="title"}>SuperHero-Dashboard <sup>ALPHA</sup></h2>
                     </hgroup>
 
                     <div class="form-wrapper">
@@ -34,13 +35,6 @@
                 </div>
             </div>
         </div>
-
-        {{#embed "lib/components/modal-form" action="/pwrecovery/" method="post" class="pwrecovery-modal"}}
-            {{#content "fields"}}
-                {{> "authentication/forms/pwrecovery"}}
-            {{/content}}
-        {{/embed}}
-
 
     {{/content}}
 {{/extend}}

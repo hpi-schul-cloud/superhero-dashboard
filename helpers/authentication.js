@@ -58,7 +58,7 @@ const populateCurrentUser = (req, res) => {
                 res.redirect('/logout');
             }
             res.locals.currentUser = data;
-           return data;
+            return data;
         });
     }
 
@@ -80,39 +80,38 @@ const restrictSidebar = (req, res) => {
         icon: 'graduation-cap',
         link: '/schools/'
     },
-    {
-        name: 'Users',
-        icon: 'user',
-        link: '/users/'
-    },
-    {
-        name: 'Accounts',
-        icon: 'address-card',
-        link: '/accounts/'
-    },
-    {
-        name: 'Rollen',
-        icon: 'superpowers',
-        link: '/roles/'
-    },
-    {
-      name: 'Helpdesk',
-      icon: 'handshake-o',
-      link: '/helpdesk/'
-    },
-    {
-        name: 'Bundesländer',
-        icon: 'globe',
-        link: '/federalstates/'
-    },
-    {
-        name: 'Allg. Verwaltung',
-        icon: 'gear',
-        link: '/management/'
-    }
+        {
+            name: 'Users',
+            icon: 'user',
+            link: '/users/'
+        },
+        {
+            name: 'Accounts',
+            icon: 'address-card',
+            link: '/accounts/'
+        },
+        {
+            name: 'Rollen',
+            icon: 'superpowers',
+            link: '/roles/'
+        },
+        {
+            name: 'Helpdesk',
+            icon: 'handshake-o',
+            link: '/helpdesk/'
+        },
+        {
+            name: 'Bundesländer',
+            icon: 'globe',
+            link: '/federalstates/'
+        },
+        {
+            name: 'Allg. Verwaltung',
+            icon: 'gear',
+            link: '/management/'
+        }
     ];
 };
-
 
 module.exports = {
     isJWT,

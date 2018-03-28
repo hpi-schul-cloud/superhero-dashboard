@@ -1,0 +1,20 @@
+<section class="section section-{{section-id}}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12"><h5>{{title}}</h5></div>
+        </div>
+        <div class="row tasks card-deck-row">
+            {{#each content}}
+                <div class="sc-card-wrapper col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                    {{> 'lib/components/sc-card' link-text=../link-text}}
+                </div>
+            {{else}}
+                <div class="col-md-8 offset-md-2 col-lg-12 offset-lg-0">
+                    <div class="alert">
+                        Keine aktuellen Einträge vorhanden.
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</section>

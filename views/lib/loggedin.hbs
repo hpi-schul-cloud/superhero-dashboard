@@ -10,6 +10,9 @@
         <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function() {
             $('.sidebar-list').css({"height": window.innerHeight});
+            if (!/^((?!chrome).)*safari/i.test(navigator.userAgent)) {
+                setupFirebasePush();
+            }
         });
         window.addEventListener("resize", function () {
             $('.sidebar-list').css({"height": window.innerHeight});
@@ -18,18 +21,20 @@
     {{/content}}
 
     {{#content "body"}}
+        <div class="navtooltips"></div>
         <aside class="nav-sidebar hide-inline">
             <nav>
                 <ul class="sidebar-list">
                     <li>
-                        <div class="sc-branding">
-                            <img src="https://media.giphy.com/media/2eh0ovwcQQK2I/giphy.gif" height="35" width="20" />
-                            <span>SuperHero</span>
-                        </div>
+                        <a class="sc-branding" href="/">
+                            <div class="cloud-logo"></div>
+                            <div class="sc-title"><span>{{themeTitle}}</span></div>
+                        </a>
                     </li>
                     {{#each sidebarItems}}
                         <li>
-                            <a class="{{this.class}}" href="{{this.link}}">
+                            <a class="{{this.class}}" href="{{this.link}}"
+                                data-container=".navtooltips" data-toggle="tooltip" data-placement="right" data-title="{{this.name}}">
                                 <i class="fa fa-{{this.icon}}" aria-hidden="true"></i>
                                 <span class="link-name">{{this.name}}</span>
                             </a>
@@ -39,7 +44,8 @@
                                     <ul class="subitems">
                                         {{#each this.children}}
                                             <li>
-                                                <a class="subitem {{this.class}}" href="{{this.link}}">
+                                                <a class="subitem {{this.class}}" href="{{this.link}}"
+                                                    data-container=".navtooltips" data-toggle="tooltip" data-placement="right" data-title="{{this.name}}">
                                                     <i class="fa fa-{{this.icon}}" aria-hidden="true"></i>
                                                     <span class="link-name">{{this.name}}</span>
                                                 </a>
@@ -57,7 +63,6 @@
                 <i class="fa fa-bars"></i>
             </a>
         </aside>
-
 
         <section class="content-wrapper">
             {{> "lib/components/notification"}}
@@ -79,9 +84,10 @@
                         <div class="btn-group">
                             <button type="button" class="btn btn-secondary dropdown-toggle account-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <strong><i class="fa fa-user"></i>{{user.displayName}}</strong>
+                                <strong>{{ currentUser.displayName }}</strong>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="/account/">Einstellungen</a>
                                 <a class="dropdown-item" href="/logout/">Abmelden</a>
                             </div>
                         </div>
@@ -104,13 +110,10 @@
                 </div>
             </section>
 
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12">
-                        {{#block "page"}}{{/block}}
-                    </div>
-                </div>
-            </div>
+            <main id="main-content" class="container-fluid">
+                {{#block "page"}}{{/block}}
+            </main>
+
         </section>
     {{/content}}
 {{/extend}}
