@@ -50,7 +50,7 @@ $(document).ready(function () {
         'Nachname': 'lastName',
         'E-Mail': 'email',
         'Rollen': 'roles',
-        'Rolen': 'roles',
+        'Rollen': 'roles',
         'Schule': 'schoolId',
         'Name': 'name',
         'ID': '_id',
