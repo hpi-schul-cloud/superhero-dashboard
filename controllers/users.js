@@ -45,15 +45,15 @@ const sendMailHandler = (user, req) => {
     let email = createdUser.email;
     let content = {
         "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
-        "Sie wurden in die " + process.env.SC_NAV_TITLE || "Schul-Cloud" + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
+        "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
         (process.env.HOST || 'https://schul-cloud.org') + "/register/account/" + createdUser._id + "\n\n" +
-        "Mit Freundlichen Grüßen" + "\nIhr " + process.env.SC_NAV_TITLE || "Schul-Cloud" + " Team"
+        "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
         json: {
             headers: {},
             email: email,
-            subject: "Einladung in die " + process.env.SC_NAV_TITLE || "Schul-Cloud",
+            subject: "Einladung in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud"),
             content: content
         }
     }).then(_ => {
