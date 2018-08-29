@@ -86,10 +86,44 @@ router.get('/:id', function (req, res, next) {
            let next = ((position + 1) > options.length - 1) ? options[0].name : options[position + 1].name;
            let prev = ((position - 1) < 0) ? options[options.length - 1].name : options[position - 1].name;
 
+           // Increment users in statistics
+           let xIncremented = [];
+           let yIncremented = [];
+           let currentCount = 0;
+           let lastDateIndex = 0;
+           try {
+            let startDate = new Date(stats.x[0]);
+            let endDate = new Date();
+            do {
+                let currentDate = startDate.toISOString().split('T')[0];
+                if(currentDate == stats.x[lastDateIndex])
+                {
+                    currentCount += stats.y[lastDateIndex];
+                    lastDateIndex++;
+                }
+
+                xIncremented.push(currentDate);
+                yIncremented.push(currentCount);
+
+                startDate.setDate(startDate.getDate() + 1);
+            } while (startDate.toISOString().split('T')[0] != endDate.toISOString().split('T')[0]);
+           } catch (error) {
+               xIncremented = [];
+               yIncremented = [];
+           }
+
+           let incrementedFinStat = [{
+                "x": Array.from(xIncremented),
+                "y": Array.from(yIncremented),
+                line: {color: colourLine},
+                fill: 'tozeroy'
+            }];
+
            res.render('statistic/plottedStat', {
                title: 'Statistiken',
                user: res.locals.currentUser,
                stats: JSON.stringify(finStat),
+               statsIncremented: JSON.stringify(incrementedFinStat),
                name: req.params.id,
                prev: prev,
                next: next,
