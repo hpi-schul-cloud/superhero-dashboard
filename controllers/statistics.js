@@ -77,9 +77,7 @@ router.get('/:id', function (req, res, next) {
 
             let finStat = [{
                 "x": Array.from(stats.x),
-                "y": Array.from(stats.y),
-                line: { color: colourLine },
-                fill: 'tozeroy'
+                "y": Array.from(stats.y)
             }];
 
             let position = _.findIndex(options, { name: req.params.id });
@@ -119,7 +117,7 @@ router.get('/:id', function (req, res, next) {
             }];
 
             res.render('statistic/plottedStat', {
-                title: 'Statistiken',
+                title: 'Statistiken (' + req.params.id + ")",
                 user: res.locals.currentUser,
                 stats: JSON.stringify(finStat),
                 statsIncremented: JSON.stringify(incrementedFinStat),
