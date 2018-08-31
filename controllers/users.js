@@ -303,13 +303,16 @@ router.get('/search' , function (req, res, next) {
 });
 
 router.get('/jwt/:id', function (req, res, next) {
-    api(req).post('/accounts/jwt', {json: { userId: req.params.id }})
-        .then(jwt => {
+    api(req).post('/accounts/jwt', {
+        json: { 
+            userId: req.params.id 
+        }
+    }).then(jwt => {
             api(req).get('/users/' + req.params.id)
                 .then(user => {
                     res.render('users/jwt', {
-                        title: 'JWT',
-                        jwt: jwt,
+                        title: `JWT für ${user.displayName}`,
+                        jwt: jwt || '',
                         user: user,
                         themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
             });
