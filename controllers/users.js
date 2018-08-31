@@ -40,13 +40,39 @@ const getTableActions = (item, path) => {
     ];
 };
 
-const sendMailHandler = (user, req) => {
+const sendMailHandler = async (user, req) => {
     let createdUser = user;
     let email = createdUser.email;
+    let link = `${(process.env.HOST || 'https://schul-cloud.org')}/registration/`;
+    let importHash = await api(req).post("/hash", {
+        json: {
+            toHash: email,
+            save: true
+        }
+    });
+
+    // make single role to array
+    if(!Array.isArray(req.body.roles)){
+        req.body.roles = [req.body.roles];
+    }
+
+    // detect registration form from roles
+    let roleNames = (await api(req).get("/roles", {qs: {$limit: 10000 }})).data.filter(role => {
+        return req.body.roles.includes(role._id);
+    }).map(role => {
+        return role.name.toLowerCase();
+    });
+    if (roleNames.join('').includes('student')) {
+        link += `${req.body.schoolId}?id=${importHash}`;
+    } else {
+        link += `${req.body.schoolId}/byemployee?id=${importHash}`;
+    }
+
+    // create & send mail
     let content = {
         "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
         "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-        (process.env.HOST || 'https://schul-cloud.org') + "/register/account/" + createdUser._id + "\n\n" +
+        link + "\n\n" +
         "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
@@ -184,10 +210,9 @@ router.get('/user/:id' , function (req, res, next) {
                 ];
 
                 const body = data.data.map(item => {
-                    let roles = '';
-                    item.roles.map(role => {
-                        roles = roles + ' ' + role.name;
-                    });
+                    let roles = item.roles.map(role => {
+                        return role.name;
+                    }).join(', ');
                     return [
                         item.firstName,
                         item.lastName,
@@ -258,10 +283,9 @@ router.get('/search' , function (req, res, next) {
                 ];
 
                 const body = data.data.map(item => {
-                    let roles = '';
-                    item.roles.map(role => {
-                        roles = roles + ' ' + role.name;
-                    });
+                    let roles = item.roles.map(role => {
+                        return role.name;
+                    }).join(', ');
                     return [
                         item.firstName,
                         item.lastName,
@@ -349,10 +373,9 @@ router.get('/', function (req, res, next) {
             ];
 
             const body = data.data.map(item => {
-                let roles = '';
-                item.roles.map(role => {
-                    roles = roles + ' ' + role.name;
-                });
+                let roles = item.roles.map(role => {
+                    return role.name;
+                }).join(', ');
                 return [
                     item._id,
                     item.firstName,
@@ -397,7 +420,7 @@ router.get('/', function (req, res, next) {
                 });
         });
     } else {
-        api(req).get('/schools/').then(schools => {
+        api(req).get('/schools/', {qs: {$limit: 1000}}).then(schools => {
             res.render('users/preselect', {
                 title: 'Users',
                 user: res.locals.currentUser,

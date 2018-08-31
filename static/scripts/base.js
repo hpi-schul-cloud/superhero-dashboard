@@ -106,7 +106,7 @@ $(document).ready(function () {
     // Initialize bootstrap-select
     $('select').not('.no-bootstrap').chosen({
         width: "100%",
-        "disable_search": true
+        "disable_search": false
     });
 
     // collapse toggle
