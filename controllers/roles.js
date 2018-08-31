@@ -124,7 +124,7 @@ router.all('/', function (req, res, next) {
                 return [
                     item._id,
                     item.name,
-                    (item.roles[0] || {}).name,
+                    (item.roles[0] || {}).name || '',
                     permissions,
                     getTableActions(item, '/roles/')
                 ];

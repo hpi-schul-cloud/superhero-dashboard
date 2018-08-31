@@ -133,7 +133,7 @@ router.get('/search' , function (req, res, next) {
                 return [
                     item._id,
                     item.name,
-                    (item.federalState || {}).name,
+                    (item.federalState || {}).name || '',
                     getTableActions(item, '/schools/')
                 ];
             });
@@ -197,8 +197,8 @@ router.all('/', function (req, res, next) {
                 return [
                     item._id,
                     item.name,
-                    (item.federalState || {}).name,
-                    (item.fileStorageType || ""),
+                    ((item.federalState || {}).name || ''),
+                    (item.fileStorageType || ''),
                     getTableActions(item, '/schools/')
                 ];
             });

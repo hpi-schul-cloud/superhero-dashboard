@@ -122,7 +122,7 @@ router.get('/search' , function (req, res, next) {
             return [
                 item._id,
                 item.username,
-                item.activated,
+                item.activated ? '✔️' : '❌',
                 item.userId,
                 getTableActions(item, '/accounts/')
             ];
