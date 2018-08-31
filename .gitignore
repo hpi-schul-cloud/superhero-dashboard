@@ -59,6 +59,9 @@ typings/
 # Optional eslint cache
 .eslintcache
 
+# gulp changed smart cache
+.gulp-changed-smart.json
+
 # Optional REPL history
 .node_repl_history
 
@@ -73,3 +76,9 @@ typings/
 
 # IntelliJ IDEA configuration files
 \.idea/
+
+# VSCode Configuration file
+.vscode
+
+# Webpack Rebuild Changed Plugin Cache
+.webpack-changed-plugin-cache

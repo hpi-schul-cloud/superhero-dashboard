@@ -105,7 +105,7 @@ router.get('/', function (req, res, next) {
                 item._id,
                 item.name,
                 item.abbreviation,
-                {url: item.logoUrl, height: 50, width: 50},
+                {image: true, url: item.logoUrl, height: 40},
                 getTableActions(item, '/federalstates/')
             ];
         });
