@@ -16,34 +16,40 @@ const getTableActionsSend = (item, path, state) => {
         actions.push(
             {
                 class: 'disabled',
-                icon: 'edit'
+                icon: 'edit',
+                title: 'bearbeiten'
             },
             {
                 class: 'disabled',
-                icon: 'ban'
+                icon: 'archive',
+                title: 'abschließen'
             },
             {
                 class: 'disabled',
-                icon: 'paper-plane'
+                icon: 'paper-plane',
+                title: 'senden'
             });
     } else {
         actions.push(
             {
                 link: path + item._id,
                 class: 'btn-edit',
-                icon: 'edit'
+                icon: 'edit',
+                title: 'bearbeiten'
             },
             {
                 link: path + item._id,
                 class: 'btn-close',
-                icon: 'ban',
-                method: 'delete'
+                icon: 'archive',
+                method: 'delete',
+                title: 'abschließen'
             },
             {
                 link: path + item._id,
                 class: 'btn',
                 icon: 'paper-plane',
-                method: 'post'
+                method: 'post',
+                title: 'senden'
             });
     }
     return actions;
