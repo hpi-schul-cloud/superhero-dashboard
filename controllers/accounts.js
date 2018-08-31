@@ -35,6 +35,55 @@ const getTableActions = (item, path) => {
     ];
 };
 
+const sendMailHandler = (user, req) => {
+    let createdUser = user;
+    let email = createdUser.email;
+    let content = {
+        "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
+        "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
+        (process.env.HOST || 'https://schul-cloud.org') + "/register/account/" + createdUser._id + "\n\n" +
+        "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
+    };
+    api(req).post('/mails', {
+        json: {
+            headers: {},
+            email: email,
+            subject: "Einladung in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud"),
+            content: content
+        }
+    }).then(_ => {
+    });
+    /**fs.readFile(path.join(__dirname, '../views/template/registration.hbs'), (err, data) => {
+        if (!err) {
+            let source = data.toString();
+            let template = handlebars.compile(source);
+            let outputString = template({
+                "url": (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id,
+                "firstName": createdUser.firstName,
+                "lastName": createdUser.lastName
+            });
+
+            let content = {
+                "html": outputString,
+                "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
+                "Sie wurden in die Schul-Cloud eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
+                (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id + "\n\n" +
+                "Mit Freundlichen Grüßen" + "\nIhr Schul-Cloud Team"
+            };
+            req.body.content = content;
+            api(req).post('/mails', {
+                json: {
+                    headers: {},
+                    email: email,
+                    subject: "Einladung in die Schul-Cloud",
+                    content: content
+                }
+            }).then(_ => {
+                return true;
+            });
+        }
+    });**/
+};
 
 const getCreateHandler = (service) => {
     return function (req, res, next) {
@@ -99,8 +148,6 @@ router.use(authHelper.authChecker);
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
-
-    console.log(req.query.q);
 
     api(req).get('/accounts/', {
             qs: {
