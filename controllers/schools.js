@@ -15,19 +15,22 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id + '/bucket',
             class: 'btn-bucket',
             icon: 'bitbucket',
-            method: 'post'
+            method: 'post',
+            title: 'AWS Bucket erstellen'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         }
     ];
 };

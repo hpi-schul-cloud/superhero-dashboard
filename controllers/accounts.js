@@ -15,19 +15,22 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         },
         {
             link: '/users/user/' + item.userId,
             class: 'btn-account',
             icon: 'address-card',
-            method: 'get'
+            method: 'get',
+            title: 'Nutzerinformationen anzeigen'
         }
     ];
 };

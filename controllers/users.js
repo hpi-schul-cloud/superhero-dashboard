@@ -17,25 +17,29 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         },
         {
             link: path + 'jwt/' + item._id,
             class: 'btn-jwt',
             icon: 'sign-in',
-            method: 'get'
+            method: 'get',
+            title: 'JWT erstellen'
         },
         {
             link: '/accounts/account/' + item._id,
             class: 'btn-account',
             icon: 'address-card',
-            method: 'get'
+            method: 'get',
+            title: 'Accountinformationen anzeigen'
         }
     ];
 };
