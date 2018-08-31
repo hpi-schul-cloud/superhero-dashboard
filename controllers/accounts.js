@@ -32,7 +32,7 @@ const getTableActions = (item, path) => {
     ];
 };
 
-
+/*
 const getCreateHandler = (service) => {
     return function (req, res, next) {
         req.body.schoolId = req.query.schoolId;
@@ -48,7 +48,7 @@ const getCreateHandler = (service) => {
         });
     };
 };
-
+*/
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
         /**if (req.body.roles[0].includes(',')) {
@@ -96,8 +96,6 @@ router.use(authHelper.authChecker);
 router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
-
-    console.log(req.query.q);
 
     api(req).get('/accounts/', {
             qs: {
@@ -153,7 +151,7 @@ router.get('/search' , function (req, res, next) {
 router.patch('/:id', getUpdateHandler('accounts'));
 router.get('/:id', getDetailHandler('accounts'));
 router.delete('/:id', getDeleteHandler('accounts'));
-router.post('/', getCreateHandler('accounts'));
+//router.post('/', getCreateHandler('accounts'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
