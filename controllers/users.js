@@ -47,7 +47,8 @@ const sendMailHandler = async (user, req) => {
     let importHash = await api(req).post("/hash", {
         json: {
             toHash: email,
-            save: true
+            save: true,
+            userPatch: true
         }
     });
 
