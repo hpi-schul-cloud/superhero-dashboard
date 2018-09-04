@@ -47,7 +47,7 @@ const getTableActions = (item, path) => {
 const sendMailHandler = async (user, req) => {
     let createdUser = user;
     let email = createdUser.email;
-    let link = `${(process.env.HOST || 'https://schul-cloud.org')}/registration/`;
+    let link = `${((req.headers.origin || process.env.HOST) || 'https://schul-cloud.org')}/registration/`;
     let importHash = await api(req).post("/hash", {
         json: {
             toHash: email,

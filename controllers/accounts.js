@@ -180,7 +180,7 @@ router.get('/account/:id' , function (req, res, next) {
             return [
                 item._id,
                 item.username,
-                item.activated,
+                item.activated ? '✔️' : '❌',
                 getTableActions(item, '/accounts/')
             ];
         });
