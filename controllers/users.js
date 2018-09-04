@@ -52,7 +52,7 @@ const sendMailHandler = async (user, req) => {
         json: {
             toHash: email,
             save: true,
-            userPatch: true
+            patchUser: true
         }
     });
 
