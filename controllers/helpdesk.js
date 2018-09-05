@@ -210,6 +210,7 @@ router.get('/', function (req, res, next) {
             'Soll-Zustand',
             'Kategorie',
             'Status',
+            'Datum',
             'Anmerkungen',
             ''
         ];
@@ -221,6 +222,7 @@ router.get('/', function (req, res, next) {
                 truncate(item.targetState),
                 dictionary[item.category],
                 dictionary[item.state],
+                moment(item.createdAt).format('DD.MM.YYYY'),
                 truncate(item.notes),
                 getTableActionsSend(item, '/helpdesk/', item.state)
             ];
