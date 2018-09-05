@@ -210,7 +210,7 @@ router.get('/', function (req, res, next) {
             'Soll-Zustand',
             'Kategorie',
             'Status',
-            'Datum',
+            'Erstellungsdatum',
             'Anmerkungen',
             ''
         ];
