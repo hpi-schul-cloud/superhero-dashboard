@@ -10,8 +10,6 @@ Desktop.ini
 .directory
 *~
 
-package-lock.json
-
 # Logs
 logs
 *.log
