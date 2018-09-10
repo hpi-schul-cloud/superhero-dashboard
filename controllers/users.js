@@ -44,7 +44,7 @@ const getTableActions = (item, path) => {
     ];
 };
 
-const sendMailHandler = async (user, req) => {
+const inviteWithMail = async (user, req) => {
     let createdUser = user;
     let email = createdUser.email;
     let link = `${((req.headers.origin || process.env.HOST) || 'https://schul-cloud.org')}/registration/`;
@@ -122,18 +122,63 @@ const sendMailHandler = async (user, req) => {
 };
 
 const getCreateHandler = (service) => {
-    return function (req, res, next) {
+    return async function (req, res, next) {
         req.body.schoolId = req.query.schoolId;
-        api(req).post('/' + service + '/', {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
-            if (req.body.silent !== 'on')
-                sendMailHandler(data, req);
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
+        if (req.body.silent !== 'true'){
+             api(req).post('/' + service + '/', {
+                // TODO: sanitize
+                json: req.body
+            }).then(data => {
+                inviteWithMail(data, req);
+                res.redirect(req.header('Referer'));
+            }).catch(err => {
+                next(err);
+            });
+        }else{
+            try {
+                const pin = await api(req).post('/registrationPins/', {
+                    json: { email: req.body.email, byRole: req.body.byRole }
+                });
+                if(!pin){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen der Pin`
+                    };
+                    res.redirect(req.header('Referer'));
+                }
+                await api(req).post('/registration/', {
+                    json: {
+                        classOrSchoolId: req.body.classOrSchoolId,
+                        
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+                        password_1: req.body["password_1"],
+                        password_2: req.body["password_2"],
+
+                        pin: pin,
+
+                        privacyConsent: true,
+                        researchConsent: true,
+                        thirdPartyConsent: true,
+                        termsOfUseConsent: true,
+
+                        roles: (Array.isArray(req.body.roles)) ? req.body.roles : [req.body.roles]
+                    },
+                    qs:{ 
+                        sso: req.params.sso,
+                        accountId: req.params.accountId
+                    }
+                });
+                req.session.notification = {
+                    'type': 'success',
+                    'message': `Der Nutzer ${req.body.email} wurde erfolgreich erstellt und kann sich nun einloggen.`
+                };
+                res.redirect(req.header('Referer'));
+            }catch(err){
+                next(err);
+            }
+        }
     };
 };
 

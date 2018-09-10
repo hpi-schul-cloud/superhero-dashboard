@@ -69,6 +69,7 @@ function populateModalForm(modal, data) {
                     $(this).val(value).trigger("chosen:updated");
                 }
         }
+        $(this).change().trigger("input");
     });
 }
 
