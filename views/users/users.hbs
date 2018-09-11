@@ -59,5 +59,10 @@
                     {{> "lib/components/delete-form-user"}}
                 {{/content}}
             {{/embed}}
+            {{#embed "lib/components/modal-form" class="reglink-modal"}}
+                {{#content "fields"}}
+                    {{> "users/forms/form-invitation"}}
+                {{/content}}
+            {{/embed}}
     {{/content}}
 {{/extend}}

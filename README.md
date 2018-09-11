@@ -13,10 +13,11 @@
 ## Run
 
 1. Start the [schul-cloud server](https://github.com/schulcloud/schulcloud-server)
-2. Go into project folder
+2. Go into superhero project folder
 3. run `gulp watch` to run gulp
-4. run `npm run watch` to boot the application
+4. run `npm run watch` to boot the application OR use `npm run debug` to run with --inspect:9311 to debug the application on port 9311
 5. go to `http://localhost:3033`
+6. you need a user with superhero role to login, maybe you need to modify your database to add this role to a user of your choice
 
 ## Theming
 

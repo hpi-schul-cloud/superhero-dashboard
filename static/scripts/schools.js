@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var $editModal = $('.edit-modal');
+    var $reglinkmodal = $('.reglink-modal');
     var $deleteModal = $('.delete-modal');
 
     $('.btn-create-school').click(function () {
@@ -25,6 +26,22 @@ $(document).ready(function () {
                 fields: result
             });
 
+            $editModal.modal('show');
+        });
+    });
+    
+    $('.btn-reglink').on('click', function (e) {
+        e.preventDefault();
+        var entry = $(this).attr('href');
+        console.log(entry);
+        $.getJSON(entry, function (result) {
+            populateModalForm($reglinkmodal, {
+                action: entry,
+                title: 'Registrierungslink',
+                closeLabel: 'Schließen',
+                fields: result
+            });
+            
             $editModal.modal('show');
         });
     });

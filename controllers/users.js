@@ -8,8 +8,6 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const api = require('../api');
 const moment = require('moment');
-const fs = require('fs');
-const handlebars = require('handlebars');
 moment.locale('de');
 
 const getTableActions = (item, path) => {
@@ -40,55 +38,68 @@ const getTableActions = (item, path) => {
             icon: 'address-card',
             method: 'get',
             title: 'Accountinformationen anzeigen'
+        },
+        {
+            link: path + 'registrationlink/' + item._id,
+            class: 'btn-reglink',
+            icon: 'share-alt',
+            title: 'Registrierungslink generieren'
         }
     ];
 };
 
 const inviteWithMail = async (user, req) => {
-    let createdUser = user;
-    let email = createdUser.email;
-    let link = `${((req.headers.origin || process.env.HOST) || 'https://schul-cloud.org')}/registration/`;
-    let importHash = await api(req).post("/hash", {
-        json: {
-            toHash: email,
-            save: true,
-            patchUser: true
-        }
-    });
-
+    
     // make single role to array
     if(!Array.isArray(req.body.roles)){
         req.body.roles = [req.body.roles];
     }
-
+    
     // detect registration form from roles
     let roleNames = (await api(req).get("/roles", {qs: {$limit: 10000 }})).data.filter(role => {
         return req.body.roles.includes(role._id);
     }).map(role => {
         return role.name.toLowerCase();
     });
-    if (roleNames.join('').includes('student')) {
-        link += `${req.body.schoolId}?id=${importHash}`;
-    } else {
-        link += `${req.body.schoolId}/byemployee?id=${importHash}`;
+    
+    let userrole = "student";
+    if (!roleNames.join('').includes('student')) {
+        userrole = "employee";
     }
+    
+    let rawData = {
+        role: userrole,
+        save: true,
+        schoolId: req.body.schoolId,
+        toHash: user.email,
+        patchUser: true
+    };
+    
+    // check raw link data
+    for (var k in rawData) {
+        if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) return Promise.reject();
+    }
+        
+    let linkData = await api(req).post("/registrationlink", {json: rawData});
 
     // create & send mail
     let content = {
-        "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
+        "text": "Sehr geehrte/r " + user.firstName + " " + user.lastName + ",\n\n" +
         "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-        link + "\n\n" +
+        linkData.shortLink + "\n\n" +
         "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
         json: {
             headers: {},
-            email: email,
+            email: user.email,
             subject: "Einladung in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud"),
             content: content
         }
     }).then(_ => {
+        return;
     });
+    
     /**fs.readFile(path.join(__dirname, '../views/template/registration.hbs'), (err, data) => {
         if (!err) {
             let source = data.toString();
@@ -480,5 +491,50 @@ router.get('/', function (req, res, next) {
         });
     }
 });
+
+
+const generateRegistrationLink = () => {
+    return function (req, res, next) {
+        api(req).get('/users/' + req.params.id).then(async user => {
+            let roles = user.roles;
+            // make single role to array
+            if(!Array.isArray(roles)){
+                roles = [roles];
+            }
+    
+            // detect registration form from roles
+            let roleNames = (await api(req).get("/roles", {qs: {$limit: 10000 }})).data.filter(role => {
+                return roles.includes(role._id);
+            }).map(role => {
+                return role.name.toLowerCase();
+            });
+    
+            let userrole = "student";
+            if (!roleNames.join('').includes('student')) {
+                userrole = "employee";
+            }
+    
+            let rawData = {
+                role: userrole,
+                save: true,
+                schoolId: user.schoolId,
+                toHash: user.email,
+                patchUser: true
+            };
+    
+            // check raw link data
+            for (var k in rawData) {
+                if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) return Promise.reject();
+            }
+    
+            let linkData = await api(req).post("/registrationlink", {json: rawData});
+            res.json({"invitation":linkData.shortLink, "currentSchool": user.schoolId});
+        }).catch(err => {
+            next(err);
+        });
+    };
+};
+
+router.get('/registrationlink/:id', generateRegistrationLink());
 
 module.exports = router;
