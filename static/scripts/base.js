@@ -30,6 +30,11 @@ function populateModalForm(modal, data) {
 
     $title.html(data.title);
     $btnSubmit.html(data.submitLabel);
+    if(data.submitLabel === false){
+        $btnSubmit.addClass("hidden");
+    }else{
+        $btnSubmit.removeClass("hidden");
+    }
     $btnClose.html(data.closeLabel);
 
     if (data.action) {
