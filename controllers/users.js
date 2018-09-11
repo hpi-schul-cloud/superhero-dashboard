@@ -164,8 +164,8 @@ const getCreateHandler = (service) => {
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
                         email: req.body.email,
-                        password_1: req.body["password_1"],
-                        password_2: req.body["password_2"],
+                        password_1: req.body.password,
+                        password_2: req.body.password,
 
                         pin: pin,
 
@@ -176,10 +176,6 @@ const getCreateHandler = (service) => {
 
                         roles: (Array.isArray(req.body.roles)) ? req.body.roles : [req.body.roles]
                     },
-                    qs:{ 
-                        sso: req.params.sso,
-                        accountId: req.params.accountId
-                    }
                 });
                 req.session.notification = {
                     'type': 'success',
@@ -470,7 +466,7 @@ router.get('/', function (req, res, next) {
                         head,
                         body,
                         pagination,
-                        schoolId: res.req.query.schoolId,
+                        schoolId: req.query.schoolId,
                         role: role.data,
                         user: res.locals.currentUser,
                         school: schoolData,
@@ -478,7 +474,7 @@ router.get('/', function (req, res, next) {
                         themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
                     });
                 });
-                });
+            });
         });
     } else {
         api(req).get('/schools/', {qs: {$limit: 1000}}).then(schools => {
