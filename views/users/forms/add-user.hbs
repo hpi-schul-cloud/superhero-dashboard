@@ -1,3 +1,4 @@
+<input type="hidden" name="classOrSchoolId" value="{{schoolId}}" data-force-value="true" required>
 <div class="form-group">
     <label class="control-label" for="{{#if add}}add-{{/if}}firstName">Vorname *</label>
     <input type="text" name="firstName" id="{{#if add}}add-{{/if}}firstName" class="form-control" placeholder="Rufus" required>
@@ -14,7 +15,7 @@
     <label class="control-label" for="{{#if add}}add-{{/if}}roles">Rollen *</label>
     <select id="{{#if add}}add-{{/if}}roles" name="roles" multiple required>
         {{#each role}}
-            <option value="{{this._id}}">{{this.name}}</option>
+            <option value="{{this.name}}">{{this.name}}</option>
         {{/each}}
     </select>
 </div>
@@ -27,7 +28,7 @@
     <div class="silent-area">
         <div class="form-group">
             <label class="control-label" for="initial-password">Initiales Passwort *</label>
-            <input type="password" name="initial-password" id="initial-password" class="form-control" placeholder="********" disabled required>
+            <input type="password" name="password" id="password" class="form-control" placeholder="********" disabled required>
         </div>
     </div>
 {{/if}}
