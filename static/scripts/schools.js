@@ -33,16 +33,16 @@ $(document).ready(function () {
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
         var entry = $(this).attr('href');
-        console.log(entry);
         $.getJSON(entry, function (result) {
             populateModalForm($reglinkmodal, {
                 action: entry,
                 title: 'Registrierungslink',
                 closeLabel: 'Schließen',
+                submitLabel: false,
                 fields: result
             });
             
-            $editModal.modal('show');
+            $reglinkmodal.modal('show');
         });
     });
 
