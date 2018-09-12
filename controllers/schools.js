@@ -134,9 +134,9 @@ router.get('/search' , function (req, res, next) {
 
             const body = data.data.map(item => {
                 return [
-                    item._id,
-                    item.name,
-                    (item.federalState || {}).name,
+                    item._id ||"",
+                    item.name ||"",
+                    (item.federalState || {}).name || '',
                     getTableActions(item, '/schools/')
                 ];
             });
@@ -198,10 +198,10 @@ router.all('/', function (req, res, next) {
 
             const body = data.data.map(item => {
                 return [
-                    item._id,
-                    item.name,
-                    (item.federalState || {}).name,
-                    (item.fileStorageType || ""),
+                    item._id ||"",
+                    item.name ||"",
+                    ((item.federalState || {}).name || ''),
+                    (item.fileStorageType || ''),
                     getTableActions(item, '/schools/')
                 ];
             });

@@ -34,6 +34,7 @@ const getTableActions = (item, path) => {
         }
     ];
 };
+
 /*
 const getCreateHandler = (service) => {
     return function (req, res, next) {
@@ -120,10 +121,10 @@ router.get('/search' , function (req, res, next) {
 
         const body = data.map(item => {
             return [
-                item._id,
-                item.username,
-                item.activated,
-                item.userId,
+                item._id ||"",
+                item.username ||"",
+                item.activated ? '✔️' : '❌',
+                item.userId ||"",
                 getTableActions(item, '/accounts/')
             ];
         });
@@ -144,7 +145,7 @@ router.get('/search' , function (req, res, next) {
             head,
             body,
             pagination,
-            user: res.locals.currentUser,
+            user: res.locals.currentUser ||"",
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
     });
@@ -177,9 +178,9 @@ router.get('/account/:id' , function (req, res, next) {
 
         const body = data.map(item => {
             return [
-                item._id,
-                item.username,
-                item.activated,
+                item._id ||"",
+                item.username ||"",
+                item.activated ? '✔️' : '❌',
                 getTableActions(item, '/accounts/')
             ];
         });
@@ -188,7 +189,7 @@ router.get('/account/:id' , function (req, res, next) {
             title: 'Account',
             head,
             body,
-            user: res.locals.currentUser
+            user: res.locals.currentUser ||""
         });
     });
 });

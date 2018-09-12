@@ -1,1 +1,5 @@
-text eol=lf 
+# Autodetect text files
+* text=auto
+
+#git on windows will convert lf to crlf which makes eslint freak out. This keeps it in linux style.
+* text eol=lf

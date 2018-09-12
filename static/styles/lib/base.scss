@@ -32,6 +32,17 @@ a[data-toggle="collapse"]:focus{
     text-decoration:none !important;
 }
 
+.table-wrapper{
+	max-width: 100%;
+	display: block;
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	margin-bottom: 1rem;
+	table{
+		margin-bottom: 0;
+	}
+}
+
 p.small {
 	line-height: 18px;
 	font-size: 12px;
@@ -123,6 +134,10 @@ footer.small-footer {
 		-webkit-transform: rotate(359deg);
 		transform: rotate(359deg);
 	}
+}
+
+.hidden {
+	display:none !important;
 }
 
 .notification.hidden {

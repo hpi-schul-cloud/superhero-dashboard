@@ -30,6 +30,11 @@ function populateModalForm(modal, data) {
 
     $title.html(data.title);
     $btnSubmit.html(data.submitLabel);
+    if(data.submitLabel === false){
+        $btnSubmit.addClass("hidden");
+    }else{
+        $btnSubmit.removeClass("hidden");
+    }
     $btnClose.html(data.closeLabel);
 
     if (data.action) {
@@ -69,6 +74,7 @@ function populateModalForm(modal, data) {
                     $(this).val(value).trigger("chosen:updated");
                 }
         }
+        $(this).change().trigger("input");
     });
 }
 
@@ -106,7 +112,7 @@ $(document).ready(function () {
     // Initialize bootstrap-select
     $('select').not('.no-bootstrap').chosen({
         width: "100%",
-        "disable_search": true
+        "disable_search": false
     });
 
     // collapse toggle

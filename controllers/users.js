@@ -8,12 +8,10 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const api = require('../api');
 const moment = require('moment');
-const fs = require('fs');
-const handlebars = require('handlebars');
 moment.locale('de');
 
 const getTableActions = (item, path) => {
-    return [
+    let tableActions = [
         {
             link: path + item._id,
             class: 'btn-edit',
@@ -42,71 +40,157 @@ const getTableActions = (item, path) => {
             title: 'Accountinformationen anzeigen'
         }
     ];
+    if (item.email) {
+        tableActions.push({
+            link: path + 'registrationlink/' + item._id,
+            class: 'btn-reglink',
+            icon: 'share-alt',
+            title: 'Registrierungslink generieren'
+        });
+    }
+    return tableActions;
 };
 
-const sendMailHandler = (user, req) => {
-    let createdUser = user;
-    let email = createdUser.email;
+const inviteWithMail = async (user, req) => {
+    
+    // make single role to array
+    if(!Array.isArray(req.body.roles)){
+        req.body.roles = [req.body.roles];
+    }
+    
+    let userrole = "student";
+    if (!req.body.roles.join('').includes('student')) {
+        userrole = "employee";
+    }
+    
+    let rawData = {
+        role: userrole,
+        save: true,
+        schoolId: req.body.schoolId,
+        toHash: user.email,
+        patchUser: true
+    };
+    
+    // check raw link data
+    for (var k in rawData) {
+        if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) return Promise.reject();
+    }
+        
+    let linkData = await api(req).post("/registrationlink", {json: rawData});
+
+    // create & send mail
     let content = {
-        "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
+        "text": "Sehr geehrte/r " + user.firstName + " " + user.lastName + ",\n\n" +
         "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-        (process.env.HOST || 'https://schul-cloud.org') + "/register/account/" + createdUser._id + "\n\n" +
+        linkData.shortLink + "\n\n" +
         "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
         json: {
             headers: {},
-            email: email,
+            email: user.email,
             subject: "Einladung in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud"),
             content: content
         }
     }).then(_ => {
+        return;
     });
-    /**fs.readFile(path.join(__dirname, '../views/template/registration.hbs'), (err, data) => {
-        if (!err) {
-            let source = data.toString();
-            let template = handlebars.compile(source);
-            let outputString = template({
-                "url": (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id,
-                "firstName": createdUser.firstName,
-                "lastName": createdUser.lastName
-            });
-
-            let content = {
-                "html": outputString,
-                "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
-                "Sie wurden in die Schul-Cloud eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-                (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id + "\n\n" +
-                "Mit Freundlichen Grüßen" + "\nIhr Schul-Cloud Team"
-            };
-            req.body.content = content;
-            api(req).post('/mails', {
-                json: {
-                    headers: {},
-                    email: email,
-                    subject: "Einladung in die Schul-Cloud",
-                    content: content
-                }
-            }).then(_ => {
-                return true;
-            });
-        }
-    });**/
 };
 
 const getCreateHandler = (service) => {
-    return function (req, res, next) {
+    return async function (req, res, next) {
         req.body.schoolId = req.query.schoolId;
-        api(req).post('/' + service + '/', {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
-            if (req.body.silent !== 'on')
-                sendMailHandler(data, req);
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
+        if (req.body.silent !== 'true'){
+             api(req).post('/' + service + '/', {
+                // TODO: sanitize
+                json: req.body
+            }).then(data => {
+                inviteWithMail(data, req);
+                res.redirect(req.header('Referer'));
+            }).catch(err => {
+                next(err);
+            });
+        }else{
+            try {
+                let importHash = await api(req).post('/hash/', {
+                    json: {
+                        toHash: req.body.email,
+                        save: true
+                    },
+                });
+                if(!importHash){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des importHash`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
+                let user = await api(req).post('/users/', {
+                    json: {
+                        schoolId: req.body.classOrSchoolId,
+                        
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+
+                        roles: (Array.isArray(req.body.roles)) ? req.body.roles : [req.body.roles],
+
+                        importHash: importHash
+                    },
+                });
+                if(!user){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des Nutzers (#1)`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
+                const pin = await api(req).post('/registrationPins/', {
+                    json: { email: req.body.email, byRole: req.body.byRole }
+                });
+                if(!(pin||{}).pin){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen der Pin`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
+                const createdUser = await api(req).post('/registration/', {
+                    json: {
+                        classOrSchoolId: req.body.classOrSchoolId,
+                        importHash: importHash,
+                        userId: user._id,
+                        
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+                        password_1: req.body.password,
+                        password_2: req.body.password,
+
+                        pin: pin.pin,
+
+                        privacyConsent: true,
+                        researchConsent: true,
+                        thirdPartyConsent: true,
+                        termsOfUseConsent: true
+                    },
+                });
+                if(!createdUser){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des Nutzers (#2)`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
+                req.session.notification = {
+                    'type': 'success',
+                    'message': `Der Nutzer ${req.body.email} wurde erfolgreich erstellt und kann sich nun einloggen.`
+                };
+                return res.redirect(req.header('Referer'));
+            }catch(err){
+                next(err);
+            }
+        }
     };
 };
 
@@ -127,9 +211,9 @@ const getUpdateHandler = (service) => {
 };
 
 
-const getDetailHandler = (service) => {
+const getDetailHandler = (service, query) => {
     return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
+        api(req).get('/' + service + '/' + req.params.id, {qs: query}).then(data => {
             res.json(data);
         }).catch(err => {
             next(err);
@@ -188,16 +272,15 @@ router.get('/user/:id' , function (req, res, next) {
                 ];
 
                 const body = data.data.map(item => {
-                    let roles = '';
-                    item.roles.map(role => {
-                        roles = roles + ' ' + role.name;
-                    });
+                    let roles = item.roles.map(role => {
+                        return role.name;
+                    }).join(', ');
                     return [
-                        item.firstName,
-                        item.lastName,
-                        item.email,
-                        roles,
-                        item.schoolId.name,
+                        item.firstName ||"",
+                        item.lastName ||"",
+                        item.email ||"",
+                        roles ||"",
+                        (item.schoolId||{}).name ||"",
                         getTableActions(item, '/users/')
                     ];
                 });
@@ -224,8 +307,8 @@ router.get('/user/:id' , function (req, res, next) {
                     body,
                     pagination,
                     role: role.data,
-                    user: res.locals.currentUser,
-                    schoolId: req.query.schoolId,
+                    user: res.locals.currentUser ||"",
+                    schoolId: req.query.schoolId ||"",
                     limit: true,
                     themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
                 });
@@ -262,16 +345,15 @@ router.get('/search' , function (req, res, next) {
                 ];
 
                 const body = data.data.map(item => {
-                    let roles = '';
-                    item.roles.map(role => {
-                        roles = roles + ' ' + role.name;
-                    });
+                    let roles = item.roles.map(role => {
+                        return role.name;
+                    }).join(', ');
                     return [
-                        item.firstName,
-                        item.lastName,
-                        item.email,
-                        roles,
-                        item.schoolId.name,
+                        item.firstName ||"",
+                        item.lastName ||"",
+                        item.email ||"",
+                        roles ||"",
+                        (item.schoolId||{}).name ||"",
                         getTableActions(item, '/users/')
                     ];
                 });
@@ -307,22 +389,25 @@ router.get('/search' , function (req, res, next) {
 });
 
 router.get('/jwt/:id', function (req, res, next) {
-    api(req).post('/accounts/jwt', {json: { userId: req.params.id }})
-        .then(jwt => {
-            api(req).get('/users/' + req.params.id)
-                .then(user => {
-                    res.render('users/jwt', {
-                        title: 'JWT',
-                        jwt: jwt,
-                        user: user,
-                        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-            });
+    api(req).post('/accounts/jwt', {
+        json: { 
+            userId: req.params.id 
+        }
+    }).then(jwt => {
+        api(req).get('/users/' + req.params.id)
+            .then(user => {
+                res.render('users/jwt', {
+                    title: `JWT für ${user.displayName}`,
+                    jwt: jwt || '',
+                    user: user,
+                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                });
             });
         });
 });
 
 router.patch('/:id', getUpdateHandler('users'));
-router.get('/:id', getDetailHandler('users'));
+router.get('/:id', getDetailHandler('users', {$populate: 'roles'}));
 router.delete('/:id', getDeleteHandler('users'));
 router.post('/', getCreateHandler('users'));
 
@@ -350,16 +435,15 @@ router.get('/', function (req, res, next) {
             ];
 
             const body = data.data.map(item => {
-                let roles = '';
-                item.roles.map(role => {
-                    roles = roles + ' ' + role.name;
-                });
+                let roles = item.roles.map(role => {
+                    return role.name;
+                }).join(', ');
                 return [
-                    item._id,
-                    item.firstName,
-                    item.lastName,
-                    item.email,
-                    roles,
+                    item._id ||"",
+                    item.firstName ||"",
+                    item.lastName ||"",
+                    item.email ||"",
+                    roles ||"",
                     getTableActions(item, '/users/')
                 ];
             });
@@ -387,7 +471,7 @@ router.get('/', function (req, res, next) {
                         head,
                         body,
                         pagination,
-                        schoolId: res.req.query.schoolId,
+                        schoolId: req.query.schoolId,
                         role: role.data,
                         user: res.locals.currentUser,
                         school: schoolData,
@@ -395,10 +479,10 @@ router.get('/', function (req, res, next) {
                         themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
                     });
                 });
-                });
+            });
         });
     } else {
-        api(req).get('/schools/').then(schools => {
+        api(req).get('/schools/', {qs: {$limit: 1000}}).then(schools => {
             res.render('users/preselect', {
                 title: 'Users',
                 user: res.locals.currentUser,
@@ -408,5 +492,39 @@ router.get('/', function (req, res, next) {
         });
     }
 });
+
+
+const generateRegistrationLink = () => {
+    return function (req, res, next) {
+        api(req).get('/users/' + req.params.id, {qs:{$populate:["roles"]}}).then(async user => {
+            let roles = user.roles.map(role => {return role.name;});
+    
+            let userrole = "student";
+            if (!roles.join('').includes('student')) {
+                userrole = "employee";
+            }
+    
+            let rawData = {
+                role: userrole,
+                save: true,
+                schoolId: user.schoolId,
+                toHash: user.email,
+                patchUser: true
+            };
+    
+            // check raw link data
+            for (var k in rawData) {
+                if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) next();
+            }
+    
+            let linkData = await api(req).post("/registrationlink", {json: rawData});
+            res.json({"invitation":linkData.shortLink, "currentSchool": user.schoolId});
+        }).catch(err => {
+            next(err);
+        });
+    };
+};
+
+router.get('/registrationlink/:id', generateRegistrationLink());
 
 module.exports = router;
