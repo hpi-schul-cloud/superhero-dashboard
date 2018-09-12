@@ -1,34 +1,33 @@
 <input type="hidden" name="classOrSchoolId" value="{{schoolId}}" data-force-value="true" required>
 <div class="form-group">
-    <label class="control-label" for="{{#if add}}add-{{/if}}firstName">Vorname *</label>
-    <input type="text" name="firstName" id="{{#if add}}add-{{/if}}firstName" class="form-control" placeholder="Rufus" required>
+    <label class="control-label" for="firstName">Vorname *</label>
+    <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Rufus" required>
 </div>
 <div class="form-group">
-    <label class="control-label" for="{{#if add}}add-{{/if}}lastName">Nachname *</label>
-    <input type="text" name="lastName" id="{{#if add}}add-{{/if}}lastName" class="form-control" placeholder="Everwood" required>
+    <label class="control-label" for="lastName">Nachname *</label>
+    <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Everwood" required>
 </div>
 <div class="form-group">
-    <label class="control-label" for="{{#if add}}add-{{/if}}email">E-Mail *</label>
-    <input type="text" name="email" id="{{#if add}}add-{{/if}}email" class="form-control" placeholder="rufus@everwood.com" required>
+    <label class="control-label" for="email">E-Mail *</label>
+    <input type="text" name="email" id="email" class="form-control" placeholder="rufus@everwood.com" required>
 </div>
 <div class="form-group">
-    <label class="control-label" for="{{#if add}}add-{{/if}}roles">Rollen *</label>
-    <select id="{{#if add}}add-{{/if}}roles" name="roles" multiple required>
+    <label class="control-label" for="roles">Rollen *</label>
+    <select id="roles" name="roles" multiple required>
         {{#each role}}
             <option value="{{this.name}}">{{this.name}}</option>
         {{/each}}
     </select>
 </div>
-{{#if add}}
-    <div class="form-group">
-        <input id="create-silent" type="checkbox" name='silent' value="true">
-        <label class="control-label" for="create-silent">Silent Creation - Keine E-Mail versenden</label>
-    </div>
 
-    <div class="silent-area">
-        <div class="form-group">
-            <label class="control-label" for="password">Initiales Passwort *</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="********" disabled required>
-        </div>
+<div class="form-group">
+    <input id="create-silent" type="checkbox" name='silent' value="true">
+    <label class="control-label" for="create-silent">Silent Creation - Keine E-Mail versenden</label>
+</div>
+
+<div class="silent-area">
+    <div class="form-group">
+        <label class="control-label" for="password">Initiales Passwort *</label>
+        <input type="password" name="password" id="password" class="form-control" placeholder="********" disabled required>
     </div>
-{{/if}}
+</div>

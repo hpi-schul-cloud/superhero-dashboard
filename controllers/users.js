@@ -246,9 +246,9 @@ const getUpdateHandler = (service) => {
 };
 
 
-const getDetailHandler = (service) => {
+const getDetailHandler = (service, query) => {
     return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
+        api(req).get('/' + service + '/' + req.params.id, {qs: query}).then(data => {
             res.json(data);
         }).catch(err => {
             next(err);
@@ -442,7 +442,7 @@ router.get('/jwt/:id', function (req, res, next) {
 });
 
 router.patch('/:id', getUpdateHandler('users'));
-router.get('/:id', getDetailHandler('users'));
+router.get('/:id', getDetailHandler('users', {$populate: 'roles'}));
 router.delete('/:id', getDeleteHandler('users'));
 router.post('/', getCreateHandler('users'));
 

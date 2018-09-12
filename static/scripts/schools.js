@@ -18,6 +18,11 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            if(result.roles){
+                result.roles = result.roles.map(role => {
+                    return role.name;
+                })
+            }
             populateModalForm($editModal, {
                 action: entry,
                 title: 'Bearbeiten',
