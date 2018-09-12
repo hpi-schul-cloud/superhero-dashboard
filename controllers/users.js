@@ -11,7 +11,7 @@ const moment = require('moment');
 moment.locale('de');
 
 const getTableActions = (item, path) => {
-    return [
+    let tableActions = [
         {
             link: path + item._id,
             class: 'btn-edit',
@@ -38,14 +38,17 @@ const getTableActions = (item, path) => {
             icon: 'address-card',
             method: 'get',
             title: 'Accountinformationen anzeigen'
-        },
-        {
+        }
+    ];
+    if (item.email) {
+        tableActions.push({
             link: path + 'registrationlink/' + item._id,
             class: 'btn-reglink',
             icon: 'share-alt',
             title: 'Registrierungslink generieren'
-        }
-    ];
+        });
+    }
+    return tableActions;
 };
 
 const inviteWithMail = async (user, req) => {
@@ -99,37 +102,6 @@ const inviteWithMail = async (user, req) => {
     }).then(_ => {
         return;
     });
-    
-    /**fs.readFile(path.join(__dirname, '../views/template/registration.hbs'), (err, data) => {
-        if (!err) {
-            let source = data.toString();
-            let template = handlebars.compile(source);
-            let outputString = template({
-                "url": (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id,
-                "firstName": createdUser.firstName,
-                "lastName": createdUser.lastName
-            });
-
-            let content = {
-                "html": outputString,
-                "text": "Sehr geehrte/r " + createdUser.firstName + " " + createdUser.lastName + ",\n\n" +
-                "Sie wurden in die Schul-Cloud eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
-                (req.headers.origin || process.env.HOST) + "/register/account/" + createdUser._id + "\n\n" +
-                "Mit Freundlichen Grüßen" + "\nIhr Schul-Cloud Team"
-            };
-            req.body.content = content;
-            api(req).post('/mails', {
-                json: {
-                    headers: {},
-                    email: email,
-                    subject: "Einladung in die Schul-Cloud",
-                    content: content
-                }
-            }).then(_ => {
-                return true;
-            });
-        }
-    });**/
 };
 
 const getCreateHandler = (service) => {
@@ -311,11 +283,11 @@ router.get('/user/:id' , function (req, res, next) {
                         return role.name;
                     }).join(', ');
                     return [
-                        item.firstName,
-                        item.lastName,
-                        item.email,
-                        roles,
-                        item.schoolId.name,
+                        item.firstName ||"",
+                        item.lastName ||"",
+                        item.email ||"",
+                        roles ||"",
+                        (item.schoolId||{}).name ||"",
                         getTableActions(item, '/users/')
                     ];
                 });
@@ -342,8 +314,8 @@ router.get('/user/:id' , function (req, res, next) {
                     body,
                     pagination,
                     role: role.data,
-                    user: res.locals.currentUser,
-                    schoolId: req.query.schoolId,
+                    user: res.locals.currentUser ||"",
+                    schoolId: req.query.schoolId ||"",
                     limit: true,
                     themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
                 });
@@ -384,11 +356,11 @@ router.get('/search' , function (req, res, next) {
                         return role.name;
                     }).join(', ');
                     return [
-                        item.firstName,
-                        item.lastName,
-                        item.email,
-                        roles,
-                        item.schoolId.name,
+                        item.firstName ||"",
+                        item.lastName ||"",
+                        item.email ||"",
+                        roles ||"",
+                        (item.schoolId||{}).name ||"",
                         getTableActions(item, '/users/')
                     ];
                 });
@@ -474,11 +446,11 @@ router.get('/', function (req, res, next) {
                     return role.name;
                 }).join(', ');
                 return [
-                    item._id,
-                    item.firstName,
-                    item.lastName,
-                    item.email,
-                    roles,
+                    item._id ||"",
+                    item.firstName ||"",
+                    item.lastName ||"",
+                    item.email ||"",
+                    roles ||"",
                     getTableActions(item, '/users/')
                 ];
             });
@@ -560,7 +532,7 @@ const generateRegistrationLink = () => {
     
             // check raw link data
             for (var k in rawData) {
-                if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) return Promise.reject();
+                if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) next();
             }
     
             let linkData = await api(req).post("/registrationlink", {json: rawData});
