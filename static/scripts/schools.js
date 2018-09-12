@@ -9,7 +9,9 @@ $(document).ready(function () {
             title: 'Neues Element hinzufügen',
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
-            fields: {}
+            fields: {
+                silent: false
+            }
         });
         $createSchoolModal.modal('show');
     });

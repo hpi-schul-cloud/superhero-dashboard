@@ -58,15 +58,8 @@ const inviteWithMail = async (user, req) => {
         req.body.roles = [req.body.roles];
     }
     
-    // detect registration form from roles
-    let roleNames = (await api(req).get("/roles", {qs: {$limit: 10000 }})).data.filter(role => {
-        return req.body.roles.includes(role._id);
-    }).map(role => {
-        return role.name.toLowerCase();
-    });
-    
     let userrole = "student";
-    if (!roleNames.join('').includes('student')) {
+    if (!req.body.roles.join('').includes('student')) {
         userrole = "employee";
     }
     
@@ -401,14 +394,14 @@ router.get('/jwt/:id', function (req, res, next) {
             userId: req.params.id 
         }
     }).then(jwt => {
-            api(req).get('/users/' + req.params.id)
-                .then(user => {
-                    res.render('users/jwt', {
-                        title: `JWT für ${user.displayName}`,
-                        jwt: jwt || '',
-                        user: user,
-                        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-            });
+        api(req).get('/users/' + req.params.id)
+            .then(user => {
+                res.render('users/jwt', {
+                    title: `JWT für ${user.displayName}`,
+                    jwt: jwt || '',
+                    user: user,
+                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                });
             });
         });
 });
@@ -503,22 +496,11 @@ router.get('/', function (req, res, next) {
 
 const generateRegistrationLink = () => {
     return function (req, res, next) {
-        api(req).get('/users/' + req.params.id).then(async user => {
-            let roles = user.roles;
-            // make single role to array
-            if(!Array.isArray(roles)){
-                roles = [roles];
-            }
-    
-            // detect registration form from roles
-            let roleNames = (await api(req).get("/roles", {qs: {$limit: 10000 }})).data.filter(role => {
-                return roles.includes(role._id);
-            }).map(role => {
-                return role.name.toLowerCase();
-            });
+        api(req).get('/users/' + req.params.id, {qs:{$populate:["roles"]}}).then(async user => {
+            let roles = user.roles.map(role => {return role.name;});
     
             let userrole = "student";
-            if (!roleNames.join('').includes('student')) {
+            if (!roles.join('').includes('student')) {
                 userrole = "employee";
             }
     
