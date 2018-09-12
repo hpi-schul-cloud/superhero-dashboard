@@ -124,10 +124,10 @@ router.all('/', function (req, res, next) {
                     permissions = permissions + ' | ' + permission;
                 });
                 return [
-                    item._id,
-                    item.name,
+                    item._id ||"",
+                    item.name ||"",
                     (item.roles[0] || {}).name || '',
-                    permissions,
+                    permissions ||"",
                     getTableActions(item, '/roles/')
                 ];
             });
