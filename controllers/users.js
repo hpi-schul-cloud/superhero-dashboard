@@ -173,10 +173,10 @@ const getCreateHandler = (service) => {
                         importHash: importHash
                     },
                 });
-                if(!importHash){
+                if(!user){
                     req.session.notification = {
                         'type': 'danger',
-                        'message': `Fehler beim Erstellen des importUsers`
+                        'message': `Fehler beim Erstellen des Nutzers (#1)`
                     };
                     return res.redirect(req.header('Referer'));
                 }
@@ -194,6 +194,7 @@ const getCreateHandler = (service) => {
                     json: {
                         classOrSchoolId: req.body.classOrSchoolId,
                         importHash: importHash,
+                        userId: user._id,
                         
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
@@ -212,7 +213,7 @@ const getCreateHandler = (service) => {
                 if(!createdUser){
                     req.session.notification = {
                         'type': 'danger',
-                        'message': `Fehler beim Erstellen des Nutzers`
+                        'message': `Fehler beim Erstellen des Nutzers (#2)`
                     };
                     return res.redirect(req.header('Referer'));
                 }
