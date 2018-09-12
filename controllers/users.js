@@ -119,19 +119,54 @@ const getCreateHandler = (service) => {
             });
         }else{
             try {
+                let importHash = await api(req).post('/hash/', {
+                    json: {
+                        toHash: req.body.email,
+                        save: true
+                    },
+                });
+                if(!importHash){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des importHash`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
+                let user = await api(req).post('/users/', {
+                    json: {
+                        schoolId: req.body.classOrSchoolId,
+                        
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        email: req.body.email,
+
+                        roles: (Array.isArray(req.body.roles)) ? req.body.roles : [req.body.roles],
+
+                        importHash: importHash
+                    },
+                });
+                if(!user){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des Nutzers (#1)`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
                 const pin = await api(req).post('/registrationPins/', {
                     json: { email: req.body.email, byRole: req.body.byRole }
                 });
-                if(!pin){
+                if(!(pin||{}).pin){
                     req.session.notification = {
                         'type': 'danger',
                         'message': `Fehler beim Erstellen der Pin`
                     };
-                    res.redirect(req.header('Referer'));
+                    return res.redirect(req.header('Referer'));
                 }
-                await api(req).post('/registration/', {
+                const createdUser = await api(req).post('/registration/', {
                     json: {
                         classOrSchoolId: req.body.classOrSchoolId,
+                        importHash: importHash,
+                        userId: user._id,
                         
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
@@ -139,21 +174,26 @@ const getCreateHandler = (service) => {
                         password_1: req.body.password,
                         password_2: req.body.password,
 
-                        pin: pin,
+                        pin: pin.pin,
 
                         privacyConsent: true,
                         researchConsent: true,
                         thirdPartyConsent: true,
-                        termsOfUseConsent: true,
-
-                        roles: (Array.isArray(req.body.roles)) ? req.body.roles : [req.body.roles]
+                        termsOfUseConsent: true
                     },
                 });
+                if(!createdUser){
+                    req.session.notification = {
+                        'type': 'danger',
+                        'message': `Fehler beim Erstellen des Nutzers (#2)`
+                    };
+                    return res.redirect(req.header('Referer'));
+                }
                 req.session.notification = {
                     'type': 'success',
                     'message': `Der Nutzer ${req.body.email} wurde erfolgreich erstellt und kann sich nun einloggen.`
                 };
-                res.redirect(req.header('Referer'));
+                return res.redirect(req.header('Referer'));
             }catch(err){
                 next(err);
             }
