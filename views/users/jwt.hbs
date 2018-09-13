@@ -24,42 +24,41 @@
     {{#content "page"}}
         <div class="container-fluid">
             <div class="row mobile-no-margin-right">
-                <h5>JWT für {{user.displayName}}</h5>
                 <div class="row card-deck-row">
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="card h-100">
-                        <div class="card-block">
-                            <h5 class="card-title"><i class="fa fa-user"></i>JWT kopieren und selbst einfügen</h5>
-                            <div class="card-text">
-                                <input value="{{jwt}}" style="width: 100%;">
-                                <p id="jwt" hidden>{{jwt}}</p>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="card h-100">
+                            <div class="card-block">
+                                <h5 class="card-title"><i class="fa fa-user"></i>JWT kopieren und selbst einfügen</h5>
+                                <div class="card-text">
+                                    <input value="{{jwt}}" style="width: 100%;">
+                                    <p id="jwt" hidden>{{jwt}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-primary btn-block" onclick="copyToClipboard('#jwt')">
-                                <i class="fa fa-clipboard" aria-hidden="true"></i>
-                            </button>
+                            <div class="card-footer">
+                                <button class="btn btn-primary btn-block" title="JWT in die Zwischenablage kopieren" onclick="copyToClipboard('#jwt')">
+                                    <i class="fa fa-clipboard" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="card h-100">
-                        <div class="card-block">
-                            <h5 class="card-title"><i class="fa fa-user"></i>Cookie für eine Domain setzen</h5>
-                            <div class="card-text">
-                                <input id="cookie" placeholder="schul-cloud.org" style="width: 100%">
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="card h-100">
+                            <div class="card-block">
+                                <h5 class="card-title"><i class="fa fa-user"></i>Cookie für eine Domain setzen</h5>
+                                <div class="card-text">
+                                    <input id="cookie" placeholder="schul-cloud.org" style="width: 100%">
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-primary btn-block" onclick="setCookie('#cookie')">
+                            <div class="card-footer">
+                                <button class="btn btn-primary btn-block" title="JWT als Cookie für Domain setzen" onclick="setCookie('#cookie')">
                                     <i class="fa fa-sign-in" aria-hidden="true"></i>
                                 </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     {{/content}}
 {{/extend}}

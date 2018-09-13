@@ -15,24 +15,27 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         },
         {
             link: '/users/user/' + item.userId,
             class: 'btn-account',
             icon: 'address-card',
-            method: 'get'
+            method: 'get',
+            title: 'Nutzerinformationen anzeigen'
         }
     ];
 };
 
-
+/*
 const getCreateHandler = (service) => {
     return function (req, res, next) {
         req.body.schoolId = req.query.schoolId;
@@ -48,7 +51,7 @@ const getCreateHandler = (service) => {
         });
     };
 };
-
+*/
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
         /**if (req.body.roles[0].includes(',')) {
@@ -97,8 +100,6 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    console.log(req.query.q);
-
     api(req).get('/accounts/', {
             qs: {
                 username: {
@@ -120,10 +121,10 @@ router.get('/search' , function (req, res, next) {
 
         const body = data.map(item => {
             return [
-                item._id,
-                item.username,
-                item.activated,
-                item.userId,
+                item._id ||"",
+                item.username ||"",
+                item.activated ? '✔️' : '❌',
+                item.userId ||"",
                 getTableActions(item, '/accounts/')
             ];
         });
@@ -144,7 +145,7 @@ router.get('/search' , function (req, res, next) {
             head,
             body,
             pagination,
-            user: res.locals.currentUser,
+            user: res.locals.currentUser ||"",
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
     });
@@ -153,7 +154,7 @@ router.get('/search' , function (req, res, next) {
 router.patch('/:id', getUpdateHandler('accounts'));
 router.get('/:id', getDetailHandler('accounts'));
 router.delete('/:id', getDeleteHandler('accounts'));
-router.post('/', getCreateHandler('accounts'));
+//router.post('/', getCreateHandler('accounts'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
@@ -177,9 +178,9 @@ router.get('/account/:id' , function (req, res, next) {
 
         const body = data.map(item => {
             return [
-                item._id,
-                item.username,
-                item.activated,
+                item._id ||"",
+                item.username ||"",
+                item.activated ? '✔️' : '❌',
                 getTableActions(item, '/accounts/')
             ];
         });
@@ -188,7 +189,7 @@ router.get('/account/:id' , function (req, res, next) {
             title: 'Account',
             head,
             body,
-            user: res.locals.currentUser
+            user: res.locals.currentUser ||""
         });
     });
 });

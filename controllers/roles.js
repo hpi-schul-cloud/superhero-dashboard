@@ -15,13 +15,15 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         }
     ];
 };
@@ -122,10 +124,10 @@ router.all('/', function (req, res, next) {
                     permissions = permissions + ' | ' + permission;
                 });
                 return [
-                    item._id,
-                    item.name,
-                    (item.roles[0] || {}).name,
-                    permissions,
+                    item._id ||"",
+                    item.name ||"",
+                    (item.roles[0] || {}).name || '',
+                    permissions ||"",
                     getTableActions(item, '/roles/')
                 ];
             });

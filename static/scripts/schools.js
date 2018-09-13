@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var $editModal = $('.edit-modal');
+    var $reglinkmodal = $('.reglink-modal');
     var $deleteModal = $('.delete-modal');
 
     $('.btn-create-school').click(function () {
@@ -8,7 +9,9 @@ $(document).ready(function () {
             title: 'Neues Element hinzufügen',
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
-            fields: {}
+            fields: {
+                silent: false
+            }
         });
         $createSchoolModal.modal('show');
     });
@@ -17,6 +20,11 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            if(result.roles){
+                result.roles = result.roles.map(role => {
+                    return role.name;
+                })
+            }
             populateModalForm($editModal, {
                 action: entry,
                 title: 'Bearbeiten',
@@ -26,6 +34,22 @@ $(document).ready(function () {
             });
 
             $editModal.modal('show');
+        });
+    });
+    
+    $('.btn-reglink').on('click', function (e) {
+        e.preventDefault();
+        var entry = $(this).attr('href');
+        $.getJSON(entry, function (result) {
+            populateModalForm($reglinkmodal, {
+                action: entry,
+                title: 'Registrierungslink',
+                closeLabel: 'Schließen',
+                submitLabel: false,
+                fields: result
+            });
+            
+            $reglinkmodal.modal('show');
         });
     });
 

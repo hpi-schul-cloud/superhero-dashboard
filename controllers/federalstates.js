@@ -15,13 +15,15 @@ const getTableActions = (item, path) => {
         {
             link: path + item._id,
             class: 'btn-edit',
-            icon: 'edit'
+            icon: 'edit',
+            title: 'bearbeiten'
         },
         {
             link: path + item._id,
             class: 'btn-delete',
             icon: 'trash-o',
-            method: 'delete'
+            method: 'delete',
+            title: 'löschen'
         }
     ];
 };
@@ -102,10 +104,10 @@ router.get('/', function (req, res, next) {
 
         const body = data.data.map(item => {
             return [
-                item._id,
-                item.name,
-                item.abbreviation,
-                {url: item.logoUrl, height: 50, width: 50},
+                item._id ||"",
+                item.name ||"",
+                item.abbreviation ||"",
+                {image: true, url: item.logoUrl, height: 40},
                 getTableActions(item, '/federalstates/')
             ];
         });
@@ -131,7 +133,7 @@ router.get('/', function (req, res, next) {
             head,
             body,
             pagination,
-            user: res.locals.currentUser,
+            user: res.locals.currentUser ||"",
             limit: true,
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
