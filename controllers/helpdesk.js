@@ -216,6 +216,7 @@ router.get('/', function (req, res, next) {
             'Soll-Zustand',
             'Kategorie',
             'Status',
+            'Erstellungsdatum',
             'Anmerkungen',
             ''
         ];
@@ -225,9 +226,10 @@ router.get('/', function (req, res, next) {
                 truncate(item.subject || ''),
                 truncate(item.currentState || ''),
                 truncate(item.targetState || ''),
-                dictionary[item.category],
-                dictionary[item.state],
-                truncate(item.notes || ''),
+                dictionary[item.category] || '',
+                dictionary[item.state] || '',
+                moment(item.createdAt).format('DD.MM.YYYY') || '',
+                truncate(item.notes) || '',
                 getTableActionsSend(item, '/helpdesk/', item.state)
             ];
         });
