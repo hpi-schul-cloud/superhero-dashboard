@@ -28,6 +28,6 @@
 <div class="silent-area">
     <div class="form-group">
         <label class="control-label" for="password">Initiales Passwort *</label>
-        <input type="password" name="password" id="password" class="form-control" placeholder="********" disabled required>
+        <input type="password" name="password" id="password" pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$" class="form-control" placeholder="********" disabled required>
     </div>
 </div>
