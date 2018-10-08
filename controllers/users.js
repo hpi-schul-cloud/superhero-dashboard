@@ -42,7 +42,7 @@ const getTableActions = (item, path) => {
     ];
     if (item.email) {
         tableActions.push({
-            link: path + 'registrationlink/' + item._id,
+            link: `${path}registrationlink/${item._id}?save=true&patchUser=true`,
             class: 'btn-reglink',
             icon: 'share-alt',
             title: 'Registrierungslink generieren'
