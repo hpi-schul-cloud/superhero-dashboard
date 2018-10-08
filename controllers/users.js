@@ -482,7 +482,7 @@ router.get('/', function (req, res, next) {
             });
         });
     } else {
-        api(req).get('/schools/', {qs: {$limit: 1000}}).then(schools => {
+        api(req).get('/schools/', {qs: {$limit: 50000}}).then(schools => {
             res.render('users/preselect', {
                 title: 'Users',
                 user: res.locals.currentUser,
