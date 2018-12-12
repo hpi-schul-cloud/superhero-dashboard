@@ -11,7 +11,7 @@ const moment = require('moment');
 moment.locale('de');
 
 const getTableActions = (item, path) => {
-    return [
+    let tableActions = [
         {
             link: path + item._id,
             class: 'btn-edit',
@@ -33,6 +33,15 @@ const getTableActions = (item, path) => {
             title: 'Nutzerinformationen anzeigen'
         }
     ];
+    if (item.username && item.userId) {
+        tableActions.push({
+            link: `${path.replace("accounts","users")}registrationlink/${item.userId}?save=true&patchUser=true`,
+            class: 'btn-reglink',
+            icon: 'share-alt',
+            title: 'Registrierungslink generieren'
+        });
+    }
+    return tableActions;
 };
 
 /*
