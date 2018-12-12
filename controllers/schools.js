@@ -152,7 +152,7 @@ router.get('/search' , function (req, res, next) {
                 baseUrl: '/schools/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
             };
 
-            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
+            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser});
             });
     });
 });
@@ -222,7 +222,7 @@ router.all('/', function (req, res, next) {
                 baseUrl: '/schools/?p={{page}}' + sortQuery + limitQuery
             };
 
-            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, provider, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
+            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, provider, limit: true});
         });
     });
 });
@@ -232,8 +232,7 @@ router.get('/', function (req, res, next) {
         res.render('schools/schools', {
             title: 'Schulen',
             user: res.locals.currentUser,
-            schools: schools.data,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+            schools: schools.data
         });
     });
 });

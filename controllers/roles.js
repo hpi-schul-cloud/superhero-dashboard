@@ -148,7 +148,7 @@ router.all('/', function (req, res, next) {
                 baseUrl: '/roles/?p={{page}}' + sortQuery + limitQuery
             };
 
-            res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
+            res.render('roles/roles', {title: 'Rollen', head, body, pagination, roles: data.data, user: res.locals.currentUser, limit: true});
         });
 });
 

@@ -172,6 +172,7 @@ $(document).ready(function () {
             $.showNotification(errorThrown, "danger");
         }
     }
+    window.$.showAJAXError = showAJAXError;
 
     $('a[data-method="delete-material"]').on('click', function(e) {
         e.stopPropagation();

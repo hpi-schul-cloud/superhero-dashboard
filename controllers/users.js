@@ -309,8 +309,7 @@ router.get('/user/:id' , function (req, res, next) {
                     role: role.data,
                     user: res.locals.currentUser ||"",
                     schoolId: req.query.schoolId ||"",
-                    limit: true,
-                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                    limit: true
                 });
             });
     });
@@ -399,8 +398,7 @@ router.get('/jwt/:id', function (req, res, next) {
                 res.render('users/jwt', {
                     title: `JWT für ${user.displayName}`,
                     jwt: jwt || '',
-                    user: user,
-                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                    user: user
                 });
             });
         });
@@ -475,8 +473,7 @@ router.get('/', function (req, res, next) {
                         role: role.data,
                         user: res.locals.currentUser,
                         school: schoolData,
-                        limit: true,
-                        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                        limit: true
                     });
                 });
             });
@@ -486,8 +483,7 @@ router.get('/', function (req, res, next) {
             res.render('users/preselect', {
                 title: 'Users',
                 user: res.locals.currentUser,
-                schools: schools.data,
-                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                schools: schools.data
             });
         });
     }

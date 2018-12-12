@@ -154,8 +154,7 @@ router.get('/search' , function (req, res, next) {
             head,
             body,
             pagination,
-            user: res.locals.currentUser ||"",
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+            user: res.locals.currentUser ||""
         });
     });
 });
@@ -206,8 +205,7 @@ router.get('/account/:id' , function (req, res, next) {
 router.get('/' , function (req, res, next) {
         res.render('accounts/search', {
             title: 'Account suchen',
-            user: res.locals.currentUser,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+            user: res.locals.currentUser
         });
 });
 

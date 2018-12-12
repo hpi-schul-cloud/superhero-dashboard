@@ -245,7 +245,7 @@ router.get('/', function (req, res, next) {
             baseUrl: '/helpdesk/?p={{page}}' + limitQuery
         };
 
-        res.render('helpdesk/helpdesk', {title: 'Helpdesk', head, body, pagination, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
+        res.render('helpdesk/helpdesk', {title: 'Helpdesk', head, body, pagination, limit: true});
     });
 });
 

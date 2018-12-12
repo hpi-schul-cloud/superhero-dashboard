@@ -123,8 +123,7 @@ router.get('/:id', function (req, res, next) {
                 statsIncremented: JSON.stringify(incrementedFinStat),
                 name: req.params.id,
                 prev: prev,
-                next: next,
-                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                next: next
             });
         });
 });
@@ -146,8 +145,7 @@ router.get('/', function (req, res, next) {
             res.render('statistic/statistic', {
                 title: 'Statistiken',
                 user: res.locals.currentUser,
-                stats: finalStats,
-                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+                stats: finalStats
             });
     });
 });
