@@ -170,7 +170,6 @@ const getCreateHandler = (service) => {
                         pin: pin.pin,
 
                         privacyConsent: true,
-                        researchConsent: true,
                         thirdPartyConsent: true,
                         termsOfUseConsent: true
                     },
