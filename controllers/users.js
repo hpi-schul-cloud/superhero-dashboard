@@ -240,8 +240,6 @@ const getDeleteHandler = (service) => {
     };
 };
 
-const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
-
 // secure routes
 router.use(authHelper.authChecker);
 
