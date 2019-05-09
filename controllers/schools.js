@@ -49,10 +49,10 @@ const createBucket = (req, res, next) => {
         });
 };
 
-const getStorageProviders = () => {
-    return [
-        {label: 'AWS S3', value: 'awsS3'}
-    ];
+const getStorageProviders = (res) => {
+	return [
+		{ label: res.locals.theme.short_title, value: 'awsS3' }
+	];
 };
 
 const getCreateHandler = (service) => {
@@ -176,7 +176,7 @@ router.all('/', function (req, res, next) {
             }
         }).then(data => {
 
-            let provider = getStorageProviders();
+            let provider = getStorageProviders(res);
             provider = (provider || []).map(prov => {
                 if (prov.value == data.fileStorageType) {
                     return Object.assign(prov, {
