@@ -33,23 +33,22 @@
 
                 <div class="form-group">
                     <label>Aktuelles Passwort</label>
-                    <input type="password" name="password" class="form-control"
-                           placeholder="***************" required>
+                    <input type="password" name="password" class="form-control" placeholder="***************" required>
                 </div>
 
                 {{#userHasPermission "PASSWORD_EDIT"}}
                 <div class="form-group">
                     <label>Neues Passwort <sup>*</sup></label>
                     <input type="password" name="password_new" id="password_new" class="form-control"
-                           placeholder="***************"
-                           pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$"
-                           title="Mindestens 8 Zeichen mit Groß- und Kleinschreibung und mindestens einer Zahl und Sonderzeichen">
+						placeholder="***************"
+						pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$" 
+						title="{{> "lib/forms/password-hint" plaintext=true}}">
                 </div>
 
                 <div class="form-group">
                     <label>Neues Passwort <sup>*</sup></label>
-                    <input type="password" name="password_control" id="password_control"
-                           class="form-control" placeholder="***************">
+                    <input type="password" name="password_control" id="password_control" class="form-control" 
+						placeholder="***************" title="{{> "lib/forms/password-hint" plaintext=true}}">
                 </div>
                 {{/userHasPermission}}
 
