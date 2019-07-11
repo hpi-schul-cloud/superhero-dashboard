@@ -49,9 +49,9 @@ const createBucket = (req, res, next) => {
         });
 };
 
-const getStorageProviders = () => [
+const getStorageProviders = res => [
 	{
-		label: process.env.SC_SHORT_TITLE,
+		label: res.locals.theme.short_title,
 		value: 'awsS3',
 	},
 ];
@@ -177,7 +177,7 @@ router.all('/', function (req, res, next) {
             }
         }).then(data => {
 
-            let provider = getStorageProviders();
+            let provider = getStorageProviders(res);
             provider = (provider || []).map(prov => {
                 if (prov.value == data.fileStorageType) {
                     return Object.assign(prov, {
