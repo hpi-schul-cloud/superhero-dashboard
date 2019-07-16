@@ -109,7 +109,12 @@ const restrictSidebar = (req, res) => {
             name: 'Allg. Verwaltung',
             icon: 'gear',
             link: '/management/'
-        }
+        },
+        {
+            name: 'Tools',
+            icon: 'window-maximize',
+            link: '/tools/'
+        },
     ];
 };
 
