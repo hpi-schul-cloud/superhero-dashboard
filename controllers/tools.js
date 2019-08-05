@@ -29,7 +29,7 @@ const getTableActions = (item, path) => {
     ];
 };
 
-const sanitizeTool = (req) => {
+const sanitizeTool = (req, create=false) => {
   req.body.resource_link_id = req.body.resource_link_id || 0;
   req.body.lti_version = req.body.lti_version || "none";
   req.body.lti_message_type = req.body.lti_message_type || "none";
@@ -38,7 +38,7 @@ const sanitizeTool = (req) => {
   req.body.isLocal = req.body.isLocal || false;
   req.body.useIframePseudonym = req.body.useIframePseudonym || false;
   req.body.isTemplate = true;
-  if(req.body.isLocal) {
+  if(req.body.isLocal && create) {
     req.body.oAuthClientId = req.body.key;
   }
   return req;
@@ -47,7 +47,7 @@ const sanitizeTool = (req) => {
 const getCreateHandler = (service) => {
 
     return function (req, res, next) {
-      req = sanitizeTool(req);
+      req = sanitizeTool(req, true);
       api(req).post('/' + service + '/', {
         json: req.body
       }).then(tool => {
@@ -107,6 +107,7 @@ const getDetailHandler = (service) => {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
           if(data.oAuthClientId) {
             api(req).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
+              data.key = data.oAuthClientId;
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
