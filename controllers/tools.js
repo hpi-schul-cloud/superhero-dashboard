@@ -123,7 +123,8 @@ const getDetailHandler = (service) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(_ => {
+        api(req).delete('/' + service + '/' + req.params.id).then(data => {
+          console.log(data);
           if(data.oAuthClientId) {
             api(req).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
               res.redirect(req.header('Referer'));
