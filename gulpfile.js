@@ -16,6 +16,8 @@ const count = require('gulp-count')
 const changed = require('gulp-changed-smart')
 const autoprefixer = require('gulp-autoprefixer')
 const header = require('gulp-header');
+const nodemon = require('gulp-nodemon');
+const browserSync = require('browser-sync');
 const cCSS = new cleancss()
 const fs = require('fs')
 const gulpif = require('gulp-if');
@@ -172,6 +174,39 @@ gulp.task('watch', ['build-all'], () => {
     gulp.watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
                 '!./static/vendor/**/*.{css,sass,scss}'], ['vendor-assets'])
 })
+
+gulp.task('watch-reload', ['watch', 'browser-sync']);
+
+gulp.task('browser-sync', ['nodemon'], () => {
+	browserSync.init(null, {
+		proxy: 'http://localhost:3033',
+		open: false,
+		port: 7000,
+		ghostMode: false,
+		reloadOnRestart: false,
+		socket: {
+			clients: {
+				heartbeatTimeout: 60000,
+			},
+		},
+	});
+});
+
+gulp.task('nodemon', (cb) => {
+	let started = false;
+	return nodemon({
+		ext: 'js hbs json',
+		script: './bin/www',
+		watch: ['views/', 'controllers/', 'helpers', 'build/'],
+		exec: 'node --inspect=9331',
+	}).on('start', () => {
+		if (!started) {
+			cb();
+			started = true;
+		}
+		setTimeout(browserSync.reload, 3000); // server-start takes some time
+	});
+});
 
 //run this if only "gulp" is run on the commandline with no task specified
 gulp.task('default', ['build-all'])
