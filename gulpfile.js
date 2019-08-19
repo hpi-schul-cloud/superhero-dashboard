@@ -178,34 +178,34 @@ gulp.task('watch', ['build-all'], () => {
 gulp.task('watch-reload', ['watch', 'browser-sync']);
 
 gulp.task('browser-sync', ['nodemon'], () => {
-	browserSync.init(null, {
-		proxy: 'http://localhost:3033',
-		open: false,
-		port: 7000,
-		ghostMode: false,
-		reloadOnRestart: false,
-		socket: {
-			clients: {
-				heartbeatTimeout: 60000,
-			},
-		},
-	});
+    browserSync.init(null, {
+        proxy: 'http://localhost:3033',
+        open: false,
+        port: 7001,
+        ghostMode: false,
+        reloadOnRestart: false,
+        socket: {
+            clients: {
+                heartbeatTimeout: 60000,
+            },
+        },
+    });
 });
 
 gulp.task('nodemon', (cb) => {
-	let started = false;
-	return nodemon({
-		ext: 'js hbs json',
-		script: './bin/www',
-		watch: ['views/', 'controllers/', 'helpers', 'build/'],
-		exec: 'node --inspect=9331',
-	}).on('start', () => {
-		if (!started) {
-			cb();
-			started = true;
-		}
-		setTimeout(browserSync.reload, 3000); // server-start takes some time
-	});
+    let started = false;
+    return nodemon({
+        ext: 'js hbs json',
+        script: './bin/www',
+        watch: ['views/', 'controllers/', 'helpers', 'build/'],
+        exec: 'node --inspect=9331',
+    }).on('start', () => {
+        if (!started) {
+            cb();
+            started = true;
+        }
+        setTimeout(browserSync.reload, 3000); // server-start takes some time
+    });
 });
 
 //run this if only "gulp" is run on the commandline with no task specified
