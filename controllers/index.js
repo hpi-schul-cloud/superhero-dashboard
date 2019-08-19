@@ -16,5 +16,6 @@ router.use('/federalstates', require('./federalstates'));
 router.use('/accounts', require('./accounts'));
 router.use('/account', require('./account'));
 router.use('/statistics', require('./statistics'));
+router.use('/tools', require('./tools'));
 
 module.exports = router;
