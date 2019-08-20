@@ -179,18 +179,22 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/ltitools', {
+    Promise.all([
+      api(req).get('/ltitools', {
         qs: {
-            name: {
-                $regex: _.escapeRegExp(req.query.q),
-                $options: 'i'
-            },
-            $limit: itemsPerPage,
-            $skip: itemsPerPage * (currentPage - 1),
-            $sort: req.query.sort,
-            'isTemplate': true,
+          name: {
+            $regex: _.escapeRegExp(req.query.q),
+            $options: 'i'
+          },
+          $limit: itemsPerPage,
+          $skip: itemsPerPage * (currentPage - 1),
+          $sort: req.query.sort,
+          'isTemplate': true,
         }
-    }).then(data => {
+      }),
+      api(req).get('/oauth2/baseUrl')
+    ]).then(([data, baseUrl]) => {
+      console.log(baseUrl);
         const body = data.data.map(item => {
             return [
                 item._id ||"",
@@ -212,7 +216,8 @@ router.get('/search' , function (req, res, next) {
         };
 
         res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser,
-          themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
+          themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods,
+          baseUrl});
         });
 });
 
@@ -225,14 +230,17 @@ router.all('/', function (req, res, next) {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/ltitools', {
-      qs: {
+    Promise.all([
+      api(req).get('/ltitools', {
+        qs: {
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
           $sort: req.query.sort,
           'isTemplate': true,
-      }
-    }).then(tools => {
+        }
+      }),
+      api(req).get('/oauth2/baseUrl')
+    ]).then(([tools, baseUrl]) => {
       const body = tools.data.map(item => {
           return [
               item._id ||"",
@@ -259,7 +267,8 @@ router.all('/', function (req, res, next) {
       };
 
       res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
-        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
+        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods,
+        baseUrl});
     });
 });
 
