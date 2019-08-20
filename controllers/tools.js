@@ -194,7 +194,6 @@ router.get('/search' , function (req, res, next) {
       }),
       api(req).get('/oauth2/baseUrl')
     ]).then(([data, baseUrl]) => {
-      console.log(baseUrl);
         const body = data.data.map(item => {
             return [
                 item._id ||"",
