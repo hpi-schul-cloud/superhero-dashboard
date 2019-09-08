@@ -49,17 +49,17 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" class="add-modal"}}
+        {{#embed "lib/components/modal-form" class="add-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "tools/forms/add-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" method="patch" class="edit-modal"}}
+        {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "tools/forms/add-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal"}}
+        {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "lib/components/delete-form"}}
             {{/content}}
