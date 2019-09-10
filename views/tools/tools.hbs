@@ -10,6 +10,19 @@
 
     {{#content "page"}}
         <div class="container-fluid">
+            <div class="row mobile-no-margin-right">
+                <div class="card h-100">
+                    <div class="card-block">
+                        <h5 class="card-title">OAuth2 Endpunkte</h5>
+                        <div class="card-text">
+                            <h6>Authorization: <a href="{{baseUrl}}/oauth2/auth">{{baseUrl}}/oauth2/auth</a></h6>
+                            <h6>Token: <a href="{{baseUrl}}/oauth2/token/">{{baseUrl}}/oauth2/token</a></h6>
+                            <h6>Userinfo: <a href="{{baseUrl}}/userinfo">{{baseUrl}}/userinfo</a></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-sm-9"></div>
                 <div class="col-sm-3" style="padding-bottom: 20px">
@@ -36,17 +49,17 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" class="add-modal"}}
+        {{#embed "lib/components/modal-form" class="add-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "tools/forms/add-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" method="patch" class="edit-modal"}}
+        {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "tools/forms/add-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal"}}
+        {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal" action="/tools"}}
             {{#content "fields"}}
                 {{> "lib/components/delete-form"}}
             {{/content}}
