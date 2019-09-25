@@ -1,5 +1,6 @@
 FROM node:8-alpine
 
+RUN apk update && apk upgrade && apk add --no-cache autoconf automake build-base make nasm zlib-dev
 # Prepare folders and install global modules
 RUN mkdir /app && npm install --quiet -g nodemon gulp
 
