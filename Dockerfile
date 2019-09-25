@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:8-alpine
 
 # Prepare folders and install global modules
 RUN mkdir /app && npm install --quiet -g nodemon gulp
