@@ -22,4 +22,4 @@ after_success:
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 - docker push schulcloud/superhero-dashboard:$DOCKERTAG
 - docker push schulcloud/superhero-dashboard:$GIT_SHA
-- if [[ "$TRAVIS_EVENT_TYPE" != "cron" ]] ; then curl -X POST -H 'Content-Type: application/json' --data '{"text":"Neues SHD, bitte ausrollen"}' $WEBHOOK_URL_CHAT ; fi
+- if [ "$TRAVIS_EVENT_TYPE" != "cron" ] ; then curl -X POST -H 'Content-Type: application/json' --data '{"text":"Neues SHD schulcloud/superhero-dashboard:'$DOCKERTAG', bitte ausrollen"}' $WEBHOOK_URL_CHAT ; fi
