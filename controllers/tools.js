@@ -36,7 +36,6 @@ const sanitizeTool = (req, create=false) => {
   req.body.secret = req.body.secret || "none";
   req.body.key = req.body.key || "none";
   req.body.isLocal = req.body.isLocal || false;
-  req.body.useIframePseudonym = req.body.useIframePseudonym || false;
   req.body.isTemplate = true;
   if(req.body.isLocal && create) {
     req.body.oAuthClientId = req.body.key;
