@@ -8,8 +8,8 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <input type="text" name="url" id="url" class="form-control" placeholder="https://app.com" required>
 </div>
 <div class="form-group">
-    <label class="control-label" for="key">Key / OAuth2-Client-Id</label>
-    <input type="text" name="key" id="key" required="required" class="form-control" placeholder="">
+    <label class="control-label" for="key">Key</label>
+    <input type="text" name="key" id="key" class="form-control" placeholder="">
 </div>
 <div class="form-group">
     <label class="control-label" for="secret">Secret</label>
@@ -27,6 +27,10 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
             <option value="{{this.value}}">{{this.label}}</option>
         {{/each}}
     </select>
+</div>
+<div class="form-group">
+    <label class="control-label" for="key">OAuth- bzw. LTI-ClientId</label>
+    <input type="text" name="oAuthClientId" id="oAuthClientId" required="required" class="form-control" placeholder="">
 </div>
 <div class="form-group">
     <label class="control-label" for="isLocal">Ist ein OAuth2-Tool?</label>
