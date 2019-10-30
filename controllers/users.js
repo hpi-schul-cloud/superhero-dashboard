@@ -395,22 +395,22 @@ router.get('/search' , function (req, res, next) {
     });
 });
 
-router.get('/jwt/:id', function (req, res, next) {
-    api(req).post('/accounts/jwt', {
+router.get('/jwt/:id', async (req, res) => {
+   const getJWT = api(req).post('/accounts/jwt', {
         json: { 
             userId: req.params.id 
         }
-    }).then(jwt => {
-        api(req).get('/users/' + req.params.id)
-            .then(user => {
-                res.render('users/jwt', {
-                    title: `JWT für ${user.displayName}`,
-                    jwt: jwt || '',
-                    user: user,
-                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-                });
-            });
-        });
+    });
+    const getUser = api(req).get('/users/' + req.params.id);
+
+    const [jwt, user] = await Promise.all(getJWT, getUser);
+    
+    res.render('users/jwt', {
+        title: `JWT für ${user.displayName}`,
+        jwt: jwt || '',
+        user: user,
+        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+    });
 });
 
 router.patch('/:id', getUpdateHandler('users'));
