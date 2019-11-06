@@ -404,7 +404,7 @@ router.get('/jwt/:id', async (req, res, next) => {
         });
         const getUser = api(req).get('/users/' + req.params.id);
     
-        const [jwt, user] = await Promise.all(getJWT, getUser);
+        const [jwt, user] = await Promise.all([getJWT, getUser]);
     
         res.render('users/jwt', {
             title: `JWT für ${user.displayName}`,
