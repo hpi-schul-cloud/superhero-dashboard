@@ -11,7 +11,7 @@ ENV NODE_PATH=/opt/node_modules
 
 # Copy current directory to container
 COPY . /app
-
+RUN chown -R 1000:1000 ./app
 WORKDIR /app
 
 EXPOSE 3033
