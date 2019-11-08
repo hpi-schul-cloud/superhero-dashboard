@@ -37,10 +37,10 @@ const sanitizeTool = (req, create=false) => {
   req.body.key = req.body.key || "none";
   req.body.isLocal = req.body.isLocal || false;
   req.body.isTemplate = true;
-  if(create || !req.body.isLocal) {
+  if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";
   } else {
-    req.body.oAuthClientId = undefined;
+    req.body.oAuthClientId = undefined; // undefine the property prohibits database update
   }
   return req;
 }
