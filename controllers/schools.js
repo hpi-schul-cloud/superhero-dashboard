@@ -51,7 +51,7 @@ const createBucket = (req, res, next) => {
 
 const getStorageProviders = res => [
 	{
-		label: res.locals.theme.short_title,
+		label: (res.locals.theme || {}).short_title,
 		value: 'awsS3',
 	},
 ];

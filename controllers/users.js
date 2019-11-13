@@ -397,7 +397,7 @@ router.get('/search' , function (req, res, next) {
 
 router.get('/jwt/:id', async (req, res, next) => {
     try {
-        const getJWT = api(req).post('/accounts/jwt', {
+        const getJWT = api(req).post('/accounts/supportJWT', {
             json: { 
                 userId: req.params.id 
             }
