@@ -36,10 +36,11 @@ const sanitizeTool = (req, create=false) => {
   req.body.secret = req.body.secret || "none";
   req.body.key = req.body.key || "none";
   req.body.isLocal = req.body.isLocal || false;
-  req.body.useIframePseudonym = req.body.useIframePseudonym || false;
   req.body.isTemplate = true;
-  if(req.body.isLocal && create) {
-    req.body.oAuthClientId = req.body.key;
+  if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
+    req.body.oAuthClientId = req.body.oAuthClientId || "";
+  } else {
+    req.body.oAuthClientId = undefined; // undefine the property prohibits database update
   }
   return req;
 }
@@ -61,7 +62,7 @@ const getCreateHandler = (service) => {
       if(req.body.isLocal) {
         api(req).post('/oauth2/clients/', {
           json: {
-            "client_id": req.body.key,
+            "client_id": req.body.oAuthClientId,
             "client_name": req.body.name,
             "client_secret": req.body.secret,
             "redirect_uris": req.body.redirect_url.split(";"),
@@ -85,7 +86,7 @@ const getUpdateHandler = (service) => {
         api(req).patch('/' + service + '/' + req.params.id, {
             json: req.body
         }).then(data => {
-          if(data.oAuthClientId) {
+          if(data.isLocal) {
             api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
               json: {
                 "client_name": req.body.name,
@@ -109,7 +110,7 @@ const getUpdateHandler = (service) => {
 const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
-          if(data.oAuthClientId) {
+          if(data.isLocal) {
             api(req).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
               data.key = data.oAuthClientId;
               data.secret = PASSWORD;
@@ -129,7 +130,7 @@ const getDetailHandler = (service) => {
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
         api(req).delete('/' + service + '/' + req.params.id).then(data => {
-          if(data.oAuthClientId) {
+          if(data.isLocal) {
             api(req).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
               res.redirect(req.header('Referer'));
             });
