@@ -83,7 +83,7 @@ const inviteWithMail = async (user, req) => {
         "text": "Sehr geehrte/r " + user.firstName + " " + user.lastName + ",\n\n" +
         "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
         linkData.shortLink + "\n\n" +
-        "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
+        "Mit freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
         json: {
