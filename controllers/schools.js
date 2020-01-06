@@ -38,7 +38,11 @@ const getTableActions = (item, path) => {
 const createBucket = (req, res, next) => {
         Promise.all([
             api(req).post('/fileStorage', {
-                json: {fileStorageType: req.body.fileStorageType, schoolId: req.params.id}
+                json: {
+                    schoolId: req.params.id,
+                    size: 0,
+                    name: 'empty.file',
+                },
             }),
             api(req).patch('/schools/' + req.params.id, {
                 json: req.body
