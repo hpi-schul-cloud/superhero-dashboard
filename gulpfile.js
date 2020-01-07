@@ -81,8 +81,8 @@ gulp.task('styles', () => {
         .pipe(header(fs.readFileSync(themeFile, 'utf8')))
         .pipe(sass({sourceMap: false}))
         .pipe(minify())
-        .pipe(autoprefixer({ browsers: ['last 3 major versions'] }))
-        .pipe(gulp.dest('./build/styles'));
+        .pipe(autoprefixer())
+        .pipe(dest('./build/styles'));
 });
 
 //copy fonts
@@ -123,8 +123,8 @@ gulp.task('vendor-styles', () => {
     return beginPipe('./static/vendor/**/*.{css,sass,scss}')
         .pipe(sass())
         .pipe(minify())
-        .pipe(autoprefixer({ browsers: ['last 3 major versions'] }))
-        .pipe(gulp.dest('./build/vendor'));
+        .pipe(autoprefixer())
+        .pipe(dest('./build/vendor'));
 });
 
 //compile/transpile vendor JSX and ES6 to ES5 and minify scripts
