@@ -1,4 +1,4 @@
-const gulp = require('gulp');
+const {src, dest, series, parallel, watch, lastRun} = require('gulp');
 const sass = require('gulp-sass');
 const sassGrapher = require('gulp-sass-grapher');
 const path = require('path');
@@ -17,7 +17,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const header = require('gulp-header');
 const cCSS = new cleancss();
 const fs = require('fs');
-//wrapped in a function so it works with gulp.watch (+consistency)
+//wrapped in a function so it works with watch (+consistency)
 const minify = () => map((buff, filename) =>
     cCSS.minify(buff.toString()).styles);
 
@@ -36,37 +36,39 @@ const baseScripts = [
 const nonBaseScripts = ['./static/scripts/**/*.js']
     .concat(baseScripts.map(script => '!' + script));
 
-//used by all gulp tasks instead of gulp.src(...)
+//used by all gulp tasks instead of src(...)
 //plumber prevents pipes from stopping when errors occur
 //changed only passes on files that were modified since last time
 //filelog logs and counts all processed files
 
-function withTheme(src){
-    if(typeof src == "string"){
-        return [src, `./theme/${themeName()}/${src.slice(2)}`];
+function withTheme(path){
+    if(typeof path == "string"){
+        return [path, `./theme/${themeName()}/${path.slice(2)}`];
     }else{
-        return src.concat(src.map(e => {
+        return path.concat(path.map(e => {
             return `./theme/${themeName()}/${e.slice(2)}`;
         }));
     }
 }
 
-const beginPipe = src =>
-    gulp.src(withTheme(src), { allowEmpty: true })
+const beginPipe = function(path) {
+    return src(withTheme(path), { allowEmpty: true, since: lastRun(all) })
         .pipe(plumber())
         .pipe(filelog());
+};
 
-const beginPipeAll = src =>
-    gulp.src(withTheme(src), { allowEmpty: true })
+const beginPipeAll = path =>
+    src(withTheme(path), { allowEmpty: true, since: lastRun(all) })
         .pipe(plumber())
         .pipe(filelog());
 
 //minify images
-gulp.task('images', () => {
+function images() {
     return beginPipe('./static/images/**/*.*')
         .pipe(imagemin())
-        .pipe(gulp.dest('./build/images'));
-});
+        .pipe(dest('./build/images'));
+}
+exports.images = images;
 
 function themeName(){
     return process.env.SC_THEME || 'default';
@@ -74,7 +76,7 @@ function themeName(){
 
 var loadPaths = path.resolve('./static/styles/');
 sassGrapher.init('./static/styles/', { loadPaths: loadPaths });
-gulp.task('styles', () => {
+function styles() {
     var themeFile = `./theme/${themeName()}/style.scss`;
     return beginPipe('./static/styles/**/*.{css,sass,scss}')
         .pipe(sassGrapher.ancestors())
@@ -83,16 +85,18 @@ gulp.task('styles', () => {
         .pipe(minify())
         .pipe(autoprefixer())
         .pipe(dest('./build/styles'));
-});
+}
+exports.styles = styles;
 
 //copy fonts
-gulp.task('fonts', () => {
+function fonts() {
     return beginPipe('./static/fonts/**/*.*')
-        .pipe(gulp.dest('./build/fonts'));
-});
+        .pipe(dest('./build/fonts'));
+}
+exports.fonts = fonts;
 
 //compile/transpile JSX and ES6 to ES5 and minify scripts
-gulp.task('scripts', () => {
+function scripts() {
     return beginPipe(nonBaseScripts)
         .pipe(babel({
             presets: [["es2015", { modules: false }]],
@@ -100,12 +104,13 @@ gulp.task('scripts', () => {
         }))
         .pipe(optimizejs())
         .pipe(uglify())
-        .pipe(gulp.dest('./build/scripts'));
-});
+        .pipe(dest('./build/scripts'));
+}
+exports.scripts = scripts;
 
 
 //compile/transpile JSX and ES6 to ES5, minify and concatenate base scripts into all.js
-gulp.task('base-scripts', () => {
+function base_scripts() {
     return beginPipeAll(baseScripts)
         .pipe(count('## js-files selected'))
         .pipe(babel({
@@ -115,20 +120,22 @@ gulp.task('base-scripts', () => {
         .pipe(optimizejs())
         .pipe(uglify())
         .pipe(concat('all.js'))
-        .pipe(gulp.dest('./build/scripts'));
-});
+        .pipe(dest('./build/scripts'));
+}
+exports.base_scripts = base_scripts;
 
 //compile vendor SASS/SCSS to CSS and minify it
-gulp.task('vendor-styles', () => {
+function vendor_styles() {
     return beginPipe('./static/vendor/**/*.{css,sass,scss}')
         .pipe(sass())
         .pipe(minify())
         .pipe(autoprefixer())
         .pipe(dest('./build/vendor'));
-});
+}
+exports.vendor_styles = vendor_styles;
 
 //compile/transpile vendor JSX and ES6 to ES5 and minify scripts
-gulp.task('vendor-scripts', () => {
+function vendor_scripts() {
     return beginPipe('./static/vendor/**/*.js')
         .pipe(babel({
             compact: false,
@@ -137,38 +144,43 @@ gulp.task('vendor-scripts', () => {
         }))
         .pipe(optimizejs())
         .pipe(uglify())
-        .pipe(gulp.dest('./build/vendor'));
-});
+        .pipe(dest('./build/vendor'));
+}
+exports.vendor_scripts = vendor_scripts;
 
 //copy other vendor files
-gulp.task('vendor-assets', () => {
+function vendor_assets() {
     return beginPipe(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
         '!./static/vendor/**/*.{css,sass,scss}'])
-        .pipe(gulp.dest('./build/vendor'));
-});
+        .pipe(dest('./build/vendor'));
+}
+exports.vendor_assets = vendor_assets;
 
 //clear build folder + smart cache
-gulp.task('clear', () => {
-    return gulp.src(['./build/*'], { read: false })
+function clear() {
+    return src(['./build/*'], { read: false })
         .pipe(rimraf());
-});
+}
+exports.clear = clear;
 
 //run all tasks, processing changed files
-gulp.task('build-all', gulp.series('images', 'styles', 'fonts', 'scripts', 'base-scripts',
-                        'vendor-styles', 'vendor-scripts', 'vendor-assets'));
+const all = series(images, styles, fonts, scripts, base_scripts,
+                    vendor_styles, vendor_scripts, vendor_assets);
+exports.all = all;
 
 //watch and run corresponding task on change, process changed files only
-gulp.task('watch', gulp.series('build-all', () => {
-    gulp.watch(withTheme('./static/images/**/*.*'), ['images']);
-    gulp.watch(withTheme('./static/styles/**/*.{css,sass,scss}'), ['styles']);
-    gulp.watch(withTheme('./static/fonts/**/*.*'), ['fonts']);
-    gulp.watch(withTheme(nonBaseScripts), ['scripts']);
-    gulp.watch(withTheme(baseScripts), ['base-scripts']);
-    gulp.watch(withTheme('./static/vendor/**/*.{css,sass,scss}'), ['vendor-styles']);
-    gulp.watch(withTheme('./static/vendor/**/*.js'), ['vendor-scripts']);
-    gulp.watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
-                '!./static/vendor/**/*.{css,sass,scss}'], ['vendor-assets']);
-}));
+exports.watch = series(all, (done) => {
+    watch(withTheme('./static/images/**/*.*'), images);
+    watch(withTheme('./static/styles/**/*.{css,sass,scss}'), styles);
+    watch(withTheme('./static/fonts/**/*.*'), fonts);
+    watch(withTheme(nonBaseScripts), scripts);
+    watch(withTheme(baseScripts), base_scripts);
+    watch(withTheme('./static/vendor/**/*.{css,sass,scss}'), vendor_styles);
+    watch(withTheme('./static/vendor/**/*.js'), vendor_scripts);
+    watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
+                '!./static/vendor/**/*.{css,sass,scss}'], vendor_assets);
+    done();
+});
 
 //run this if only "gulp" is run on the commandline with no task specified
-gulp.task('default', gulp.series('build-all'));
+exports.default = all;
