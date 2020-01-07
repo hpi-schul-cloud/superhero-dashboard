@@ -156,7 +156,7 @@ function vendor_assets() {
 }
 exports.vendor_assets = vendor_assets;
 
-//clear build folder + smart cache
+//clear build folder
 function clear() {
     return src(['./build/*'], { read: false })
         .pipe(rimraf());
