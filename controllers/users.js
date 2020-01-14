@@ -83,7 +83,7 @@ const inviteWithMail = async (user, req) => {
         "text": "Sehr geehrte/r " + user.firstName + " " + user.lastName + ",\n\n" +
         "Sie wurden in die " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " eingeladen, bitte registrieren Sie sich unter folgendem Link:\n" +
         linkData.shortLink + "\n\n" +
-        "Mit Freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
+        "Mit freundlichen Grüßen" + "\nIhr " + (process.env.SC_NAV_TITLE || "Schul-Cloud") + " Team"
     };
     api(req).post('/mails', {
         json: {
@@ -170,8 +170,6 @@ const getCreateHandler = (service) => {
                         pin: pin.pin,
 
                         privacyConsent: true,
-                        researchConsent: true,
-                        thirdPartyConsent: true,
                         termsOfUseConsent: true
                     },
                 });
@@ -240,8 +238,6 @@ const getDeleteHandler = (service) => {
         });
     };
 };
-
-const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
 
 // secure routes
 router.use(authHelper.authChecker);
@@ -322,9 +318,20 @@ router.get('/search' , function (req, res, next) {
 
     api(req).get('/users/', {
             qs: {
-                firstName: {
-                    $regex: _.escapeRegExp(capitalize(req.query.q))
-                },
+                $or:[
+                    {
+                        firstName: {
+                            $regex: _.escapeRegExp(req.query.q),
+                            $options: 'i'
+                        }
+                    },
+                    {
+                        lastName: {
+                            $regex: _.escapeRegExp(req.query.q),
+                            $options: 'i'
+                        }
+                    },
+                ],
                 schoolId: (req.query.schoolId) ? req.query.schoolId : undefined,
                 $populate: ['roles', 'schoolId'],
                 $limit: itemsPerPage,
@@ -388,22 +395,26 @@ router.get('/search' , function (req, res, next) {
     });
 });
 
-router.get('/jwt/:id', function (req, res, next) {
-    api(req).post('/accounts/jwt', {
-        json: { 
-            userId: req.params.id 
-        }
-    }).then(jwt => {
-        api(req).get('/users/' + req.params.id)
-            .then(user => {
-                res.render('users/jwt', {
-                    title: `JWT für ${user.displayName}`,
-                    jwt: jwt || '',
-                    user: user,
-                    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-                });
-            });
+router.get('/jwt/:id', async (req, res, next) => {
+    try {
+        const getJWT = api(req).post('/accounts/supportJWT', {
+            json: { 
+                userId: req.params.id 
+            }
         });
+        const getUser = api(req).get('/users/' + req.params.id);
+    
+        const [jwt, user] = await Promise.all([getJWT, getUser]);
+    
+        res.render('users/jwt', {
+            title: `JWT für ${user.displayName}`,
+            jwt: jwt || '',
+            user: user,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+        });
+    } catch (err) {
+        next(err);
+    }
 });
 
 router.patch('/:id', getUpdateHandler('users'));
@@ -482,7 +493,7 @@ router.get('/', function (req, res, next) {
             });
         });
     } else {
-        api(req).get('/schools/', {qs: {$limit: 50000}}).then(schools => {
+        api(req).get('/schools/', {qs: {$limit: false}}).then(schools => {
             res.render('users/preselect', {
                 title: 'Users',
                 user: res.locals.currentUser,

@@ -38,7 +38,11 @@ const getTableActions = (item, path) => {
 const createBucket = (req, res, next) => {
         Promise.all([
             api(req).post('/fileStorage', {
-                json: {fileStorageType: req.body.fileStorageType, schoolId: req.params.id}
+                json: {
+                    schoolId: req.params.id,
+                    size: 0,
+                    name: 'empty.file',
+                },
             }),
             api(req).patch('/schools/' + req.params.id, {
                 json: req.body
@@ -49,11 +53,12 @@ const createBucket = (req, res, next) => {
         });
 };
 
-const getStorageProviders = () => {
-    return [
-        {label: 'AWS S3', value: 'awsS3'}
-    ];
-};
+const getStorageProviders = res => [
+	{
+		label: (res.locals.theme || {}).short_title,
+		value: 'awsS3',
+	},
+];
 
 const getCreateHandler = (service) => {
     return function (req, res, next) {
@@ -103,8 +108,6 @@ const getDeleteHandler = (service) => {
     };
 };
 
-const capitalize = ([first,...rest]) => first.toUpperCase() + rest.join('').toLowerCase();
-
 // secure routes
 router.use(authHelper.authChecker);
 
@@ -117,7 +120,8 @@ router.get('/search' , function (req, res, next) {
         api(req).get('/schools', {
             qs: {
                 name: {
-                    $regex: _.escapeRegExp(capitalize(req.query.q))
+                    $regex: _.escapeRegExp(req.query.q),
+                    $options: 'i'
                 },
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),
@@ -177,7 +181,7 @@ router.all('/', function (req, res, next) {
             }
         }).then(data => {
 
-            let provider = getStorageProviders();
+            let provider = getStorageProviders(res);
             provider = (provider || []).map(prov => {
                 if (prov.value == data.fileStorageType) {
                     return Object.assign(prov, {

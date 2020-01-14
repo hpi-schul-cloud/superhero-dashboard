@@ -22,12 +22,13 @@
 
 <div class="form-group">
     <input id="create-silent" type="checkbox" name='silent' value="true">
-    <label class="control-label" for="create-silent">Silent Creation - Keine E-Mail versenden</label>
+    <label class="control-label" for="create-silent">Silent Creation für Testnutzer - Keine E-Mail versenden</label>
+    <p>Mit Silent Creation werden Testnutzer erstellt, die keine Registrierung mehr durchlaufen müssen. Für Mitarbeiter/Lehrer wird Firstlogin bereits ausgeführt. Schüler müssen Firstlogin noch durchklicken und dort ihr Alter und Zustimmung eingeben.</p>
 </div>
 
 <div class="silent-area">
     <div class="form-group">
         <label class="control-label" for="password">Initiales Passwort *</label>
-        <input type="password" name="password" id="password" pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$" class="form-control" placeholder="********" disabled required>
+        <input type="password" name="password" id="password" pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$" title="{{> "lib/forms/password-hint" plaintext=true}}" class="form-control" placeholder="********" disabled required>
     </div>
 </div>

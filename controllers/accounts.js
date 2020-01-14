@@ -112,7 +112,8 @@ router.get('/search' , function (req, res, next) {
     api(req).get('/accounts/', {
             qs: {
                 username: {
-                    $regex: _.escapeRegExp(req.query.q)
+                    $regex: _.escapeRegExp(req.query.q),
+                    $options: 'i'
                 },
                 $limit: itemsPerPage,
                 $skip: itemsPerPage * (currentPage - 1),

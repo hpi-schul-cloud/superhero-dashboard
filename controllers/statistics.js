@@ -56,13 +56,9 @@ let options = [
         icon: 'user'
     },
     {
-        name: 'files',
+        name: 'files/directories',
         icon: 'files-o'
-    },
-    {
-        name: 'directories',
-        icon: 'folder-o'
-    },
+    }
 ];
 
 // secure routes
