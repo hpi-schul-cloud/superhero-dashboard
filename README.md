@@ -1,5 +1,7 @@
 # SuperHero-Dashboard
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/schul-cloud/superhero-dashboard.svg)](https://greenkeeper.io/)
+
 ## Requirements
 
 * node.js 6 or later (You can install it from https://nodejs.org/en/download/)
