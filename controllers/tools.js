@@ -35,7 +35,7 @@ const sanitizeTool = (req, create=false) => {
   req.body.lti_message_type = req.body.lti_message_type || "none";
   req.body.secret = req.body.secret || "none";
   req.body.key = req.body.key || "none";
-  req.body.isLocal = req.body.isLocal || false;
+  req.body.isLocal = (req.body.isLocal === "on") || false;
   req.body.isTemplate = true;
   if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";
