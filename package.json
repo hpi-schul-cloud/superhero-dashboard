@@ -32,7 +32,7 @@
     "request-promise": "^4.1.1",
     "serve-favicon": "~2.5.0",
     "showdown": "^1.9.1",
-    "string-strip-html": "^3.2.0",
+    "string-strip-html": "^4.3.15",
     "string_decoder": "^1.0.1",
     "truncate-html": "^1.0.1"
   },
