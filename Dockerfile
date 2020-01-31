@@ -15,7 +15,7 @@ ENV NODE_PATH=/opt/node_modules
 COPY . /app
 ENV SC_THEME=default
 ENV TZ=Europe/Berlin
-RUN chown -R 1000:1000 ./app
+RUN chown -R 1000:1000 /app
 
 EXPOSE 3033
 CMD ["npm", "run", "start"]
