@@ -1,11 +1,10 @@
 FROM node:10.17-alpine
 
 RUN apk update && apk upgrade && apk add --no-cache autoconf automake build-base make nasm zlib-dev
-USER node
 WORKDIR /app
 # Prepare folders and install global modules
 #RUN mkdir /app && npm install --quiet -g nodemon gulp
-RUN npm install --quiet -g nodemon gulp
+RUN npm set unsafe-perm true && npm install --quiet -g nodemon gulp
 
 # Install dependency outside of the app volume
 COPY package.json /opt/
