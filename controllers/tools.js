@@ -33,9 +33,9 @@ const sanitizeTool = (req, create=false) => {
   req.body.resource_link_id = req.body.resource_link_id || 0;
   req.body.lti_version = req.body.lti_version || "none";
   req.body.lti_message_type = req.body.lti_message_type || "none";
-  req.body.secret = req.body.secret || "none";
+  req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret || "none");
   req.body.key = req.body.key || "none";
-  req.body.isLocal = (req.body.isLocal === "on") || false;
+  req.body.isLocal = (req.body.isLocal);
   req.body.isTemplate = true;
   if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";
@@ -83,27 +83,26 @@ const getCreateHandler = (service) => {
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req);
-        api(req).patch('/' + service + '/' + req.params.id, {
-            json: req.body
-        }).then(data => {
-          if(data.isLocal) {
-            api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
-              json: {
-                "client_name": req.body.name,
-                "client_secret": ((req.body.secret === PASSWORD || req.body.secret === "none")
-                  ? undefined : req.body.secret),
-                "redirect_uris": req.body.redirect_url.split(";"),
-                "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
-                "subject_type": "pairwise"
-              }
-            }).then(_ => {
-              res.redirect(req.header('Referer'));
-            });
-          }
-          res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
+      api(req).patch('/' + service + '/' + req.params.id, {
+          json: req.body
+      }).then(data => {
+        if(data.isLocal) {
+          api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
+            json: {
+              "client_name": req.body.name,
+              "client_secret": req.body.secret,
+              "redirect_uris": req.body.redirect_url.split(";"),
+              "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
+              "subject_type": "pairwise"
+            }
+          }).then(_ => {
+            res.redirect(req.header('Referer'));
+          });
+        }
+      res.redirect(req.header('Referer'));
+      }).catch(err => {
+          next(err);
+      });
     };
 };
 
@@ -112,13 +111,13 @@ const getDetailHandler = (service) => {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
           if(data.isLocal) {
             api(req).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
-              data.key = data.oAuthClientId;
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
               res.json(data);
             });
           } else {
+            data.secret = PASSWORD;
             res.json(data);
           }
         }).catch(err => {
