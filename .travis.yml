@@ -12,7 +12,7 @@ cache:
 env:
   global:
   - GIT_SHA=$( git rev-parse HEAD )
-  - f [ "$TRAVIS_BRANCH" = "master" ] ; then DOCKERTAG=latest; else DOCKERTAG=$( echo $TRAVIS_BRANCH | tr -s "[:punct:]" "-" | tr -s "[:upper:]" "[:lower:]" ) ; fi
+  - DOCKERTAG="$( echo $TRAVIS_BRANCH | tr -s '[:punct:]' '-' | tr -s '[:upper:]' '[:lower:]' )_$TRAVIS_COMMIT"
 before_install:
 - openssl aes-256-cbc -K $encrypted_0c700ab4b9a5_key -iv $encrypted_0c700ab4b9a5_iv -in travis_rsa.enc -out travis_rsa -d
 - chmod 0600 travis_rsa
