@@ -33,7 +33,11 @@ const sanitizeTool = (req, create=false) => {
   req.body.resource_link_id = req.body.resource_link_id || 0;
   req.body.lti_version = req.body.lti_version || "none";
   req.body.lti_message_type = req.body.lti_message_type || "none";
-  req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret || "none");
+  if (req.body.secret === PASSWORD) {
+    req.body.secret = undefined;
+  } else {
+    req.body.secret = req.body.secret || "none"
+  }
   req.body.key = req.body.key || "none";
   req.body.isLocal = (req.body.isLocal);
   req.body.isTemplate = true;
@@ -51,12 +55,16 @@ const createTool = (req, service, next) => {
   }).then(tool => {
     next();
   }).catch(err => {
+    if(req.body.isLocal) {
+      api(req).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
+        next(err);
+      });
+    }
     next(err);
   });
 }
 
 const getCreateHandler = (service) => {
-
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
@@ -178,21 +186,18 @@ const authMethods = [
 const showTools = (req, res) => {
   const itemsPerPage = (req.query.limit || 10);
   const currentPage = parseInt(req.query.p) || 1;
-  Promise.all([
-    api(req).get('/ltitools', {
-      qs: {
-        name: (req.query.q ? {
-          $regex: _.escapeRegExp(req.query.q),
-          $options: 'i'
-        } : undefined),
-        $limit: itemsPerPage,
-        $skip: itemsPerPage * (currentPage - 1),
-        $sort: req.query.sort,
-        'isTemplate': true,
-      }
-    }),
-    api(req).get('/oauth2/baseUrl')
-  ]).then(([tools, baseUrl]) => {
+  api(req).get('/ltitools', {
+    qs: {
+      name: (req.query.q ? {
+        $regex: _.escapeRegExp(req.query.q),
+        $options: 'i'
+      } : undefined),
+      $limit: itemsPerPage,
+      $skip: itemsPerPage * (currentPage - 1),
+      $sort: req.query.sort,
+      'isTemplate': true,
+    },
+  }).then((tools) => {
     const body = tools.data.map(item => {
       return [
         item._id ||"",
@@ -219,8 +224,7 @@ const showTools = (req, res) => {
     };
 
     res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
-      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods,
-      baseUrl});
+      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
   });
 }
 
