@@ -30,16 +30,12 @@ const getTableActions = (item, path) => {
 };
 
 const sanitizeTool = (req, create=false) => {
-  req.body.resource_link_id = req.body.resource_link_id || 0;
-  req.body.lti_version = req.body.lti_version || "none";
-  req.body.lti_message_type = req.body.lti_message_type || "none";
-  if (req.body.secret === PASSWORD) {
-    req.body.secret = undefined;
-  } else {
-    req.body.secret = req.body.secret || "none"
-  }
-  req.body.key = req.body.key || "none";
-  req.body.isLocal = (req.body.isLocal);
+  req.body.key = req.body.key || null;
+  req.body.resource_link_id = req.body.resource_link_id || null;
+  req.body.lti_version = req.body.lti_version || null;
+  req.body.lti_message_type = req.body.lti_message_type || null;
+  req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
+  req.body.isLocal = (create ? !!req.body.isLocal : undefined);
   req.body.isTemplate = true;
   if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";

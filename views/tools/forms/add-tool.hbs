@@ -13,8 +13,8 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
 </div>
 <div class="form-group">
     <label class="control-label" for="secret">Secret</label>
-    <input type="text" name="secret" id="secret" class="form-control" placeholder="" pattern=".{0}|.{6,64}"
-    title="Leer oder mindestens 6 Zeichen">
+    <input type="text" name="secret" id="secret" class="form-control" placeholder="" pattern=".{6,64}"
+    title="Mindestens 6 Zeichen" required>
 </div>
 <div class="form-group">
     <label class="control-label" for="logo_url">Logo-URL</label>
@@ -33,8 +33,11 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <input type="text" name="oAuthClientId" id="oAuthClientId" class="form-control" placeholder="">
 </div>
 <div class="form-group">
-    <label class="control-label" for="isLocal">Ist ein OAuth2-Tool?</label>
-    <input type="checkbox" name="isLocal" id="isLocal" value="1"  class="form-control">
+    <label class="control-label">Handelt es sich um ein OAuth2-Tool?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isLocal" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, OAuth2
+    </label>
 </div>
 <h3>Nur für LTI:</h3>
 <div class="form-group">
