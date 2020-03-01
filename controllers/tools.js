@@ -35,13 +35,13 @@ const sanitizeTool = (req, create=false) => {
   req.body.lti_version = req.body.lti_version || null;
   req.body.lti_message_type = req.body.lti_message_type || null;
   req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
-  req.body.isLocal = (create ? !!req.body.isLocal : undefined);
   req.body.isTemplate = true;
   if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";
   } else {
     req.body.oAuthClientId = undefined; // undefine the property prohibits database update
   }
+  req.body.isLocal = (create ? !!req.body.isLocal : undefined);
   return req;
 }
 
@@ -73,7 +73,8 @@ const getCreateHandler = (service) => {
             "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
             "subject_type": "pairwise"
           }
-        }).then(_ => {
+        }).then(response => {
+          req.body.oAuthClientId = response.client_id;
           createTool(req, service, next);
         }).catch(err => {
           next(err);
