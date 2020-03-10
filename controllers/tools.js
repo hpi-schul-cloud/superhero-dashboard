@@ -30,18 +30,18 @@ const getTableActions = (item, path) => {
 };
 
 const sanitizeTool = (req, create=false) => {
-  req.body.resource_link_id = req.body.resource_link_id || 0;
-  req.body.lti_version = req.body.lti_version || "none";
-  req.body.lti_message_type = req.body.lti_message_type || "none";
-  req.body.secret = req.body.secret || "none";
-  req.body.key = req.body.key || "none";
-  req.body.isLocal = req.body.isLocal || false;
+  req.body.key = req.body.key || null;
+  req.body.resource_link_id = req.body.resource_link_id || null;
+  req.body.lti_version = req.body.lti_version || null;
+  req.body.lti_message_type = req.body.lti_message_type || null;
+  req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
   req.body.isTemplate = true;
   if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
     req.body.oAuthClientId = req.body.oAuthClientId || "";
   } else {
     req.body.oAuthClientId = undefined; // undefine the property prohibits database update
   }
+  req.body.isLocal = (create ? !!req.body.isLocal : undefined);
   return req;
 }
 
@@ -51,12 +51,16 @@ const createTool = (req, service, next) => {
   }).then(tool => {
     next();
   }).catch(err => {
+    if(req.body.isLocal) {
+      api(req).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
+        next(err);
+      });
+    }
     next(err);
   });
 }
 
 const getCreateHandler = (service) => {
-
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
@@ -69,7 +73,8 @@ const getCreateHandler = (service) => {
             "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
             "subject_type": "pairwise"
           }
-        }).then(_ => {
+        }).then(response => {
+          req.body.oAuthClientId = response.client_id;
           createTool(req, service, next);
         }).catch(err => {
           next(err);
@@ -83,27 +88,26 @@ const getCreateHandler = (service) => {
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req);
-        api(req).patch('/' + service + '/' + req.params.id, {
-            json: req.body
-        }).then(data => {
-          if(data.isLocal) {
-            api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
-              json: {
-                "client_name": req.body.name,
-                "client_secret": ((req.body.secret === PASSWORD || req.body.secret === "none")
-                  ? undefined : req.body.secret),
-                "redirect_uris": req.body.redirect_url.split(";"),
-                "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
-                "subject_type": "pairwise"
-              }
-            }).then(_ => {
-              res.redirect(req.header('Referer'));
-            });
-          }
-          res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
+      api(req).patch('/' + service + '/' + req.params.id, {
+          json: req.body
+      }).then(data => {
+        if(data.isLocal) {
+          api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
+            json: {
+              "client_name": req.body.name,
+              "client_secret": req.body.secret,
+              "redirect_uris": req.body.redirect_url.split(";"),
+              "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
+              "subject_type": "pairwise"
+            }
+          }).then(_ => {
+            res.redirect(req.header('Referer'));
+          });
+        }
+      res.redirect(req.header('Referer'));
+      }).catch(err => {
+          next(err);
+      });
     };
 };
 
@@ -112,13 +116,13 @@ const getDetailHandler = (service) => {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
           if(data.isLocal) {
             api(req).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
-              data.key = data.oAuthClientId;
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
               res.json(data);
             });
           } else {
+            data.secret = PASSWORD;
             res.json(data);
           }
         }).catch(err => {
@@ -179,21 +183,18 @@ const authMethods = [
 const showTools = (req, res) => {
   const itemsPerPage = (req.query.limit || 10);
   const currentPage = parseInt(req.query.p) || 1;
-  Promise.all([
-    api(req).get('/ltitools', {
-      qs: {
-        name: (req.query.q ? {
-          $regex: _.escapeRegExp(req.query.q),
-          $options: 'i'
-        } : undefined),
-        $limit: itemsPerPage,
-        $skip: itemsPerPage * (currentPage - 1),
-        $sort: req.query.sort,
-        'isTemplate': true,
-      }
-    }),
-    api(req).get('/oauth2/baseUrl')
-  ]).then(([tools, baseUrl]) => {
+  api(req).get('/ltitools', {
+    qs: {
+      name: (req.query.q ? {
+        $regex: _.escapeRegExp(req.query.q),
+        $options: 'i'
+      } : undefined),
+      $limit: itemsPerPage,
+      $skip: itemsPerPage * (currentPage - 1),
+      $sort: req.query.sort,
+      'isTemplate': true,
+    },
+  }).then((tools) => {
     const body = tools.data.map(item => {
       return [
         item._id ||"",
@@ -220,8 +221,7 @@ const showTools = (req, res) => {
     };
 
     res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
-      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods,
-      baseUrl});
+      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
   });
 }
 
