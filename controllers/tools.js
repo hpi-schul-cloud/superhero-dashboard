@@ -29,6 +29,16 @@ const getTableActions = (item, path) => {
     ];
 };
 
+const getClient = (body, create = false) => ({
+  "client_id": (create ? body.oAuthClientId : undefined),
+  "client_name": body.name,
+  "client_secret": body.secret,
+  "redirect_uris": body.redirect_url.split(";"),
+  "token_endpoint_auth_method": body.token_endpoint_auth_method,
+  "subject_type": "pairwise",
+  "scope": body.scope,
+});
+
 const sanitizeTool = (req, create=false) => {
   req.body.key = req.body.key || null;
   req.body.resource_link_id = req.body.resource_link_id || null;
@@ -42,6 +52,8 @@ const sanitizeTool = (req, create=false) => {
     req.body.oAuthClientId = undefined; // undefine the property prohibits database update
   }
   req.body.isLocal = (create ? !!req.body.isLocal : undefined);
+  req.body.scope = req.body.scope || "openid offline";
+  req.body.skipConsent = !!req.body.skipConsent;
   return req;
 }
 
@@ -64,15 +76,8 @@ const getCreateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
-        api(req).post('/oauth2/clients/', {
-          json: {
-            "client_id": req.body.oAuthClientId,
-            "client_name": req.body.name,
-            "client_secret": req.body.secret,
-            "redirect_uris": req.body.redirect_url.split(";"),
-            "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
-            "subject_type": "pairwise"
-          }
+        return api(req).post('/oauth2/clients/', {
+          json: getClient(req.body, true)
         }).then(response => {
           req.body.oAuthClientId = response.client_id;
           createTool(req, service, next);
@@ -88,18 +93,12 @@ const getCreateHandler = (service) => {
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req);
-      api(req).patch('/' + service + '/' + req.params.id, {
+      return api(req).patch('/' + service + '/' + req.params.id, {
           json: req.body
       }).then(data => {
         if(data.isLocal) {
-          api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
-            json: {
-              "client_name": req.body.name,
-              "client_secret": req.body.secret,
-              "redirect_uris": req.body.redirect_url.split(";"),
-              "token_endpoint_auth_method": req.body.token_endpoint_auth_method,
-              "subject_type": "pairwise"
-            }
+          return api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
+            json: getClient(req.body)
           }).then(_ => {
             res.redirect(req.header('Referer'));
           });
@@ -119,6 +118,7 @@ const getDetailHandler = (service) => {
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
+              data.scope = client.scope;
               res.json(data);
             });
           } else {

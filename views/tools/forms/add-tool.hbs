@@ -21,14 +21,6 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <input type="text" name="logo_url" id="logo_url" class="form-control" placeholder="">
 </div>
 <div class="form-group">
-    <label class="control-label" for="privacy_permission">Privatsphäre</label>
-    <select name="privacy_permission">
-        {{#each privacies}}
-            <option value="{{this.value}}">{{this.label}}</option>
-        {{/each}}
-    </select>
-</div>
-<div class="form-group">
     <label class="control-label" for="key">OAuth- bzw. LTI-ClientId</label>
     <input type="text" name="oAuthClientId" id="oAuthClientId" class="form-control" placeholder="">
 </div>
@@ -39,6 +31,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         Ja, OAuth2
     </label>
 </div>
+
 <h3>Nur für LTI:</h3>
 <div class="form-group">
     <label class="control-label" for="lti_version">Version</label>
@@ -56,6 +49,15 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         {{/each}}
     </select>
 </div>
+<div class="form-group">
+    <label class="control-label" for="privacy_permission">Privatsphäre</label>
+    <select name="privacy_permission">
+        {{#each privacies}}
+            <option value="{{this.value}}">{{this.label}}</option>
+        {{/each}}
+    </select>
+</div>
+
 <h3>Nur für OAuth2</h3>
 <div class="form-group">
     <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert)</label>
@@ -68,4 +70,16 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
             <option value="{{this.value}}">{{this.label}}</option>
         {{/each}}
     </select>
+</div>
+<div class="form-group">
+    <label class="control-label" for="scope">Scope</label>
+    <input type="text" name="scope" id="scope" class="form-control" placeholder="openid offline">
+</div>
+
+<div class="form-group">
+    <label class="control-label">Consent skippen? (Zustimmung liegt in anderer Form vor)</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="skipConsent" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, skippen
+    </label>
 </div>
