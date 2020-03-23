@@ -133,9 +133,11 @@ router.get('/', function (req, res, next) {
             for (let key in stats) {
                 if (stats.hasOwnProperty(key)) {
                     let obj = _.find(options, {name: key});
-                    Object.assign(obj, {value: stats[key]});
-                    obj.action = 'statistics/' + obj.name;
-                    finalStats.push(obj);
+                    if (obj) {
+                        Object.assign(obj, {value: stats[key]});
+                        obj.action = 'statistics/' + obj.name;
+                        finalStats.push(obj);
+                    }
                 }
             }
 
