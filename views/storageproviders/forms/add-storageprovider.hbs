@@ -1,0 +1,23 @@
+<div class="form-group">
+    <label class="control-label" for="type">Typ</label>
+    <select name="type" required>
+        {{#each types}}
+            <option value="{{this.value}}">{{this.label}}</option>
+        {{/each}}
+    </select>
+</div>
+<div class="form-group">
+    <label class="control-label">Soll der Provider von allen Schulen genutzt werden können?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isShared" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, teilen
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label" for="endpointUrl">Endpunkt-URL</label>
+    <input type="text" name="endpointUrl" id="endpointUrl" class="form-control" placeholder="" required>
+</div>
+<div class="form-group">
+    <label class="control-label" for="accessKeyId">Access Key ID</label>
+    <input type="text" name="accessKeyId" id="accessKeyId" class="form-control" placeholder="AKIAIOSFODNN7EXAMPLE" required>
+</div>
