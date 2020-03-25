@@ -6,9 +6,7 @@ services:
 - docker
 notifications:
   email: false
-cache:
-  directories:
-  - node_modules
+cache: npm
 env:
   global:
   - GIT_SHA=$( git rev-parse HEAD )
