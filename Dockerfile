@@ -8,14 +8,15 @@ RUN mkdir /app && npm set unsafe-perm true && npm install --quiet -g gulp
 WORKDIR /app
 # Install dependency outside of the app volume
 COPY package.json /opt/
-RUN cd /opt && npm install
+COPY package-lock.json /opt/
+RUN cd /opt && npm ci
 ENV NODE_PATH=/opt/node_modules
 
 # Copy current directory to container
 COPY . /app
 ENV SC_THEME=default
 ENV TZ=Europe/Berlin
-RUN chown -R 1000:1000 /app
+RUN gulp && chown -R 1000:1000 /app
 
 EXPOSE 3033
 CMD ["npm", "run", "start"]

@@ -3,7 +3,7 @@
   "version": "0.12.0",
   "private": true,
   "scripts": {
-    "start": "gulp && node ./bin/www",
+    "start": "node ./bin/www",
     "watch": "nodemon --watch ./ --watch views/ --watch controllers/ --watch build/ --ext js,hbs ./bin/www",
     "debug": "nodemon --inspect=0.0.0.0:9311 --watch controllers/ --watch helpers/ --watch views/ --ext js,hbs ./bin/www",
     "lint": "eslint ./bin ./controllers ./helpers ./test ./api.js ./app.js --ext .js --fix",
