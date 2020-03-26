@@ -111,10 +111,11 @@ router.get('/', function (req, res, next) {
             ''
         ];
         const body = data.data.map(item => {
+            const countSchools = (item.schools ? item.schools.length : 0);
             return [
                 item._id || "",
                 item.endpointUrl || "",
-                "?" || "",
+                `${countSchools}/${item.maxBuckets}` || "",
                 getTableActions(item, '/storageproviders/')
             ];
         });
