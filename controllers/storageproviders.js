@@ -10,8 +10,10 @@ const api = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
+const PASSWORD = "******";
+
 const types = [
-  {label: 'Amazon Web Services S3', value: 'awsS3'},
+  {label: 'S3', value: 'S3'},
 ];
 
 const getTableActions = (item, path) => {
@@ -34,6 +36,7 @@ const getTableActions = (item, path) => {
 
 const sanitize = (body) => ({
   ...body,
+  secretAccessKey: (body.secretAccessKey === PASSWORD ? undefined : body.secretAccessKey),
   isShared: (body.isShared || false),
 })
 
@@ -67,6 +70,7 @@ const getUpdateHandler = (service) => {
 const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
+            data.secretAccessKey = PASSWORD;
             res.json(data);
         }).catch(err => {
             next(err);
