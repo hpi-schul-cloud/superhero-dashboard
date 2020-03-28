@@ -17,21 +17,22 @@ const types = [
 ];
 
 const getTableActions = (item, path) => {
-    return [
-        {
-            link: path + item._id,
-            class: 'btn-edit',
-            icon: 'edit',
-            title: 'bearbeiten'
-        },
-        {
-            link: path + item._id,
-            class: 'btn-delete',
-            icon: 'trash-o',
-            method: 'delete',
-            title: 'löschen'
-        }
-    ];
+    let actions = [{
+      link: path + item._id,
+      class: 'btn-edit',
+      icon: 'edit',
+      title: 'bearbeiten'
+    }];
+    if(item.schools.length === 0) {
+        actions.push({
+          link: path + item._id,
+          class: 'btn-delete',
+          icon: 'trash-o',
+          method: 'delete',
+          title: 'löschen'
+        });
+    }
+    return actions;
 };
 
 const sanitize = (body) => ({
