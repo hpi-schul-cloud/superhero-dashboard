@@ -23,7 +23,7 @@ const getTableActions = (item, path) => {
       icon: 'edit',
       title: 'bearbeiten'
     }];
-    if(item.schools.length === 0) {
+    if(item.freeBuckets === item.maxBuckets) {
         actions.push({
           link: path + item._id,
           class: 'btn-delete',
@@ -35,15 +35,16 @@ const getTableActions = (item, path) => {
     return actions;
 };
 
-const sanitize = (body) => ({
+const sanitize = (body, create=false) => ({
   ...body,
   secretAccessKey: (body.secretAccessKey === PASSWORD ? undefined : body.secretAccessKey),
   isShared: (body.isShared || false),
-})
+  freeBuckets: (create ? body.maxBuckets : undefined),
+});
 
 const getCreateHandler = (service) => {
     return function (req, res, next) {
-        const body = sanitize(req.body);
+        const body = sanitize(req.body, true);
         api(req).post('/' + service + '/', {
             json: body
         }).then(data => {
@@ -106,7 +107,6 @@ router.get('/', function (req, res, next) {
             $limit: itemsPerPage,
             $skip: itemsPerPage * (currentPage - 1),
             $sort: req.query.sort,
-            $populate: 'schools.storageProvider',
         }
     }).then(data => {
         const head = [
@@ -120,7 +120,7 @@ router.get('/', function (req, res, next) {
             return [
                 item._id || "",
                 item.endpointUrl || "",
-                `${countSchools}/${item.maxBuckets}` || "",
+                `${item.maxBuckets - item.freeBuckets}/${item.maxBuckets}` || "",
                 getTableActions(item, '/storageproviders/')
             ];
         });
