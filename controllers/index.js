@@ -17,5 +17,6 @@ router.use('/accounts', require('./accounts'));
 router.use('/account', require('./account'));
 router.use('/statistics', require('./statistics'));
 router.use('/tools', require('./tools'));
+router.use('/storageproviders', require('./storageproviders'));
 
 module.exports = router;

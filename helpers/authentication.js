@@ -115,6 +115,11 @@ const restrictSidebar = (req, res) => {
             icon: 'window-maximize',
             link: '/tools/'
         },
+        {
+            name: 'Datenspeicher',
+            icon: 'server',
+            link: '/storageproviders/'
+        },
     ];
 };
 
