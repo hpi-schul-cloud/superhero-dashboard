@@ -146,7 +146,7 @@ const getCreateHandler = (service) => {
                     return res.redirect(req.header('Referer'));
                 }
                 const pin = await api(req).post('/registrationPins/', {
-                    json: { email: req.body.email, byRole: req.body.byRole }
+                    json: { email: req.body.email, silent: true, byRole: req.body.byRole }
                 });
                 if(!(pin||{}).pin){
                     req.session.notification = {
