@@ -10,55 +10,36 @@ const api = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const getTableActions = (item, path) => {
-    return [
-        {
-            link: path + item._id,
-            class: 'btn-edit',
-            icon: 'edit',
-            title: 'bearbeiten'
-        },
-        {
-            link: path + item._id + '/bucket',
-            class: 'btn-bucket',
-            icon: 'bitbucket',
-            method: 'post',
-            title: 'AWS Bucket erstellen'
-        },
-        {
-            link: path + item._id,
-            class: 'btn-delete',
-            icon: 'trash-o',
-            method: 'delete',
-            title: 'löschen'
-        }
-    ];
-};
+const getTableActions = (item, path) => ([
+    {
+        link: path + item._id,
+        class: 'btn-edit',
+        icon: 'edit',
+        title: 'bearbeiten'
+    },
+    {
+        link: path + item._id,
+        class: 'btn-delete',
+        icon: 'trash-o',
+        method: 'delete',
+        title: 'löschen'
+    },
+]);
 
-const createBucket = (req, res, next) => {
-        Promise.all([
-            api(req).post('/fileStorage/bucket', {
-                json: {
-                    schoolId: req.params.id,
-                    size: 0,
-                    name: 'empty.file',
-                },
-            }),
-            api(req).patch('/schools/' + req.params.id, {
-                json: req.body
-            })]).then(data => {
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
-};
-
-const getStorageProviders = res => [
+const getStorageTypes = () => [
 	{
-		label: (res.locals.theme || {}).short_title,
+		label: 'S3',
 		value: 'awsS3',
 	},
 ];
+
+const getStorageProviders = async (req) => {
+  const providers = await api(req).get('/storageProvider/');
+  return providers.data.map(p => ({
+    label: `${p.endpointUrl} (${p.accessKeyId})`,
+    value: p._id,
+  }));
+};
 
 const getCreateHandler = (service) => {
     return function (req, res, next) {
@@ -86,7 +67,6 @@ const getUpdateHandler = (service) => {
     };
 };
 
-
 const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
@@ -96,7 +76,6 @@ const getDetailHandler = (service) => {
         });
     };
 };
-
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
@@ -108,128 +87,77 @@ const getDeleteHandler = (service) => {
     };
 };
 
+const getHandler = async (req, res) => {
+  const itemsPerPage = (req.query.limit || 10);
+  const currentPage = parseInt(req.query.p) || 1;
+
+  const [federalStates, data, storageProvider] = await Promise.all([
+    api(req).get('/federalStates'),
+    api(req).get('/schools', {
+      qs: {
+        name: (req.query.q ? {
+          $regex: _.escapeRegExp(req.query.q),
+          $options: 'i'
+        } : undefined),
+        $limit: itemsPerPage,
+        $skip: itemsPerPage * (currentPage - 1),
+        $sort: req.query.sort,
+        $populate: 'federalState'
+      },
+    }),
+    getStorageProviders(req),
+  ]);
+
+  const head = [
+    'ID',
+    'Name',
+    'Bundesland',
+    'Filestorage',
+    ''
+  ];
+
+  const body = data.data.map(item => {
+    return [
+      item._id ||"",
+      item.name ||"",
+      ((item.federalState || {}).name || ''),
+      (item.fileStorageType || ''),
+      getTableActions(item, '/schools/')
+    ];
+  });
+
+  const sortQuery = (req.query.sort ? `&sort=${req.query.sort}` : '');
+  const limitQuery = (req.query.limit ? `&limit=${req.query.limit}` : '');
+  const searchQuery = (req.query.q ? `&q=${req.query.q}` : '');
+
+  const pagination = {
+    currentPage,
+    numPages: Math.ceil(data.total / itemsPerPage),
+    baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
+  };
+
+  res.render('schools/schools', {
+    title: 'Schulen',
+    head,
+    body,
+    pagination,
+    federalState: federalStates.data,
+    user: res.locals.currentUser,
+    storageType: getStorageTypes(),
+    storageProvider,
+    limit: true,
+    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+  });
+};
+
 // secure routes
 router.use(authHelper.authChecker);
-
-router.get('/search' , function (req, res, next) {
-
-    const itemsPerPage = 10;
-    const currentPage = parseInt(req.query.p) || 1;
-
-    api(req).get('/federalStates').then(federalStates => {
-        api(req).get('/schools', {
-            qs: {
-                name: {
-                    $regex: _.escapeRegExp(req.query.q),
-                    $options: 'i'
-                },
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort,
-                $populate: 'federalState'
-            }
-        }).then(data => {
-            const head = [
-                'ID',
-                'Name',
-                'Bundesland',
-                ''
-            ];
-
-            const body = data.data.map(item => {
-                return [
-                    item._id ||"",
-                    item.name ||"",
-                    (item.federalState || {}).name || '',
-                    getTableActions(item, '/schools/')
-                ];
-            });
-
-            let sortQuery = '';
-            if (req.query.sort) {
-                sortQuery = '&sort=' + req.query.sort;
-            }
-
-            const pagination = {
-                currentPage,
-                numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/schools/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
-            };
-
-            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
-            });
-    });
-});
 
 router.patch('/:id', getUpdateHandler('schools'));
 router.get('/:id', getDetailHandler('schools'));
 router.delete('/:id', getDeleteHandler('schools'));
-router.post('/:id/bucket', createBucket);
 router.post('/', getCreateHandler('schools'));
-router.all('/', function (req, res, next) {
-
-    const itemsPerPage = (req.query.limit || 10);
-    const currentPage = parseInt(req.query.p) || 1;
-
-    api(req).get('/federalStates').then(federalStates => {
-        api(req).get('/schools', {
-            qs: {
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort,
-                $populate: 'federalState'
-            }
-        }).then(data => {
-
-            let provider = getStorageProviders(res);
-            provider = (provider || []).map(prov => {
-                if (prov.value == data.fileStorageType) {
-                    return Object.assign(prov, {
-                        selected: true
-                    });
-                } else {
-                    return prov;
-                }
-            });
-
-            const head = [
-                'ID',
-                'Name',
-                'Bundesland',
-                'Filestorage',
-                ''
-            ];
-
-            const body = data.data.map(item => {
-                return [
-                    item._id ||"",
-                    item.name ||"",
-                    ((item.federalState || {}).name || ''),
-                    (item.fileStorageType || ''),
-                    getTableActions(item, '/schools/')
-                ];
-            });
-
-            let sortQuery = '';
-            if (req.query.sort) {
-                sortQuery = '&sort=' + req.query.sort;
-            }
-
-            let limitQuery = '';
-            if (req.query.limit) {
-                limitQuery = '&limit=' + req.query.limit;
-            }
-
-            const pagination = {
-                currentPage,
-                numPages: Math.ceil(data.total / itemsPerPage),
-                baseUrl: '/schools/?p={{page}}' + sortQuery + limitQuery
-            };
-
-            res.render('schools/schools', {title: 'Schulen', head, body, pagination, federalState: federalStates.data, user: res.locals.currentUser, provider, limit: true, themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'});
-        });
-    });
-});
+router.all('/', getHandler);
 
 router.get('/', function (req, res, next) {
     api(req).get('/schools/').then(schools => {
