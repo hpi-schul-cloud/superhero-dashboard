@@ -15,7 +15,7 @@ router.use(authHelper.authChecker);
 
 router.get('/releases', function (req, res, next) {
     api(req).get('/releases/fetch')
-        .then(_ => {
+        .then(() => {
             res.locals.notification = {
                 'type': 'success',
                 'message': 'Releases erfolgreich gefetched.'
@@ -24,7 +24,11 @@ router.get('/releases', function (req, res, next) {
                 title: 'Allgemeine Verwaltung',
                 user: res.locals.currentUser,
                 themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-            });	 });
+            });	
+        })
+        .catch((error) => {
+            next(error);
+        });
 });
 
 router.get('/', function (req, res, next) {
