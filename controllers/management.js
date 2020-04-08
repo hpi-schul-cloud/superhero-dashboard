@@ -26,9 +26,7 @@ router.get('/releases', function (req, res, next) {
                 themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
             });	
         })
-        .catch((error) => {
-            next(error);
-        });
+        .catch(next);
 });
 
 router.get('/', function (req, res, next) {
