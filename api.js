@@ -6,6 +6,9 @@ const api = (req, {useCallback = false, json = true} = {}) => {
     if(req && req.cookies && req.cookies.jwt) {
         headers['Authorization'] = req.cookies.jwt;
     }
+    if(process.env.API_KEY) {
+        headers['x-api-key'] = process.env.API_KEY;
+    }
 
     const handler = useCallback ? request : rp;
     return handler.defaults({
