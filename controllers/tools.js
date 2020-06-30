@@ -54,6 +54,7 @@ const sanitizeTool = (req, create=false) => {
   req.body.isLocal = (create ? !!req.body.isLocal : undefined);
   req.body.scope = req.body.scope || "openid offline";
   req.body.skipConsent = !!req.body.skipConsent;
+  req.body.openNewTab = !!req.body.openNewTab;
   return req;
 }
 
