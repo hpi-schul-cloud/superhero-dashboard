@@ -74,6 +74,7 @@ typings/
 
 # IntelliJ IDEA configuration files
 \.idea/
+*.iml
 
 # VSCode Configuration file
 .vscode

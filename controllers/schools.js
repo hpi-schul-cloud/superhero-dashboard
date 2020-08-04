@@ -10,6 +10,14 @@ const api = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
+const SCHOOL_FEATURES = [
+    'rocketChat',
+    'videoconference',
+    'messenger',
+    'studentVisibility',
+    'messengerSchoolRoom',
+];
+
 const getTableActions = (item, path) => ([
     {
         link: path + item._id,
@@ -56,6 +64,15 @@ const getCreateHandler = (service) => {
 
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
+        // parse school features
+        req.body.features = [];
+        for (let feature of SCHOOL_FEATURES) {
+            let key = 'hasFeature_' + feature;
+            if (req.body[key]) {
+                req.body.features.push(feature);
+            }
+        }
+
         api(req).patch('/' + service + '/' + req.params.id, {
             // TODO: sanitize
             json: req.body
@@ -70,6 +87,12 @@ const getUpdateHandler = (service) => {
 const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
+            // parse school features
+            for (let feature of SCHOOL_FEATURES) {
+                let key = 'hasFeature_' + feature;
+                data[key] = data.features.indexOf(feature) !== -1;
+            }
+
             res.json(data);
         }).catch(err => {
             next(err);
