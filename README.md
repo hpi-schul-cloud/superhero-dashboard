@@ -55,15 +55,6 @@ Default branch: master
 7. run `git rebase -p develop` (not `git merge`!) and solve merge conflicts if needed
 8. run `git push`
 
-
-## CI/CD
-- Every push to branch "develop" triggers build & test pipeline
-- Every merge with master ... TBD
-- Every merge with release ... TBD
-- Every tag release... TBD
-
-- from https://github.com/hpi-schul-cloud/schulcloud-synapse-synchronization: Every push to every branch builds and pushes image. Exception: commit message contains "skip ci"
-
 ## Container
 
 ### Build
