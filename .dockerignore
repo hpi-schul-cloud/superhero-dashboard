@@ -2,8 +2,9 @@
 .gitignore
 .webpack-changed-plugin-cache
 .idea
+.build
 .vscode
 .travis.yml*
 Dockerfile*
 node_modules
-travis_rsa.enc
+travis*
