@@ -11,10 +11,6 @@ const moment = require('moment-timezone');
 
 moment.locale('de');
 
-// let timeZones = moment.tz.names();
-// timeZones = timeZones.map((item) => {
-//     return moment.tz.zone(item).country;
-// });
 function timeConvert(num) {
     let hours = (num / 60);
     let rhours = Math.floor(hours);
@@ -35,12 +31,6 @@ countryCodes = countryCodes.map((item) => {
         offset: timeConvert(item.offset)
     };
 });
-// const offsetTmz = [];
-// for(let item in timeZones) {
-//     offsetTmz.push(" (GMT"+moment.tz(timeZones[item]).format('Z')+")" + timeZones[item]);
-// }
-// offsetTmz.sort();
-// console.log(offsetTmz);
 
 const SCHOOL_FEATURES = [
     'rocketChat',
