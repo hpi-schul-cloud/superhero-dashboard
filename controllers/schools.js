@@ -7,8 +7,40 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const api = require('../api');
-const moment = require('moment');
+const moment = require('moment-timezone');
+
 moment.locale('de');
+
+// let timeZones = moment.tz.names();
+// timeZones = timeZones.map((item) => {
+//     return moment.tz.zone(item).country;
+// });
+function timeConvert(num) {
+    let hours = (num / 60);
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours) * 60;
+    rhours = rhours > 0 ? `+${rhours}` : rhours;
+    minutes = minutes === 0 ? '00' : minutes;
+    return `${rhours}:${minutes}`;
+}
+let countryCodes = moment.tz.countries();
+countryCodes = countryCodes.map((item) => {
+    return moment.tz.zonesForCountry(item, true);
+});
+countryCodes = [].concat.apply([], countryCodes);
+
+countryCodes = countryCodes.map((item) => {
+    return {
+        name: item.name,
+        offset: timeConvert(item.offset)
+    };
+});
+// const offsetTmz = [];
+// for(let item in timeZones) {
+//     offsetTmz.push(" (GMT"+moment.tz(timeZones[item]).format('Z')+")" + timeZones[item]);
+// }
+// offsetTmz.sort();
+// console.log(offsetTmz);
 
 const SCHOOL_FEATURES = [
     'rocketChat',
@@ -167,6 +199,7 @@ const getHandler = async (req, res) => {
     federalState: federalStates.data,
     user: res.locals.currentUser,
     storageType: getStorageTypes(),
+    timeZones: countryCodes,
     storageProvider,
     limit: true,
     themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
