@@ -17,7 +17,7 @@ function timeConvert(num) {
     let minutes = (hours - rhours) * 60;
     rhours = rhours > 0 ? `+${rhours}` : rhours;
     minutes = minutes === 0 ? '00' : minutes;
-    return `${rhours}:${minutes}`;
+    return `(UTC ${rhours}:${minutes})`;
 }
 let countryCodes = moment.tz.countries();
 countryCodes = countryCodes.map((item) => {
