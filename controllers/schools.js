@@ -24,6 +24,7 @@ countryCodes = countryCodes.map((item) => {
     return moment.tz.zonesForCountry(item, true);
 });
 countryCodes = [].concat.apply([], countryCodes);
+countryCodes.sort((a, b) => parseFloat(a.offset) - parseFloat(b.offset));
 
 countryCodes = countryCodes.map((item) => {
     return {
