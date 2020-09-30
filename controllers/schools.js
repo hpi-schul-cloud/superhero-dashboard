@@ -21,31 +21,32 @@ function timeConvert(num) {
     let hours = (num / 60);
     let rhours = Math.floor(hours);
     let minutes = (hours - rhours) * 60;
-    rhours = rhours > 0 ? `+${rhours}` : rhours;
     minutes = minutes === 0 ? '00' : minutes;
-    return `(GMT ${rhours}:${minutes})`;
+    rhours = rhours * -1;
+    rhours = rhours > 0 ? `+${rhours}` : rhours;
+    return `(UTC ${rhours}:${minutes})`;
 }
 
-countryCodes.sort((a, b) => {
-        a = ((timeConvert(a.offset)).slice(5,11)).replace(/\)/g, '');
-        b = ((timeConvert(b.offset)).slice(5,11)).replace(/\)/g, '');
-        if (a.split(":")[0] - b.split(":")[0] === 0) {
-            if ((b.split(":")[1]) - (a.split(":")[1]) < 0) {
-                return (a.split(":")[1]) - (b.split(":")[1]);
-            } else {
-                return (b.split(":")[1]) - (a.split(":")[1]);
-            }
-        } else {
-            return (a.split(":")[0]) - (b.split(":")[0]);
+countryCodes.sort((a, b) => b.offset - a.offset);
+countryCodes = countryCodes
+    .map((entry) => {
+        const {offset} = entry;
+        let prefix = '';
+        if (offset > 0) {
+            prefix = '+';
         }
-    });
+        if (offset < 0) {
+            prefix = '-';
+        }
+        const hours = String(Math.floor(Math.abs(entry.offset)/60)).padStart(2, '0');
+        const minutes = String(Math.abs(entry.offset) % 60).padStart(2, '0');
 
-countryCodes = countryCodes.map((item) => {
-    return {
-        name: item.name,
-        offset: timeConvert(item.offset)
-    };
-});
+        return {
+            ...entry,
+            minutes: entry.offset,
+            offset: `UTC ${prefix}${hours}:${minutes}`
+        };
+    });
 
 const SCHOOL_FEATURES = [
     'rocketChat',
@@ -72,18 +73,18 @@ const getTableActions = (item, path) => ([
 ]);
 
 const getStorageTypes = () => [
-	{
-		label: 'S3',
-		value: 'awsS3',
-	},
+    {
+        label: 'S3',
+        value: 'awsS3',
+    },
 ];
 
 const getStorageProviders = async (req) => {
-  const providers = await api(req).get('/storageProvider/');
-  return providers.data.map(p => ({
-    label: `${p.endpointUrl} (${p.accessKeyId})`,
-    value: p._id,
-  }));
+    const providers = await api(req).get('/storageProvider/');
+    return providers.data.map(p => ({
+        label: `${p.endpointUrl} (${p.accessKeyId})`,
+        value: p._id,
+    }));
 };
 
 const getCreateHandler = (service) => {
@@ -148,69 +149,69 @@ const getDeleteHandler = (service) => {
 };
 
 const getHandler = async (req, res) => {
-  const itemsPerPage = (req.query.limit || 10);
-  const currentPage = parseInt(req.query.p) || 1;
+    const itemsPerPage = (req.query.limit || 10);
+    const currentPage = parseInt(req.query.p) || 1;
 
-  const [federalStates, data, storageProvider] = await Promise.all([
-    api(req).get('/federalStates'),
-    api(req).get('/schools', {
-      qs: {
-        name: (req.query.q ? {
-          $regex: _.escapeRegExp(req.query.q),
-          $options: 'i'
-        } : undefined),
-        $limit: itemsPerPage,
-        $skip: itemsPerPage * (currentPage - 1),
-        $sort: req.query.sort,
-        $populate: 'federalState'
-      },
-    }),
-    getStorageProviders(req),
-  ]);
+    const [federalStates, data, storageProvider] = await Promise.all([
+        api(req).get('/federalStates'),
+        api(req).get('/schools', {
+            qs: {
+                name: (req.query.q ? {
+                    $regex: _.escapeRegExp(req.query.q),
+                    $options: 'i'
+                } : undefined),
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort,
+                $populate: 'federalState'
+            },
+        }),
+        getStorageProviders(req),
+    ]);
 
-  const head = [
-    'ID',
-    'Name',
-    'Timezone',
-    'Bundesland',
-    'Filestorage',
-    ''
-  ];
-
-  const body = data.data.map(item => {
-    return [
-      item._id ||"",
-      item.name ||"",
-      item.timezone ||"",
-      ((item.federalState || {}).name || ''),
-      (item.fileStorageType || ''),
-      getTableActions(item, '/schools/')
+    const head = [
+        'ID',
+        'Name',
+        'Timezone',
+        'Bundesland',
+        'Filestorage',
+        ''
     ];
-  });
 
-  const sortQuery = (req.query.sort ? `&sort=${req.query.sort}` : '');
-  const limitQuery = (req.query.limit ? `&limit=${req.query.limit}` : '');
-  const searchQuery = (req.query.q ? `&q=${req.query.q}` : '');
+    const body = data.data.map(item => {
+        return [
+            item._id ||"",
+            item.name ||"",
+            item.timezone ||"",
+            ((item.federalState || {}).name || ''),
+            (item.fileStorageType || ''),
+            getTableActions(item, '/schools/')
+        ];
+    });
 
-  const pagination = {
-    currentPage,
-    numPages: Math.ceil(data.total / itemsPerPage),
-    baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
-  };
+    const sortQuery = (req.query.sort ? `&sort=${req.query.sort}` : '');
+    const limitQuery = (req.query.limit ? `&limit=${req.query.limit}` : '');
+    const searchQuery = (req.query.q ? `&q=${req.query.q}` : '');
 
-  res.render('schools/schools', {
-    title: 'Schulen',
-    head,
-    body,
-    pagination,
-    federalState: federalStates.data,
-    user: res.locals.currentUser,
-    storageType: getStorageTypes(),
-    timeZones: countryCodes,
-    storageProvider,
-    limit: true,
-    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-  });
+    const pagination = {
+        currentPage,
+        numPages: Math.ceil(data.total / itemsPerPage),
+        baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
+    };
+
+    res.render('schools/schools', {
+        title: 'Schulen',
+        head,
+        body,
+        pagination,
+        federalState: federalStates.data,
+        user: res.locals.currentUser,
+        storageType: getStorageTypes(),
+        timeZones: countryCodes,
+        storageProvider,
+        limit: true,
+        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+    });
 };
 
 // secure routes
