@@ -28,7 +28,7 @@ countryTimezones = countryTimezones.map((item) => {
 
     return {
         ...item,
-        offset: `UTC ${prefix}${hours}:${minutes}`
+        offset: `(UTC ${prefix}${hours}:${minutes})`
     };
 });
 countryTimezones = countryTimezones.reverse();
