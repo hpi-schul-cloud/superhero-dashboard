@@ -16,19 +16,23 @@ countryTimezones = countryTimezones.map((item) => {
     return moment.tz.zonesForCountry(item, true);
 });
 countryTimezones = [].concat.apply([], countryTimezones);
+countryTimezones = countryTimezones.map((item) => {
+    return {
+        ...item,
+        offset: item.offset * -1
+    };
+});
 
 countryTimezones.sort((a, b) => b.offset - a.offset);
 countryTimezones = countryTimezones.map((item) => {
     const {offset} = item;
-    let prefix = '';
-    if (offset > 0) prefix = '+';
-    if (offset < 0) prefix = '-';
+    let prefix = (offset >= 0) ? '+' : '-';
     const hours = String(Math.floor(Math.abs(offset)/60)).padStart(2, '0');
     const minutes = String(Math.abs(offset) % 60).padStart(2, '0');
 
     return {
         ...item,
-        offset: `(UTC ${prefix}${hours}:${minutes})`
+        offset: hours === '00' ? 'UTC' : `(UTC ${prefix}${hours}:${minutes})`
     };
 });
 countryTimezones = countryTimezones.reverse();
