@@ -17,36 +17,21 @@ countryCodes = countryCodes.map((item) => {
 });
 countryCodes = [].concat.apply([], countryCodes);
 
-function timeConvert(num) {
-    let hours = (num / 60);
-    let rhours = Math.floor(hours);
-    let minutes = (hours - rhours) * 60;
-    minutes = minutes === 0 ? '00' : minutes;
-    rhours = rhours * -1;
-    rhours = rhours > 0 ? `+${rhours}` : rhours;
-    return `(UTC ${rhours}:${minutes})`;
-}
-
 countryCodes.sort((a, b) => b.offset - a.offset);
-countryCodes = countryCodes
-    .map((entry) => {
-        const {offset} = entry;
-        let prefix = '';
-        if (offset > 0) {
-            prefix = '+';
-        }
-        if (offset < 0) {
-            prefix = '-';
-        }
-        const hours = String(Math.floor(Math.abs(entry.offset)/60)).padStart(2, '0');
-        const minutes = String(Math.abs(entry.offset) % 60).padStart(2, '0');
+countryCodes = countryCodes.map((item) => {
+    const {offset} = item;
+    let prefix = '';
+    if (offset > 0) prefix = '+';
+    if (offset < 0) prefix = '-';
+    const hours = String(Math.floor(Math.abs(offset)/60)).padStart(2, '0');
+    const minutes = String(Math.abs(offset) % 60).padStart(2, '0');
 
-        return {
-            ...entry,
-            minutes: entry.offset,
-            offset: `UTC ${prefix}${hours}:${minutes}`
-        };
-    });
+    return {
+        ...item,
+        offset: `UTC ${prefix}${hours}:${minutes}`
+    };
+});
+countryCodes = countryCodes.reverse();
 
 const SCHOOL_FEATURES = [
     'rocketChat',
