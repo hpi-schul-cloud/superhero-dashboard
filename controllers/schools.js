@@ -32,7 +32,7 @@ countryTimezones = countryTimezones.map((item) => {
 
     return {
         ...item,
-        offset: hours === '00' ? 'UTC' : `(UTC ${prefix}${hours}:${minutes})`
+        offset: hours === '00' ? '(UTC)' : `(UTC ${prefix}${hours}:${minutes})`
     };
 });
 countryTimezones = countryTimezones.reverse();
