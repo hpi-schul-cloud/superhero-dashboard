@@ -11,29 +11,32 @@ const moment = require('moment-timezone');
 
 moment.locale('de');
 
+let countryCodes = moment.tz.countries();
+countryCodes = countryCodes.map((item) => {
+    return moment.tz.zonesForCountry(item, true);
+});
+countryCodes = [].concat.apply([], countryCodes);
+
 function timeConvert(num) {
     let hours = (num / 60);
     let rhours = Math.floor(hours);
     let minutes = (hours - rhours) * 60;
     rhours = rhours > 0 ? `+${rhours}` : rhours;
     minutes = minutes === 0 ? '00' : minutes;
-    return`${rhours}:${minutes}`;
-    // return `(UTC ${rhours}:${minutes})`;
+    return `(GMT ${rhours}:${minutes})`;
 }
-let countryCodes = moment.tz.countries();
-countryCodes = countryCodes.map((item) => {
-    return moment.tz.zonesForCountry(item, true);
-});
-countryCodes = [].concat.apply([], countryCodes);
+
 countryCodes.sort((a, b) => {
-        if ((timeConvert(a.offset).split(":")[0]) - (timeConvert(b.offset).split(":")[0]) === 0) {
-            if (((timeConvert(b.offset).split(":")[1]) - (timeConvert(a.offset).split(":")[1])) < 0) {
-                return (timeConvert(a.offset).split(":")[1]) - (timeConvert(b.offset).split(":")[1]);
+        a = ((timeConvert(a.offset)).slice(5,11)).replace(/\)/g, '');
+        b = ((timeConvert(b.offset)).slice(5,11)).replace(/\)/g, '');
+        if (a.split(":")[0] - b.split(":")[0] === 0) {
+            if ((b.split(":")[1]) - (a.split(":")[1]) < 0) {
+                return (a.split(":")[1]) - (b.split(":")[1]);
             } else {
-                return (timeConvert(b.offset).split(":")[1]) - (timeConvert(a.offset).split(":")[1]);
+                return (b.split(":")[1]) - (a.split(":")[1]);
             }
         } else {
-            return (timeConvert(a.offset).split(":")[0]) - (timeConvert(b.offset).split(":")[0]);
+            return (a.split(":")[0]) - (b.split(":")[0]);
         }
     });
 
