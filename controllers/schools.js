@@ -171,6 +171,7 @@ const getHandler = async (req, res) => {
   const head = [
     'ID',
     'Name',
+    'Timezone',
     'Bundesland',
     'Filestorage',
     ''
@@ -180,6 +181,7 @@ const getHandler = async (req, res) => {
     return [
       item._id ||"",
       item.name ||"",
+      item.timezone ||"",
       ((item.federalState || {}).name || ''),
       (item.fileStorageType || ''),
       getTableActions(item, '/schools/')
