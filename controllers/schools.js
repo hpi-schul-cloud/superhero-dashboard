@@ -27,30 +27,26 @@ function timeConvert(num) {
     return `(UTC ${rhours}:${minutes})`;
 }
 
-countryCodes.sort((a, b) => {
-    a = ((timeConvert(a.offset)).slice(5,11)).replace(/\)/g, '');
-    b = ((timeConvert(b.offset)).slice(5,11)).replace(/\)/g, '');
-    // -15:45 -15:10
-
-    if (a.split(":")[0] - b.split(":")[0] === 0) {
-        if ((b.split(":")[1]) - (a.split(":")[1]) < 0) {
-            return (a.split(":")[1]) - (b.split(":")[1]);
-        } else {
-            return (b.split(":")[1]) - (a.split(":")[1]);
+countryCodes.sort((a, b) => b.offset - a.offset);
+countryCodes = countryCodes
+    .map((entry) => {
+        const {offset} = entry;
+        let prefix = '';
+        if (offset > 0) {
+            prefix = '+';
         }
-    } else {
-        return (a.split(":")[0]) - (b.split(":")[0]);
-    }
-});
+        if (offset < 0) {
+            prefix = '-';
+        }
+        const hours = String(Math.floor(Math.abs(entry.offset)/60)).padStart(2, '0');
+        const minutes = String(Math.abs(entry.offset) % 60).padStart(2, '0');
 
-countryCodes = countryCodes.map((item) => {
-    console.log(timeConvert(item.offset));
-    return {
-        name: item.name,
-        offset: timeConvert(item.offset),
-        minutes: item.offset
-    };
-});
+        return {
+            ...entry,
+            minutes: entry.offset,
+            offset: `UTC ${prefix}${hours}:${minutes}`
+        };
+    });
 
 const SCHOOL_FEATURES = [
     'rocketChat',
