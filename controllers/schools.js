@@ -17,14 +17,25 @@ function timeConvert(num) {
     let minutes = (hours - rhours) * 60;
     rhours = rhours > 0 ? `+${rhours}` : rhours;
     minutes = minutes === 0 ? '00' : minutes;
-    return `(UTC ${rhours}:${minutes})`;
+    return`${rhours}:${minutes}`;
+    // return `(UTC ${rhours}:${minutes})`;
 }
 let countryCodes = moment.tz.countries();
 countryCodes = countryCodes.map((item) => {
     return moment.tz.zonesForCountry(item, true);
 });
 countryCodes = [].concat.apply([], countryCodes);
-countryCodes.sort((a, b) => parseFloat(a.offset) - parseFloat(b.offset));
+countryCodes.sort((a, b) => {
+        if ((timeConvert(a.offset).split(":")[0]) - (timeConvert(b.offset).split(":")[0]) === 0) {
+            if (((timeConvert(b.offset).split(":")[1]) - (timeConvert(a.offset).split(":")[1])) < 0) {
+                return (timeConvert(a.offset).split(":")[1]) - (timeConvert(b.offset).split(":")[1]);
+            } else {
+                return (timeConvert(b.offset).split(":")[1]) - (timeConvert(a.offset).split(":")[1]);
+            }
+        } else {
+            return (timeConvert(a.offset).split(":")[0]) - (timeConvert(b.offset).split(":")[0]);
+        }
+    });
 
 countryCodes = countryCodes.map((item) => {
     return {
