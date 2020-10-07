@@ -52,17 +52,17 @@ const getTableActions = (item, path) => {
 };
 
 const inviteWithMail = async (user, req) => {
-    
+
     // make single role to array
     if(!Array.isArray(req.body.roles)){
         req.body.roles = [req.body.roles];
     }
-    
+
     let userrole = "student";
     if (!req.body.roles.join('').includes('student')) {
         userrole = "employee";
     }
-    
+
     let rawData = {
         role: userrole,
         save: true,
@@ -70,12 +70,12 @@ const inviteWithMail = async (user, req) => {
         toHash: user.email,
         patchUser: true
     };
-    
+
     // check raw link data
     for (var k in rawData) {
         if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) return Promise.reject();
     }
-        
+
     let linkData = await api(req).post("/registrationlink", {json: rawData});
 
     // create & send mail
@@ -128,7 +128,7 @@ const getCreateHandler = (service) => {
                 let user = await api(req).post('/users/', {
                     json: {
                         schoolId: req.body.classOrSchoolId,
-                        
+
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
                         email: req.body.email,
@@ -146,7 +146,7 @@ const getCreateHandler = (service) => {
                     return res.redirect(req.header('Referer'));
                 }
                 const pin = await api(req).post('/registrationPins/', {
-                    json: { email: req.body.email, silent: true, byRole: req.body.byRole }
+                    json: { email: req.body.email, silent: true, byRole: req.body.byRole, importHash: importHash }
                 });
                 if(!(pin||{}).pin){
                     req.session.notification = {
@@ -160,7 +160,7 @@ const getCreateHandler = (service) => {
                         classOrSchoolId: req.body.classOrSchoolId,
                         importHash: importHash,
                         userId: user._id,
-                        
+
                         firstName: req.body.firstName,
                         lastName: req.body.lastName,
                         email: req.body.email,
@@ -398,14 +398,14 @@ router.get('/search' , function (req, res, next) {
 router.get('/jwt/:id', async (req, res, next) => {
     try {
         const getJWT = api(req).post('/accounts/supportJWT', {
-            json: { 
-                userId: req.params.id 
+            json: {
+                userId: req.params.id
             }
         });
         const getUser = api(req).get('/users/' + req.params.id);
-    
+
         const [jwt, user] = await Promise.all([getJWT, getUser]);
-    
+
         res.render('users/jwt', {
             title: `JWT für ${user.displayName}`,
             jwt: jwt || '',
@@ -509,12 +509,12 @@ const generateRegistrationLink = () => {
     return function (req, res, next) {
         api(req).get('/users/' + req.params.id, {qs:{$populate:["roles"]}}).then(async user => {
             let roles = user.roles.map(role => {return role.name;});
-    
+
             let userrole = "student";
             if (!roles.join('').includes('student')) {
                 userrole = "employee";
             }
-    
+
             let rawData = {
                 role: userrole,
                 save: true,
@@ -522,12 +522,12 @@ const generateRegistrationLink = () => {
                 toHash: user.email,
                 patchUser: true
             };
-    
+
             // check raw link data
             for (var k in rawData) {
                 if(rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === "")) next();
             }
-    
+
             let linkData = await api(req).post("/registrationlink", {json: rawData});
             res.json({"invitation":linkData.shortLink, "currentSchool": user.schoolId});
         }).catch(err => {
