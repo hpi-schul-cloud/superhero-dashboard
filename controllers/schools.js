@@ -6,8 +6,10 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
+const { getTimezones } = require('../helpers/timeZoneHelper');
 const api = require('../api');
-const moment = require('moment');
+const moment = require('moment-timezone');
+
 moment.locale('de');
 
 const SCHOOL_FEATURES = [
@@ -35,18 +37,18 @@ const getTableActions = (item, path) => ([
 ]);
 
 const getStorageTypes = () => [
-	{
-		label: 'S3',
-		value: 'awsS3',
-	},
+    {
+        label: 'S3',
+        value: 'awsS3',
+    },
 ];
 
 const getStorageProviders = async (req) => {
-  const providers = await api(req).get('/storageProvider/');
-  return providers.data.map(p => ({
-    label: `${p.endpointUrl} (${p.accessKeyId})`,
-    value: p._id,
-  }));
+    const providers = await api(req).get('/storageProvider/');
+    return providers.data.map(p => ({
+        label: `${p.endpointUrl} (${p.accessKeyId})`,
+        value: p._id,
+    }));
 };
 
 const getCreateHandler = (service) => {
@@ -111,66 +113,69 @@ const getDeleteHandler = (service) => {
 };
 
 const getHandler = async (req, res) => {
-  const itemsPerPage = (req.query.limit || 10);
-  const currentPage = parseInt(req.query.p) || 1;
+    const itemsPerPage = (req.query.limit || 10);
+    const currentPage = parseInt(req.query.p) || 1;
 
-  const [federalStates, data, storageProvider] = await Promise.all([
-    api(req).get('/federalStates'),
-    api(req).get('/schools', {
-      qs: {
-        name: (req.query.q ? {
-          $regex: _.escapeRegExp(req.query.q),
-          $options: 'i'
-        } : undefined),
-        $limit: itemsPerPage,
-        $skip: itemsPerPage * (currentPage - 1),
-        $sort: req.query.sort,
-        $populate: 'federalState'
-      },
-    }),
-    getStorageProviders(req),
-  ]);
+    const [federalStates, data, storageProvider] = await Promise.all([
+        api(req).get('/federalStates'),
+        api(req).get('/schools', {
+            qs: {
+                name: (req.query.q ? {
+                    $regex: _.escapeRegExp(req.query.q),
+                    $options: 'i'
+                } : undefined),
+                $limit: itemsPerPage,
+                $skip: itemsPerPage * (currentPage - 1),
+                $sort: req.query.sort,
+                $populate: 'federalState'
+            },
+        }),
+        getStorageProviders(req),
+    ]);
 
-  const head = [
-    'ID',
-    'Name',
-    'Bundesland',
-    'Filestorage',
-    ''
-  ];
-
-  const body = data.data.map(item => {
-    return [
-      item._id ||"",
-      item.name ||"",
-      ((item.federalState || {}).name || ''),
-      (item.fileStorageType || ''),
-      getTableActions(item, '/schools/')
+    const head = [
+        'ID',
+        'Name',
+        'Timezone',
+        'Bundesland',
+        'Filestorage',
+        ''
     ];
-  });
 
-  const sortQuery = (req.query.sort ? `&sort=${req.query.sort}` : '');
-  const limitQuery = (req.query.limit ? `&limit=${req.query.limit}` : '');
-  const searchQuery = (req.query.q ? `&q=${req.query.q}` : '');
+    const body = data.data.map(item => {
+        return [
+            item._id ||"",
+            item.name ||"",
+            item.timezone ||"",
+            ((item.federalState || {}).name || ''),
+            (item.fileStorageType || ''),
+            getTableActions(item, '/schools/')
+        ];
+    });
 
-  const pagination = {
-    currentPage,
-    numPages: Math.ceil(data.total / itemsPerPage),
-    baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
-  };
+    const sortQuery = (req.query.sort ? `&sort=${req.query.sort}` : '');
+    const limitQuery = (req.query.limit ? `&limit=${req.query.limit}` : '');
+    const searchQuery = (req.query.q ? `&q=${req.query.q}` : '');
 
-  res.render('schools/schools', {
-    title: 'Schulen',
-    head,
-    body,
-    pagination,
-    federalState: federalStates.data,
-    user: res.locals.currentUser,
-    storageType: getStorageTypes(),
-    storageProvider,
-    limit: true,
-    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-  });
+    const pagination = {
+        currentPage,
+        numPages: Math.ceil(data.total / itemsPerPage),
+        baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
+    };
+
+    res.render('schools/schools', {
+        title: 'Schulen',
+        head,
+        body,
+        pagination,
+        federalState: federalStates.data,
+        user: res.locals.currentUser,
+        storageType: getStorageTypes(),
+        timeZones: getTimezones(),
+        storageProvider,
+        limit: true,
+        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+    });
 };
 
 // secure routes
