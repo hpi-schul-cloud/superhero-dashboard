@@ -21,7 +21,7 @@ const getTimezones = () => {
 
     countryTimezones = [].concat.apply([], countryTimezones);
     countryTimezones = countryTimezones.map((item) => {
-        const [region, location] = item.name.split('/').map((string) => string.replace(/_/, ' '));
+        const [region, location] = item.name.split('/').map((string) => string.replace(/[_]+/g, ' '));
         return {
             ...item,
             region,
