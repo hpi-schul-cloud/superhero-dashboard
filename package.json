@@ -60,7 +60,7 @@
     "gulp-sass": "^4.0.2",
     "gulp-sass-grapher": "^1.0.0",
     "gulp-uglify": "^3.0.2",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "pump": "^3.0.0",
     "vinyl-map": "^1.0.2"
   }
