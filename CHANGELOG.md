@@ -9,8 +9,12 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
+### Added
+
+- OPS-1297 - Added Changelog github action
+
 ## [24.3.1] - 2020-10-07
 
-## Fixed
+### Fixed
 
 - SC-7081 - Fixed user creation: added missing importHash to request
