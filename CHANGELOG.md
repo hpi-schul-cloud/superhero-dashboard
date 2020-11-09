@@ -9,6 +9,8 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
+- SC-7555 - change of route to delete user
+
 ### Added
 
 - OPS-1297 - Added Changelog github action
