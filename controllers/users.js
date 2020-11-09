@@ -222,7 +222,7 @@ const getDetailHandler = (service, query) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(_ => {
+        api(req).delete(`/${service}/${req.params.id}`).then(_ => {
             api(req).get('/accounts/', { qs: { userId: req.params.id }})
                 .then(account => {
                     api(req).delete('/accounts/' + account[0]._id)
@@ -419,7 +419,7 @@ router.get('/jwt/:id', async (req, res, next) => {
 
 router.patch('/:id', getUpdateHandler('users'));
 router.get('/:id', getDetailHandler('users', {$populate: 'roles'}));
-router.delete('/:id', getDeleteHandler('users'));
+router.delete('/:id', getDeleteHandler('users/v2/users'));
 router.post('/', getCreateHandler('users'));
 
 router.get('/', function (req, res, next) {
