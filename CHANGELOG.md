@@ -12,6 +12,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 ### Added
 
 - OPS-1297 - Added Changelog github action
+- SC-2483 - Enable tool configuration to contain multiline keys
 
 ## [24.3.1] - 2020-10-07
 
