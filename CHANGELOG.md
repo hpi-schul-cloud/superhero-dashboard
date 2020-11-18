@@ -18,4 +18,5 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 ### Fixed
 
 - SC-7758 - Fixed user information request
+- SC-7845 - Fixed changelog github action
 - SC-7081 - Fixed user creation: added missing importHash to request
