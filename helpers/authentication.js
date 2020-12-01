@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const api = require('../api');
+const { api } = require('../api');
 const permissionsHelper = require('./permissions');
 
 const isJWT = (req) => {

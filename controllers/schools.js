@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { getTimezones } = require('../helpers/timeZoneHelper');
-const api = require('../api');
+const { api } = require('../api');
 const moment = require('moment-timezone');
 
 moment.locale('de');
