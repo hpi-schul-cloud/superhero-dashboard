@@ -12,6 +12,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 ### Added
 
 - OPS-1297 - Added Changelog github action
+- SC-7483 - Updating terms of use for all users for each instance separately
 
 ## [24.3.1] - 2020-10-07
 
