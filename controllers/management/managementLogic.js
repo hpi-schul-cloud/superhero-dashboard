@@ -30,7 +30,6 @@ const updateInstancePolicy = (req, res, next) => {
 			publishedAt: moment().format(),
 			consentTypes: ['privacy'],
 			consentData,
-			shdUpload: true,
 		},
 	}).then(() => {
 		redirectHelper.safeBackRedirect(req, res);

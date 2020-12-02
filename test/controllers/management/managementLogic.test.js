@@ -100,7 +100,6 @@ describe("Management controller logic tests: ", () => {
 					publishedAt: sinon.match.string,
 					consentTypes: sinon.match.array.contains(['privacy']),
 					consentData: requestParamesters.consentData,
-					shdUpload: true,
 				}
 			}));
 			safeBackRedirectStub.restore();
