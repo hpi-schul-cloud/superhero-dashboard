@@ -6,7 +6,7 @@ const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
-const api = require('../api');
+const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 const PASSWORD = "******";

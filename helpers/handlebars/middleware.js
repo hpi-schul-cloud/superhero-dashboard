@@ -1,6 +1,6 @@
 const url = require('url');
 const moment = require('moment');
-const api = require('../../api');
+const { api } = require('../../api');
 
 const makeActive = (items, currentUrl) => {
 	currentUrl += "/";		
