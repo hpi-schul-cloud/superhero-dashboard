@@ -44,7 +44,7 @@ $(document).ready(() => {
 	$('.btn-add-modal--policy').on('click', (e) => {
 		e.preventDefault();
 		populateModalForm($addConsentModal, {
-			title: "Zustimmung hinzufügen",
+			title: "Rechtliches Dokument hinzufügen",
 			closeLabel: "Abbrechen",
 			submitLabel: "Hinzufügen",
 		});
