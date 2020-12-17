@@ -26,6 +26,14 @@
         {{/each}}
     </select>
 </div>
+<div class="form-group">
+    <label class="control-label" for="timezone">Time zone</label>
+    <select name="timezone" type="text">
+        {{#each timeZones}}
+            <option value="{{this.name}}">{{this.region}} / {{this.location}} {{this.offset}}</option>
+        {{/each}}
+    </select>
+</div>
 
 <div class="form-group">
     <label>
