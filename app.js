@@ -38,8 +38,8 @@ app.set('view cache', true);
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({limit: process.env.BODYPARSER_LIMIT || '4mb'}));
+app.use(bodyParser.urlencoded({extended: true, limit: process.env.BODYPARSER_LIMIT || '4mb'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -89,8 +89,8 @@ app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     let status = err.status || err.statusCode;
     if (err.statusCode) {
-        res.setHeader("error-message", err.error.message);
-        res.locals.message = err.error.message;
+        res.setHeader("error-message", err.message);
+        res.locals.message = err.message;
     }else {
         res.locals.message = err.message;
     }
