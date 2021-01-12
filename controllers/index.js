@@ -18,5 +18,6 @@ router.use('/account', require('./account'));
 router.use('/statistics', require('./statistics'));
 router.use('/tools', require('./tools'));
 router.use('/storageproviders', require('./storageproviders'));
+router.use('/base64files/', require('./base64files'));
 
 module.exports = router;

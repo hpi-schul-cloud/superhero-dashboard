@@ -1,0 +1,24 @@
+<div class="form-group">
+	<label for="consent-title">Titel</label>
+	<input id="consent-title" class="form-control" name="consentTitle" type="text" data-force-value="true" required>
+</div>
+<div class="form-group">
+	<label for="consent-description">Beschreibung</label>
+	<textarea id="consent-description" class="form-control" name="consentText" required></textarea>
+</div>
+<div class="form-group">
+	<label>Datei hochladen (nur PDF, max 4MB)</label><br/>
+	<input type="hidden" id="policy-file-data" name="consentData" value="{{consentData}}">
+	<input type="file" id="policy-input" accept="application/pdf" required>
+	<label for="policy-input" class="btn btn-secondary">Datei auswählen</label>
+</div>
+<div class="form-group">
+	<div class="policy-file-upload">
+		<img id="policy-file-logo" role="presentation" src="/images/thumbs/pdfs.png" width="25px">
+		<span id="policy-file-name">Keine Datei ausgewählt</span>
+	</div>
+</div>
+<div class="form-group">
+	<b>Wichtig:</b><p class="text-muted">Wenn eine neue Datenschutzerklärung hochgeladen wird, wird sie allen Nutzern aus dieser Schule zur Zustimmung gegeben.</p>
+</div>
+
