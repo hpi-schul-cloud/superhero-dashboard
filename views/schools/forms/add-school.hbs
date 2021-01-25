@@ -11,6 +11,17 @@
     </select>
 </div>
 <div class="form-group">
+    <label class="control-label" for="county">Kreis</label>
+    <select name="county">
+        {{#each county}}
+            <option value="{{this._id}}">{{this.name}}</option>
+        {{/each}}   
+    </select>
+    <p class="text-danger" style="font-size:0.75rem;">
+        Warning: all counties/kreis from all states/bundesland are listed here
+    </p>
+</div>
+<div class="form-group">
     <label class="control-label" for="fileStorageType">File-Storage-Typ</label>
     <select name="fileStorageType" type="text">
         {{#each storageType}}
@@ -26,6 +37,14 @@
         {{/each}}
     </select>
 </div>
+<div class="form-group">
+    <label class="control-label" for="officialSchoolNumber">Official School Number</label>
+        <input type="text" name="officialSchoolNumber" id="officialSchoolNumber" class="form-control" >
+    <p class="text-danger" style="font-size:0.75rem;">
+        Allowed format: AB-12345 <em>OR</em> 12345
+    </p>
+</div>
+
 <div class="form-group">
     <label class="control-label" for="timezone">Time zone</label>
     <select name="timezone" type="text">
