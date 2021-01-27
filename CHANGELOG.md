@@ -11,7 +11,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Added
 
-- SC-6950 - Add Manage school kreis and officialSchoolNumber
+- SC-6950 - Add Manage school kreis and officialSchoolNumber with dynamic getter
 - OPS-1297 - Added Changelog github action
 - SC-7483 - Updating terms of use for all users for each instance separately
 - SC-8247 - Update SHD platform with new texts regarding consent upload (fix for modal naming)
