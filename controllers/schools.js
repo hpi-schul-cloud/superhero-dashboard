@@ -168,7 +168,7 @@ const getHandler = async (req, res) => {
 
   // Extracts all counties from federalstates
   let allCounties;
-  if (!federalStates && !Array.isArray(federalStates.data)) {
+  if (!federalStates || !Array.isArray(federalStates.data)) {
     allCounties = [];
   } else {
     allCounties = federalStates.data
