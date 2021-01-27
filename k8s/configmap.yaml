@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: $SERVICE_NAME-environment-variables
+data:
+  THIS_SERVICE: $SERVICE_NAME
+  BRANCH: $NAMESPACE
+  API_KEY: '123' #secret
+  BACKEND_URL: http://schulcloud-server
+  HOST: http://$HOSTNAME # must change to https
+  SC_NAV_TITLE: HPI Schul-Cloud
+  SC_THEME: default
+  NODE_VERSION: 10.17.0
+  TZ: Europe/Berlin
+  #PORT do not exist at the moment but should
+
