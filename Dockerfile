@@ -1,4 +1,4 @@
-FROM node:10.17-alpine
+FROM node:lts-buster
 
 RUN apk update && apk upgrade && apk add --no-cache autoconf automake build-base make nasm zlib-dev
 

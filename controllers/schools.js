@@ -167,7 +167,11 @@ const getHandler = async (req, res) => {
     };
 
   // Extracts all counties from federalstates
-  const allCounties = federalStates.data
+  let allCounties;
+  if (!federalStates && !Array.isArray(federalStates.data)) {
+    allCounties = [];
+  } else {
+    allCounties = federalStates.data
     .map((state) => {
       return state.counties.map((county) => {
         if (county && county.name) {
@@ -176,6 +180,8 @@ const getHandler = async (req, res) => {
       });
     })
     .flat();
+  }
+
 
     res.render('schools/schools', {
         title: 'Schulen',
