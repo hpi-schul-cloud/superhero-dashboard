@@ -77,6 +77,10 @@ app.get('/', (req,res,next) => {
     res.redirect('/login/');
 });
 
+app.get('/ping', (req, res) => {
+    res.json({ pong: Date.now() });
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     const err = new Error('Not Found');
