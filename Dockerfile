@@ -1,6 +1,4 @@
-FROM node:lts-buster
-
-RUN apk update && apk upgrade && apk add --no-cache autoconf automake build-base make nasm zlib-dev
+FROM node:10.17-alpine
 
 # Prepare folders and install global modules
 #RUN mkdir /app && npm install --quiet -g nodemon gulp
