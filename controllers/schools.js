@@ -173,11 +173,14 @@ const getHandler = async (req, res) => {
   } else {
     allCounties = federalStates.data
     .map((state) => {
-      return state.counties.map((county) => {
-        if (county && county.name) {
-          return county;
+        if (!state || !Array.isArray(state.counties)) {
+            return '';
         }
-      });
+        return state.counties.map((county) => {
+            if (county && county.name) {
+            return county;
+            }
+        });
     })
     .flat();
   }
