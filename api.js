@@ -18,4 +18,4 @@ const api = (req, {useCallback = false, json = true} = {}) => {
     });
 };
 
-module.exports = api;
+module.exports = { api };

@@ -90,7 +90,14 @@ module.exports = {
         } else {
             return options.inverse(this);
         }
-    },
+	},
+	ifEnvNot: (envVariable, value, options) => {
+		const envValue = process.env[envVariable];
+		if (envValue !== value) {
+			return options.fn(this);
+		}
+		return options.inverse(this);
+	},
     ifvalue: (conditional, options) => {
         if (options.hash.value === conditional) {
             return options.fn(this);

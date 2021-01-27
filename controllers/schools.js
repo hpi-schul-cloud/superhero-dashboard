@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { getTimezones } = require('../helpers/timeZoneHelper');
-const api = require('../api');
+const { api } = require('../api');
 const moment = require('moment-timezone');
 
 moment.locale('de');
@@ -95,6 +95,9 @@ const getDetailHandler = (service) => {
                 data[key] = data.features.indexOf(feature) !== -1;
             }
 
+        if (data.county && data.county.name) {
+          data.county = data.county._id;
+        }
             res.json(data);
         }).catch(err => {
             next(err);
@@ -163,12 +166,24 @@ const getHandler = async (req, res) => {
         baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`
     };
 
+  // Extracts all counties from federalstates
+  const allCounties = federalStates.data
+    .map((state) => {
+      return state.counties.map((county) => {
+        if (county && county.name) {
+          return county;
+        }
+      });
+    })
+    .flat();
+
     res.render('schools/schools', {
         title: 'Schulen',
         head,
         body,
         pagination,
         federalState: federalStates.data,
+        county: allCounties,
         user: res.locals.currentUser,
         storageType: getStorageTypes(),
         timeZones: getTimezones(),
