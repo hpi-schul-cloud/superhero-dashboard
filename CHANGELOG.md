@@ -11,7 +11,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Added
 
-- SC-6950 - Add Manage school kreis and officialSchoolNumber
+- SC-6950 - Add Manage school kreis and officialSchoolNumber with dynamic getter
 - OPS-1297 - Added Changelog github action
 - SC-2483 - Enable tool configuration to contain multiline keys
 - SC-7483 - Updating terms of use for all users for each instance separately
