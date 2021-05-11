@@ -116,14 +116,19 @@ const getDetailHandler = (service) => {
       .get('/' + service + '/' + req.params.id)
       .then((data) => {
         // parse school features
-        for (let feature of SCHOOL_FEATURES) {
-          let key = 'hasFeature_' + feature;
-          data[key] = data.features.indexOf(feature) !== -1;
+          for (let feature of SCHOOL_FEATURES) {
+            let key = 'hasFeature_' + feature;
+            if (data.features) {
+              data[key] = data.features.indexOf(feature) !== -1;
+            } else {
+              data[key] = false;
+          }
         }
 
-        if (data.county && data.county.name) {
+        if (data.county && data.county.name && data.county._id) {
           data.county = data.county._id;
         }
+
         res.json(data);
       })
       .catch((err) => {
