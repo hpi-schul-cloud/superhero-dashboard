@@ -60,13 +60,17 @@ const getAllCounties = (federalStates) => {
     if (!state.counties || !state.counties.length) {
       return [];
     }
-    return state.counties.map((county) => {
+    const allCounties = state.counties.map((county) => {
       if (county && county.name) {
         return county;
       }
     });
+    return allCounties;
   });
-  return counties.flat();
+  if (counties.length) {
+    return counties.flat();
+  }
+  return [];
 };
 
 const getCreateHandler = (service) => {
@@ -153,10 +157,9 @@ const getDeleteHandler = (service) => {
 const getHandler = async (req, res) => {
   const itemsPerPage = req.query.limit || 10;
   const currentPage = parseInt(req.query.p) || 1;
-
-  const [federalStates, data, storageProvider] = await Promise.all([
-    api(req).get('/federalStates'),
-    api(req).get('/schools', {
+  try {
+    const federalStates = await api(req).get('/federalStates');
+    const schools = await api(req).get('/schools', {
       qs: {
         name: req.query.q
           ? {
@@ -169,49 +172,58 @@ const getHandler = async (req, res) => {
         $sort: req.query.sort,
         $populate: 'federalState',
       },
-    }),
-    getStorageProviders(req),
-  ]);
+    });
+    const storageProvider = await getStorageProviders(req);
 
-  const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
+    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
 
-  const body = data.data.map((item) => {
-    return [
-      item._id || '',
-      item.name || '',
-      item.timezone || '',
-      (item.federalState || {}).name || '',
-      item.fileStorageType || '',
-      getTableActions(item, '/schools/'),
-    ];
-  });
+    const body = schools.data.map((item) => {
+      return [
+        item._id || '',
+        item.name || '',
+        item.timezone || '',
+        (item.federalState || {}).name || '',
+        item.fileStorageType || '',
+        getTableActions(item, '/schools/'),
+      ];
+    });
 
-  const sortQuery = req.query.sort ? `&sort=${req.query.sort}` : '';
-  const limitQuery = req.query.limit ? `&limit=${req.query.limit}` : '';
-  const searchQuery = req.query.q ? `&q=${req.query.q}` : '';
+    const sortQuery = req.query.sort ? `&sort=${req.query.sort}` : '';
+    const limitQuery = req.query.limit ? `&limit=${req.query.limit}` : '';
+    const searchQuery = req.query.q ? `&q=${req.query.q}` : '';
 
-  const pagination = {
-    currentPage,
-    numPages: Math.ceil(data.total / itemsPerPage),
-    baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`,
-  };
+    const pagination = {
+      currentPage,
+      numPages: Math.ceil(schools.total / itemsPerPage),
+      baseUrl: `/schools/?p={{page}}${sortQuery}${limitQuery}${searchQuery}`,
+    };
 
-  const allCounties = getAllCounties(federalStates);
+    const allCounties = getAllCounties(federalStates);
 
-  res.render('schools/schools', {
-    title: 'Schulen',
-    head,
-    body,
-    pagination,
-    federalState: federalStates.data,
-    county: allCounties,
-    user: res.locals.currentUser,
-    storageType: getStorageTypes(),
-    timeZones: getTimezones(),
-    storageProvider,
-    limit: true,
-    themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-  });
+    res.render('schools/schools', {
+      title: 'Schulen',
+      head,
+      body,
+      pagination,
+      federalState: federalStates.data,
+      county: allCounties,
+      user: res.locals.currentUser,
+      storageType: getStorageTypes(),
+      timeZones: getTimezones(),
+      storageProvider,
+      limit: true,
+      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+    });
+  } catch (err) {
+    res.render("schools/schools", {
+      title: "Schulen",
+      notification: {
+        type: "danger",
+        message: err.error.message,
+      },
+    });
+  }
+
 };
 
 // secure routes
@@ -222,18 +234,5 @@ router.get('/:id', getDetailHandler('schools'));
 router.delete('/:id', getDeleteHandler('schools'));
 router.post('/', getCreateHandler('schools'));
 router.all('/', getHandler);
-
-router.get('/', function (req, res, next) {
-  api(req)
-    .get('/schools/')
-    .then((schools) => {
-      res.render('schools/schools', {
-        title: 'Schulen',
-        user: res.locals.currentUser,
-        schools: schools.data,
-        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-      });
-    });
-});
 
 module.exports = router;
