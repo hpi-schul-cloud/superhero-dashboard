@@ -120,12 +120,12 @@ const getDetailHandler = (service) => {
       .get('/' + service + '/' + req.params.id)
       .then((data) => {
         // parse school features
-          for (let feature of SCHOOL_FEATURES) {
-            let key = 'hasFeature_' + feature;
-            if (data.features) {
-              data[key] = data.features.indexOf(feature) !== -1;
-            } else {
-              data[key] = false;
+        for (let feature of SCHOOL_FEATURES) {
+          let key = 'hasFeature_' + feature;
+          if (data.features) {
+            data[key] = data.features.indexOf(feature) !== -1;
+          } else {
+            data[key] = false;
           }
         }
 
@@ -157,23 +157,26 @@ const getDeleteHandler = (service) => {
 const getHandler = async (req, res) => {
   const itemsPerPage = req.query.limit || 10;
   const currentPage = parseInt(req.query.p) || 1;
+
   try {
-    const federalStates = await api(req).get('/federalStates');
-    const schools = await api(req).get('/schools', {
-      qs: {
-        name: req.query.q
-          ? {
-              $regex: _.escapeRegExp(req.query.q),
-              $options: 'i',
-            }
-          : undefined,
-        $limit: itemsPerPage,
-        $skip: itemsPerPage * (currentPage - 1),
-        $sort: req.query.sort,
-        $populate: 'federalState',
-      },
-    });
-    const storageProvider = await getStorageProviders(req);
+    const [federalStates, schools, storageProvider] = await Promise.all([
+      api(req).get('/federalStates'),
+      api(req).get('/schools', {
+        qs: {
+          name: req.query.q
+            ? {
+                $regex: _.escapeRegExp(req.query.q),
+                $options: 'i',
+              }
+            : undefined,
+          $limit: itemsPerPage,
+          $skip: itemsPerPage * (currentPage - 1),
+          $sort: req.query.sort,
+          $populate: 'federalState',
+        },
+      }),
+      getStorageProviders(req),
+    ]);
 
     const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
 
@@ -215,15 +218,14 @@ const getHandler = async (req, res) => {
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
     });
   } catch (err) {
-    res.render("schools/schools", {
-      title: "Schulen",
+    res.render('schools/schools', {
+      title: 'Schulen',
       notification: {
-        type: "danger",
+        type: 'danger',
         message: err.error.message,
       },
     });
   }
-
 };
 
 // secure routes
