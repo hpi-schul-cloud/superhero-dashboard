@@ -92,7 +92,7 @@ const getDetailHandler = (service) => {
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
         api(req).delete('/' + service + '/' + req.params.id).then(account => {
-                api(req).delete('/v2/users/' + account.userId)
+                api(req).delete('/users/v2' + account.userId)
                     .then(_ => {
                         res.redirect(req.header('Referer'));
                     });
