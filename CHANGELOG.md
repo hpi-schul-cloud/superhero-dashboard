@@ -11,6 +11,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Added
 
+- use new user for delete user to connect to deletion concept
 - SC-6950 - Add Manage school kreis and officialSchoolNumber with dynamic getter
 - OPS-1297 - Added Changelog github action
 - SC-2483 - Enable tool configuration to contain multiline keys
