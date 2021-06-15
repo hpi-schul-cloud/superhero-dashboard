@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shd-deployment
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: shd
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      #maxUnavailable: 1
+  revisionHistoryLimit: 4
+  paused: false
+  selector:
+    matchLabels:
+      app: shd
+  template:
+    metadata:
+      labels:
+        app: shd
+      annotations:
+    spec:
+      securityContext:  
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+      containers:
+      - name: shd
+        image: {{ SHD_IMAGE_NAME }}:{{ APP_IMAGE_TAG }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: shd
+          containerPort: 3033
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: shd-configmap
+        - secretRef:
+            name: shd-secret
+        resources:
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+          requests:
+            cpu: "100m"
+            memory: "2Gi"
