@@ -56,21 +56,19 @@ const getAllCounties = (federalStates) => {
   if (!federalStates || !federalStates.data || !federalStates.data.length) {
     return [];
   }
-  const counties = federalStates.data.map((state) => {
+
+  let counties = [];
+  federalStates.data.forEach((state) => {
     if (!state.counties || !state.counties.length) {
-      return [];
+      return;
     }
-    const allCounties = state.counties.map((county) => {
-      if (county && county.name) {
-        return county;
-      }
-    });
-    return allCounties;
+
+    const allCounties = state.counties.filter(county => county && county.name);
+
+    counties = [...counties, ...allCounties];
   });
-  if (counties.length) {
-    return counties.flat();
-  }
-  return [];
+
+  return counties;
 };
 
 const getCreateHandler = (service) => {
@@ -222,7 +220,7 @@ const getHandler = async (req, res) => {
       title: 'Schulen',
       notification: {
         type: 'danger',
-        message: err.error.message,
+        message: err.message ? err.message : err.error.message,
       },
     });
   }
