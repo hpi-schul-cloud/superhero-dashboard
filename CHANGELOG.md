@@ -9,6 +9,12 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
+## 26.2.0
+
+### Fixed
+
+- SC-9041 - fixed schools page cannot load
+
 ### Added
 
 - SC-6950 - Add Manage school kreis and officialSchoolNumber with dynamic getter
