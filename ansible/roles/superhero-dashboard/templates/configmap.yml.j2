@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shd-configmap
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: shd
+data:
+  BACKEND_URL: "http://api-svc:{{ PORT_SERVER }}/"
+  SC_NAV_TITLE: "{{ SC_NAV_TITLE }}"
+  HOST: "https://{{ DOMAIN }}"

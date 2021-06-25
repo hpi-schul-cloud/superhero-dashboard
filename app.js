@@ -105,5 +105,4 @@ app.use(function (err, req, res, next) {
             inline: !res.locals.loggedin
         });
 });
-
 module.exports = app;
