@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shd-svc
+  namespace: {{ NAMESPACE }}
+  labels:
+    app: shd
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ SHD_PORT }}
+      targetPort: 3033
+      protocol: TCP
+      name: shd
+  selector:
+    app: shd
