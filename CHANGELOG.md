@@ -9,8 +9,10 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [Unreleased]
 
-### Added
+## [24.3.1] - 2021-06-25
 
+### Added
+- OPS-2492 - changes build pipeline to github actions
 - OPS-1297 - Added Changelog github action
 - SC-7483 - Updating terms of use for all users for each instance separately
 - SC-8247 - Update SHD platform with new texts regarding consent upload (fix for modal naming)
