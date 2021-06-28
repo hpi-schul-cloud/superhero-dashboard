@@ -7,7 +7,9 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
+const axios = require('axios');
 const moment = require('moment');
+const { cookie } = require('request');
 moment.locale('de');
 
 const getTableActions = (item, path) => {
@@ -239,27 +241,37 @@ const getDetailHandler = (service, query) => {
 	};
 };
 
+// const getDeleteHandler = (service) => {
+// 	return function (req, res, next) {
+// 		api(req)
+// 			.delete('/' + service + '/' + req.params.id)
+// 			.then((_) => {
+// 				api(req)
+// 					.get('/accounts/', { qs: { userId: req.params.id } })
+// 					.then((account) => {
+// 						api(req)
+// 							.delete('/accounts/' + account[0]._id)
+// 							.then((_) => {
+// 								res.redirect(req.header('Referer'));
+// 							});
+// 					})
+// 					.catch((_) => {
+// 						res.redirect(req.header('Referer'));
+// 					});
+// 			})
+// 			.catch((err) => {
+// 				next(err);
+// 			});
+// 	};
+// };
+
 const getDeleteHandler = (service) => {
-	return function (req, res, next) {
-		api(req)
-			.delete('/' + service + '/' + req.params.id)
-			.then((_) => {
-				api(req)
-					.get('/accounts/', { qs: { userId: req.params.id } })
-					.then((account) => {
-						api(req)
-							.delete('/accounts/' + account[0]._id)
-							.then((_) => {
-								res.redirect(req.header('Referer'));
-							});
-					})
-					.catch((_) => {
-						res.redirect(req.header('Referer'));
-					});
-			})
-			.catch((err) => {
-				next(err);
-			});
+	return async function(req){
+		await axios.delete(`http://localhost:3030/users/v2/admin/student/${req.params.id}`, {
+			headers: {
+				Authorization: `Bearer ${req.cookies.jwt}`
+			}
+		});
 	};
 };
 
