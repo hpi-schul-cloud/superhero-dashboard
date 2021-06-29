@@ -253,12 +253,15 @@ const getDeleteHandler = (service) => {
 			.then((roles) => {
 				const pathRole = roles.includes('teacher') ? 'teacher' : roles.includes('student') ? 'student' : undefined;
 				if (pathRole === undefined) {
-					throw '(403) Forbidden';
+					throw 403;
 				}
 				api(req)
 					.delete(`/users/v2/admin/${pathRole}/${req.params.id}`)
 					.then((data) => {
 						res.redirect(req.header('Referer'));
+					})
+					.catch((err) => {
+						next(err);
 					});
 			})
 			.catch((err) => {
