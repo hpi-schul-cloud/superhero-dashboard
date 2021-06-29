@@ -10,7 +10,7 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const getTableActions = (item, path, role) => {
+const getTableActions = (item, path) => {
 	let tableActions = [
 		{
 			link: path + item._id,
@@ -461,7 +461,7 @@ router.get('/', function (req, res, next) {
 								item.lastName || '',
 								item.email || '',
 								roles || '',
-								getTableActions(item, '/users/', roles),
+								getTableActions(item, '/users/'),
 							];
 						});
 
