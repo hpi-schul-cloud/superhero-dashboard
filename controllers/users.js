@@ -251,14 +251,18 @@ const getDeleteHandler = (service) => {
 				return roles;
 			})
 			.then((roles) => {
+				const pathRole = roles.includes('teacher') ? 'teacher' : roles.includes('student') ? 'student' : undefined;
+				if (pathRole === undefined) {
+					throw '(403) Forbidden';
+				}
 				api(req)
-					.delete(`/users/v2/admin/${roles}/${req.params.id}`)
+					.delete(`/users/v2/admin/${pathRole}/${req.params.id}`)
 					.then((data) => {
 						res.redirect(req.header('Referer'));
-					})
-					.catch((err) => {
-						next(err);
 					});
+			})
+			.catch((err) => {
+				next(err);
 			});
 	};
 };
@@ -450,19 +454,21 @@ router.get('/', function (req, res, next) {
 						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', ''];
 
 						const body = data.data.map((item) => {
-							let roles = item.roles
-								.map((role) => {
-									return role.name;
-								})
-								.join(', ');
-							return [
-								item._id || '',
-								item.firstName || '',
-								item.lastName || '',
-								item.email || '',
-								roles || '',
-								getTableActions(item, '/users/'),
-							];
+							if (!item.deletedAt) {
+								let roles = item.roles
+									.map((role) => {
+										return role.name;
+									})
+									.join(', ');
+								return [
+									item._id || '',
+									item.firstName || '',
+									item.lastName || '',
+									item.email || '',
+									roles || '',
+									getTableActions(item, '/users/'),
+								];
+							}
 						});
 
 						let sortQuery = '';
