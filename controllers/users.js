@@ -253,7 +253,9 @@ const getDeleteHandler = (service) => {
 			.then((roles) => {
 				const pathRole = roles.includes('teacher') ? 'teacher' : roles.includes('student') ? 'student' : undefined;
 				if (pathRole === undefined) {
-					throw 403;
+					const error = new Error('Deletion is supported only for users with role student or teacher.');
+					error.status = 403;
+					throw error;
 				}
 				api(req)
 					.delete(`/users/v2/admin/${pathRole}/${req.params.id}`)
