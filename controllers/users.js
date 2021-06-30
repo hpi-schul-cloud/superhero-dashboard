@@ -240,21 +240,30 @@ const getDetailHandler = (service, query) => {
 };
 
 const getDeleteHandler = (service) => {
+	let roles;
 	return function (req, res, next) {
 		api(req)
-			.delete('/' + service + '/' + req.params.id)
-			.then((_) => {
+			.get('/users/' + req.params.id, { qs: { $populate: ['roles'] } })
+			.then(async (user) => {
+				roles = user.roles.map((role) => {
+					return role.name;
+				});
+				return roles;
+			})
+			.then((roles) => {
+				const pathRole = roles.includes('teacher') ? 'teacher' : roles.includes('student') ? 'student' : undefined;
+				if (pathRole === undefined) {
+					const error = new Error('Deletion is supported only for users with role student or teacher.');
+					error.status = 403;
+					throw error;
+				}
 				api(req)
-					.get('/accounts/', { qs: { userId: req.params.id } })
-					.then((account) => {
-						api(req)
-							.delete('/accounts/' + account[0]._id)
-							.then((_) => {
-								res.redirect(req.header('Referer'));
-							});
-					})
-					.catch((_) => {
+					.delete(`/users/v2/admin/${pathRole}/${req.params.id}`)
+					.then((data) => {
 						res.redirect(req.header('Referer'));
+					})
+					.catch((err) => {
+						next(err);
 					});
 			})
 			.catch((err) => {
@@ -262,7 +271,6 @@ const getDeleteHandler = (service) => {
 			});
 	};
 };
-
 // secure routes
 router.use(authHelper.authChecker);
 
@@ -451,19 +459,21 @@ router.get('/', function (req, res, next) {
 						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', ''];
 
 						const body = data.data.map((item) => {
-							let roles = item.roles
-								.map((role) => {
-									return role.name;
-								})
-								.join(', ');
-							return [
-								item._id || '',
-								item.firstName || '',
-								item.lastName || '',
-								item.email || '',
-								roles || '',
-								getTableActions(item, '/users/'),
-							];
+							if (!item.deletedAt) {
+								let roles = item.roles
+									.map((role) => {
+										return role.name;
+									})
+									.join(', ');
+								return [
+									item._id || '',
+									item.firstName || '',
+									item.lastName || '',
+									item.email || '',
+									roles || '',
+									getTableActions(item, '/users/'),
+								];
+							}
 						});
 
 						let sortQuery = '';
