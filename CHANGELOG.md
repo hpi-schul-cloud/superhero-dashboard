@@ -10,6 +10,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 ## [Unreleased]
 
 - SC-9142 and SC-9170 - fix deletion of users
+- OPS-2574 - Removeing autodeployed branches for developers if branch deleted
 
 ## [26.2.1] - 2021-06-25
 
