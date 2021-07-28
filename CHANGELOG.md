@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
-## [Unreleased]
+## Unreleased
+
+## [26.6.0] - 2021-07-20
 
 - SC-9142 and SC-9170 - fix deletion of users
 - OPS-2574 - Removeing autodeployed branches for developers if branch deleted
