@@ -239,6 +239,12 @@ const getDetailHandler = (service, query) => {
 	};
 };
 
+const getMostSignificantRole = (roles) => {
+	return roles.find((role) => role === 'administrator') ||
+		roles.find((role) => role === 'teacher') ||
+		roles.find((role) => role === 'student');
+};
+
 const getDeleteHandler = (service) => {
 	let roles;
 	return function (req, res, next) {
@@ -251,9 +257,9 @@ const getDeleteHandler = (service) => {
 				return roles;
 			})
 			.then((roles) => {
-				const pathRole = roles.includes('teacher') ? 'teacher' : roles.includes('student') ? 'student' : undefined;
+				const pathRole = getMostSignificantRole(roles);
 				if (pathRole === undefined) {
-					const error = new Error('Deletion is supported only for users with role student or teacher.');
+					const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
 					error.status = 403;
 					throw error;
 				}
