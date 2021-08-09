@@ -9,6 +9,8 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## Unreleased
 
+## [26.8.0] - 2021-08-09
+
 ### Added
 
 - SC-9177 - allow superheros to delete admins
