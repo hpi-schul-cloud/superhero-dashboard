@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
-## [Unreleased]
+## Unreleased
+
+## [26.8.0] - 2021-08-09
+
+### Added
+
+- SC-9177 - allow superheros to delete admins
+
+## [26.6.0] - 2021-07-20
 
 - SC-9192 - access feathers and nestjs apps over their dedicated version prefixes
 - SC-9142 and SC-9170 - fix deletion of users
