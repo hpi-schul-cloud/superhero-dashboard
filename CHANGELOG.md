@@ -11,6 +11,10 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## [26.9.0] - 2021-08-09
 
+- SC-9192 - set api as server basepath
+
+## [26.9.0] - 2021-08-09
+
 - SC-9192 - access feathers and nestjs apps over their dedicated version prefixes
 
 ## [26.8.0] - 2021-08-09
