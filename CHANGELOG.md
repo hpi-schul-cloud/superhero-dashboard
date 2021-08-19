@@ -9,6 +9,8 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ## Unreleased
 
+ - BC-37 - BC-57 - reduce resource consumption for deployed Superhero Dashboard
+
 ## [26.9.0] - 2021-08-09
 
 - SC-9192 - access feathers and nestjs apps over their dedicated version prefixes
