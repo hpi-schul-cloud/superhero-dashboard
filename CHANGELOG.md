@@ -11,6 +11,7 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
  - BC-37 - BC-57 - reduce resource consumption for deployed Superhero Dashboard
  - BC-147 - add dispatch job after build and push job for the main branch
+ - BC-38 - BC-129 - Add ansible files for Bosscloud (default)
 
 ## [26.9.0] - 2021-08-09
 
