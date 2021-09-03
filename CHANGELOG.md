@@ -7,13 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
-## Unreleased
+## [Unreleased]
+
+### Added
+
+### Changed
+
+## [26.10.0] - 2021-09-03
+
+### Changed
 
  - BC-37 - BC-57 - reduce resource consumption for deployed Superhero Dashboard
+
+### Added
+
  - BC-147 - add dispatch job after build and push job for the main branch
  - BC-38 - BC-129 - Add ansible files for Bosscloud (default)
 
 ## [26.9.0] - 2021-08-09
+
+### Changed
 
 - SC-9192 - access feathers and nestjs apps over their dedicated version prefixes
 
