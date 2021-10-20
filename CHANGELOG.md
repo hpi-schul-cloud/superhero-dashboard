@@ -13,6 +13,10 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Changed
 
+## [26.13.0]
+
+### Changed
+
  - BC-331 - BC-351 - rename ansible variables for OnePassword
 
 ## [26.10.0] - 2021-09-03
