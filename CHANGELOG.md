@@ -13,6 +13,8 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Changed
 
+ - BC-573 - changing the domain name and tls handling at the ingress on the ansible template
+
 ## [26.13.0]
 
 ### Changed
