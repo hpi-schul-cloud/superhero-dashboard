@@ -1,4 +1,4 @@
-FROM node:10.17-alpine
+FROM docker.io/library/node:14-alpine
 
 WORKDIR /app
 COPY . /app
