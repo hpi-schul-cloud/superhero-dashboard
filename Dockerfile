@@ -1,8 +1,15 @@
 FROM docker.io/library/node:14-alpine
 
-WORKDIR /app
-COPY . /app
 ENV TZ=Europe/Berlin
 EXPOSE 3033
-RUN chown -R 1000:1000 /app
+
+RUN apk add --no-cache autoconf automake build-base make nasm zlib-dev
+#RUN npm install -g gulp
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci && npm cache clean --force
+COPY . .
+RUN node node_modules/gulp/bin/gulp.js
+
 CMD ["npm", "run", "start"]
