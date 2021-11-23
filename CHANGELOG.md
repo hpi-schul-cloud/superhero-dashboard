@@ -13,6 +13,8 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Fixed
 
+## [26.18.0] - 2021-11-23
+
 ## [26.17.0] - 2021-11-16
 
 ### Changed
