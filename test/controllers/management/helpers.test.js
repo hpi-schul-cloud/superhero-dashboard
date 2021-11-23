@@ -6,7 +6,7 @@ const { expect } = require('chai');
 describe('Management controller helpers tests: ', () => {
 	describe("createPoliciesBody", () => {
 		let momentFormatMock;
-		
+
 		beforeEach(() => {
 			momentFormatMock = sinon.mock(moment.fn);
 		});
