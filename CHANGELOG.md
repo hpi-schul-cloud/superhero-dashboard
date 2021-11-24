@@ -13,7 +13,9 @@ Allowed Types of change: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `
 
 ### Fixed
 
-## [26.18.0] - 2021-11-23
+## [26.18.0] - 2021-11-24
+
+- BC-824 - fix dependency update, use node 14 for build and add nvmrc file
 
 ## [26.17.0] - 2021-11-16
 

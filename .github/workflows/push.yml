@@ -11,13 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: |
-         export SC_THEME="default"
-         export TZ="Europe/Berlin"
-         gulp
-         ls -la build
       - name: Docker meta Service Name
         id: docker_meta_img
         uses: crazy-max/ghaction-docker-meta@v2
