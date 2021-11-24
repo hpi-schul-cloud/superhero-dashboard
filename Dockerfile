@@ -4,7 +4,6 @@ ENV TZ=Europe/Berlin
 EXPOSE 3033
 
 RUN apk add --no-cache autoconf automake build-base make nasm zlib-dev
-#RUN npm install -g gulp
 
 WORKDIR /app
 COPY package.json package-lock.json ./
