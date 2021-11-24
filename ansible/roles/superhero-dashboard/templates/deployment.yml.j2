@@ -30,7 +30,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: shd
-        image: {{ SHD_IMAGE_NAME }}:{{ APP_IMAGE_TAG }}
+        image: {{ SUPERHERO_DASHBOARD_IMAGE }}:{{ SUPERHERO_DASHBOARD_IMAGE_TAG }}
         imagePullPolicy: IfNotPresent
         ports:
         - name: shd
