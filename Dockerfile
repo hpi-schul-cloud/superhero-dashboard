@@ -9,6 +9,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci && npm cache clean --force
 COPY . .
-RUN node node_modules/gulp/bin/gulp.js
+#RUN node node_modules/gulp/bin/gulp.js
+RUN npx gulp
 
 CMD ["npm", "run", "start"]
