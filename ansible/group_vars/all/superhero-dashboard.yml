@@ -1,4 +1,2 @@
 ---
-SUPERHERO_DASHBOARD_IMAGE: ghcr.io/hpi-schul-cloud/superhero-dashboard
 SHD_PORT: 3033
-SHD_PREFIX: shd-
