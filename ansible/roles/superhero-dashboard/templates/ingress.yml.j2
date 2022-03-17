@@ -13,12 +13,18 @@ metadata:
     nginx.ingress.kubernetes.io/auth-secret: shd-basic-auth-secret
     # message to display with an appropriate context why the authentication is required
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+{% if CLUSTER_ISSUER is defined %}
+    cert-manager.io/cluster-issuer: {{ CLUSTER_ISSUER }}
+{% endif %}
 
 spec:
-{% if TLS_ENABELD is defined and TLS_ENABELD|bool %}
+{% if CLUSTER_ISSUER is defined or (TLS_ENABELD is defined and TLS_ENABELD|bool) %}
   tls:
   - hosts:
       - {{ SHD_PREFIX }}{{ DOMAIN }}
+{% if CLUSTER_ISSUER is defined %}
+        secretName: {{ SHD_PREFIX }}{{ DOMAIN }}-tls
+{% endif %}
 {% endif %}
   rules:
   - host: {{ SHD_PREFIX }}{{ DOMAIN }}
