@@ -23,7 +23,7 @@ spec:
   - hosts:
       - {{ SHD_PREFIX }}{{ DOMAIN }}
 {% if CLUSTER_ISSUER is defined %}
-        secretName: {{ SHD_PREFIX }}{{ DOMAIN }}-tls
+    secretName: {{ SHD_PREFIX }}{{ DOMAIN }}-tls
 {% endif %}
 {% endif %}
   rules:
