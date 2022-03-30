@@ -44,61 +44,35 @@ const getTableActions = (item, path) => {
     return tableActions;
 };
 
-/*
-const getCreateHandler = (service) => {
-    return function (req, res, next) {
-        req.body.schoolId = req.query.schoolId;
-        api(req).post('/' + service + '/', {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
-            if (req.body.silent !== 'on')
-                sendMailHandler(data, req);
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
-    };
-};
-*/
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
-        /**if (req.body.roles[0].includes(',')) {
-            req.body.roles = req.body.roles[0].split(',');
-        }**/
-        api(req).patch('/' + service + '/' + req.params.id, {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
+        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+            .patch('/' + service + '/' + req.params.id, { json: req.body }) // TODO: sanitize
+            .then(() => res.redirect(req.header('Referer')))
+            .catch(err => next(err));
     };
 };
 
 
 const getDetailHandler = (service) => {
     return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
-            res.json(data);
-        }).catch(err => {
-            next(err);
-        });
+        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+            .get('/' + service + '/' + req.params.id)
+            .then(data => res.json(data))
+            .catch(err => next(err));
     };
 };
 
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(account => {
-                api(req).delete('/users/' + account.userId)
-                    .then(_ => {
-                        res.redirect(req.header('Referer'));
-                    });
-        }).catch(err => {
-            next(err);
-        });
+        api(req)
+            .delete('/' + service + '/' + req.params.id)
+            .then(account =>
+                api(req)
+                    .delete('/users/' + account.userId)
+                    .then(() => res.redirect(req.header('Referer'))))
+            .catch(err => next(err));
     };
 };
 
@@ -161,10 +135,9 @@ router.get('/search' , function (req, res, next) {
     });
 });
 
-router.patch('/:id', getUpdateHandler('accounts'));
-router.get('/:id', getDetailHandler('accounts'));
+router.patch('/:id', getUpdateHandler('account'));
+router.get('/:id', getDetailHandler('account'));
 router.delete('/:id', getDeleteHandler('accounts'));
-//router.post('/', getCreateHandler('accounts'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
