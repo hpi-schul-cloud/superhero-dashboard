@@ -13,13 +13,13 @@ moment.locale('de');
 const getTableActions = (item, path) => {
     let tableActions = [
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-edit',
             icon: 'edit',
             title: 'bearbeiten'
         },
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete',
@@ -53,7 +53,6 @@ const getUpdateHandler = (service) => {
     };
 };
 
-
 const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
@@ -63,10 +62,9 @@ const getDetailHandler = (service) => {
     };
 };
 
-
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req)
+        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
             .delete('/' + service + '/' + req.params.id)
             .then(account =>
                 api(req)
@@ -83,18 +81,17 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/accounts/', {
-            qs: {
-                username: {
-                    $regex: _.escapeRegExp(req.query.q),
-                    $options: 'i'
-                },
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort
-            }
-        }
-    ).then(data => {
+    api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+        .get(
+            '/account/search',
+            {
+                qs: {
+                    username: req.query.q,
+                    limit: itemsPerPage,
+                    skip: itemsPerPage * (currentPage - 1),
+                }
+            })
+        .then(data => {
         const head = [
             'ID',
             'Username',
@@ -103,9 +100,9 @@ router.get('/search' , function (req, res, next) {
             ''
         ];
 
-        const body = data.map(item => {
+        const body = data.data.map(item => {
             return [
-                item._id ||"",
+                item.id ||"",
                 item.username ||"",
                 item.activated ? '✔️' : '❌',
                 item.userId ||"",
@@ -137,7 +134,7 @@ router.get('/search' , function (req, res, next) {
 
 router.patch('/:id', getUpdateHandler('account'));
 router.get('/:id', getDetailHandler('account'));
-router.delete('/:id', getDeleteHandler('accounts'));
+router.delete('/:id', getDeleteHandler('account'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
@@ -161,7 +158,7 @@ router.get('/account/:id' , function (req, res, next) {
 
         const body = data.map(item => {
             return [
-                item._id ||"",
+                item.id ||"",
                 item.username ||"",
                 item.activated ? '✔️' : '❌',
                 getTableActions(item, '/accounts/')
