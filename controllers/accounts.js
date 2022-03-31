@@ -46,7 +46,7 @@ const getTableActions = (item, path) => {
 
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
-        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+        api(req, { useCallback: false, json: true, version: 'v3' })
             .patch('/' + service + '/' + req.params.id, { json: req.body }) // TODO: sanitize
             .then(() => res.redirect(req.header('Referer')))
             .catch(err => next(err));
@@ -55,7 +55,7 @@ const getUpdateHandler = (service) => {
 
 const getDetailHandler = (service) => {
     return function (req, res, next) {
-        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+        api(req, { useCallback: false, json: true, version: 'v3' })
             .get('/' + service + '/' + req.params.id)
             .then(data => res.json(data))
             .catch(err => next(err));
@@ -64,7 +64,7 @@ const getDetailHandler = (service) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+        api(req, { useCallback: false, json: true, version: 'v3' })
             .delete('/' + service + '/' + req.params.id)
             .then(account =>
                 api(req)
@@ -81,55 +81,49 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
-        .get(
-            '/account/search',
-            {
-                qs: {
-                    username: req.query.q,
-                    limit: itemsPerPage,
-                    skip: itemsPerPage * (currentPage - 1),
-                }
-            })
+    api(req, { useCallback: false, json: true, version: 'v3' })
+        .get('/account/search', {
+            qs: {
+                type: 'username',
+                value: req.query.q,
+                limit: itemsPerPage,
+                skip: itemsPerPage * (currentPage - 1),
+            }
+        })
         .then(data => {
-        const head = [
-            'ID',
-            'Username',
-            'Aktiviert',
-            'UserId',
-            ''
-        ];
-
-        const body = data.data.map(item => {
-            return [
-                item.id ||"",
-                item.username ||"",
-                item.activated ? '✔️' : '❌',
-                item.userId ||"",
-                getTableActions(item, '/accounts/')
+            const head = [
+                'ID',
+                'Username',
+                'Aktiviert',
+                'UserId',
+                ''
             ];
+
+            const body = data.data.map(item => {
+                return [
+                    item.id ||"",
+                    item.username ||"",
+                    item.activated ? '✔️' : '❌',
+                    item.userId ||"",
+                    getTableActions(item, '/accounts/')
+                ];
+            });
+
+            const pagination = {
+                currentPage,
+                numPages: Math.ceil(data.total / itemsPerPage),
+                baseUrl: '/accounts/search/?q=' + res.req.query.q + '&p={{page}}'
+            };
+
+            res.render('accounts/accounts', {
+                title: 'Account',
+                head,
+                body,
+                pagination,
+                user: res.locals.currentUser ||"",
+                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+            });
         });
-
-        let sortQuery = '';
-        if (req.query.sort) {
-            sortQuery = '&sort=' + req.query.sort;
-        }
-
-        const pagination = {
-            currentPage,
-            numPages: Math.ceil(data.total / itemsPerPage),
-            baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
-        };
-
-        res.render('accounts/accounts', {
-            title: 'Account',
-            head,
-            body,
-            pagination,
-            user: res.locals.currentUser ||"",
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-        });
-    });
 });
 
 router.patch('/:id', getUpdateHandler('account'));
@@ -140,38 +134,39 @@ router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/accounts/', {
+    api(req, { useCallback: false, json: true, version: 'v3' })
+        .get('/account/search', {
             qs: {
-                userId: req.params.id,
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort
+                type: 'userId',
+                value: req.params.id,
+                limit: itemsPerPage,
+                skip: itemsPerPage * (currentPage - 1),
             }
-        }
-    ).then(data => {
-        const head = [
-            'ID',
-            'Username',
-            'Aktiviert',
-            ''
-        ];
-
-        const body = data.map(item => {
-            return [
-                item.id ||"",
-                item.username ||"",
-                item.activated ? '✔️' : '❌',
-                getTableActions(item, '/accounts/')
+        })
+        .then(data => {
+            const head = [
+                'ID',
+                'Username',
+                'Aktiviert',
+                ''
             ];
-        });
 
-        res.render('accounts/accounts', {
-            title: 'Account',
-            head,
-            body,
-            user: res.locals.currentUser ||""
+            const body = data.data.map(item => {
+                return [
+                    item.id ||"",
+                    item.username ||"",
+                    item.activated ? '✔️' : '❌',
+                    getTableActions(item, '/accounts/')
+                ];
+            });
+
+            res.render('accounts/accounts', {
+                title: 'Account',
+                head,
+                body,
+                user: res.locals.currentUser ||""
+            });
         });
-    });
 });
 
 router.get('/' , function (req, res, next) {

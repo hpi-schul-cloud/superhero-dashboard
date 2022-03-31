@@ -1,10 +1,10 @@
 const request = require('request');
-var rp = require('request-promise');
+const rp = require('request-promise');
 
-const api = (req, { useCallback = false, json = true, version = 'v1', bearer = false } = {}) => {
+const api = (req, { useCallback = false, json = true, version = 'v1' } = {}) => {
     const headers = {};
     if(req && req.cookies && req.cookies.jwt) {
-        headers['Authorization'] = bearer ? 'Bearer ' + req.cookies.jwt : req.cookies.jwt;
+        headers['Authorization'] = (req.cookies.jwt.startsWith('Bearer ') ? '' : 'Bearer ') + req.cookies.jwt;
     }
     if(process.env.API_KEY) {
         headers['x-api-key'] = process.env.API_KEY;

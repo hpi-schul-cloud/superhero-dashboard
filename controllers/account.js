@@ -8,7 +8,7 @@ router.use(authHelper.authChecker);
 
 router.post('/', function (req, res) {
     const { firstName, lastName, email, password, password_new } = req.body;
-    return api(req, { useCallback: false, json: true, version: 'v3', bearer: true })
+    return api(req, { useCallback: false, json: true, version: 'v3' })
         .patch('/account/me', {
             json: {
                 passwordOld: password,
