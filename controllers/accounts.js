@@ -82,7 +82,7 @@ router.get('/search' , function (req, res, next) {
     const currentPage = parseInt(req.query.p) || 1;
 
     api(req, { useCallback: false, json: true, version: 'v3' })
-        .get('/account/search', {
+        .get('/account', {
             qs: {
                 type: 'username',
                 value: req.query.q,
@@ -135,7 +135,7 @@ router.get('/account/:id' , function (req, res, next) {
     const currentPage = parseInt(req.query.p) || 1;
 
     api(req, { useCallback: false, json: true, version: 'v3' })
-        .get('/account/search', {
+        .get('/account', {
             qs: {
                 type: 'userId',
                 value: req.params.id,
