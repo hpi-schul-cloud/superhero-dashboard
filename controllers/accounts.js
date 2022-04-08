@@ -46,8 +46,15 @@ const getTableActions = (item, path) => {
 
 const getUpdateHandler = (service) => {
     return function (req, res, next) {
+        const { username, password, activated } = req.body;
         api(req, { useCallback: false, json: true, version: 'v3' })
-            .patch('/' + service + '/' + req.params.id, { json: req.body }) // TODO: sanitize
+            .patch('/' + service + '/' + req.params.id, {
+                json: {
+                    username,
+                    password,
+                    activated: activated === 'on',
+                }
+            })
             .then(() => res.redirect(req.header('Referer')))
             .catch(err => next(err));
     };
