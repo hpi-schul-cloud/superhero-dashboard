@@ -45,39 +45,49 @@ const getTableActions = (item, path) => {
 };
 
 const getUpdateHandler = (service) => {
-    return function (req, res, next) {
-        const { username, password, activated } = req.body;
-        api(req, { useCallback: false, json: true, version: 'v3' })
-            .patch('/' + service + '/' + req.params.id, {
-                json: {
-                    username,
-                    password,
-                    activated: activated === 'on',
-                }
-            })
-            .then(() => res.redirect(req.header('Referer')))
-            .catch(err => next(err));
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const { username, password, activated } = req.body;
+            await api(req, { useCallback: false, json: true, version: 'v3' })
+                .patch(`/${service}/${id}`, {
+                    json: {
+                        username,
+                        password,
+                        activated: activated === 'on',
+                    }
+                });
+            res.redirect(req.header('Referer'));
+        } catch (err) {
+            next(err);
+        }
     };
 };
 
 const getDetailHandler = (service) => {
-    return function (req, res, next) {
-        api(req, { useCallback: false, json: true, version: 'v3' })
-            .get('/' + service + '/' + req.params.id)
-            .then(data => res.json(data))
-            .catch(err => next(err));
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const data = await api(req, { useCallback: false, json: true, version: 'v3' })
+                .get(`/${service}/${id}`);
+            res.json(data);
+        } catch (err) {
+            next(err);
+        }
     };
 };
 
 const getDeleteHandler = (service) => {
-    return function (req, res, next) {
-        api(req, { useCallback: false, json: true, version: 'v3' })
-            .delete('/' + service + '/' + req.params.id)
-            .then(account =>
-                api(req)
-                    .delete('/users/' + account.userId)
-                    .then(() => res.redirect(req.header('Referer'))))
-            .catch(err => next(err));
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
+                .delete(`/${service}/${id}`);
+            await api(req).delete(`/users/${userId}`);
+            res.redirect(req.header('Referer'));
+        } catch (err) {
+            next(err);
+        }
     };
 };
 
