@@ -19,8 +19,8 @@ router.post('/', async function (req, res) {
                     email,
                 }
             });
-            authHelper.populateCurrentUser.bind(this, req, res);
-            res.redirect('/account/');
+        authHelper.populateCurrentUser.bind(this, req, res);
+        res.redirect('/account/');
     } catch (err) {
         res.render('account/settings', {
             title: 'Dein Account',
