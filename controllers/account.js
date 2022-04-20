@@ -6,27 +6,30 @@ const authHelper = require('../helpers/authentication');
 // secure routes
 router.use(authHelper.authChecker);
 
-router.post('/', function (req, res, next) {
-    const { firstName, lastName, email, password, password_new } = req.body; // TODO: sanitize
-        return api(req).patch('/accounts/' + res.locals.currentPayload.accountId, {
-            json: {
-                password_verification: password,
-                password: password_new !== '' ? password_new : undefined,
-            }
-        }).then(() => {
-            return api(req).patch('/users/' + res.locals.currentUser._id, {json: {
-                firstName,
-                lastName,
-                email,
-            }}).then(authHelper.populateCurrentUser.bind(this, req, res)).then(_ => {
-                res.redirect('/account/');
+router.post('/', async function (req, res) {
+    try {
+        const { firstName, lastName, email, password, password_new } = req.body;
+        await api(req, { useCallback: false, json: true, version: 'v3' })
+            .patch('/account/me', {
+                json: {
+                    passwordOld: password,
+                    passwordNew: password_new !== '' ? password_new : undefined,
+                    firstName,
+                    lastName,
+                    email,
+                }
             });
-        }).catch((err) => {
-            res.render('account/settings', {title: 'Dein Account', notification: {
+        authHelper.populateCurrentUser.bind(this, req, res);
+        res.redirect('/account/');
+    } catch (err) {
+        res.render('account/settings', {
+            title: 'Dein Account',
+            notification: {
                 type: 'danger',
                 message: err.error.message,
-            }});
+            }
         });
+    }
 });
 
 router.get('/', function (req, res, next) {

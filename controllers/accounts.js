@@ -13,13 +13,13 @@ moment.locale('de');
 const getTableActions = (item, path) => {
     let tableActions = [
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-edit',
             icon: 'edit',
             title: 'bearbeiten'
         },
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete',
@@ -44,61 +44,50 @@ const getTableActions = (item, path) => {
     return tableActions;
 };
 
-/*
-const getCreateHandler = (service) => {
-    return function (req, res, next) {
-        req.body.schoolId = req.query.schoolId;
-        api(req).post('/' + service + '/', {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
-            if (req.body.silent !== 'on')
-                sendMailHandler(data, req);
-            res.redirect(req.header('Referer'));
-        }).catch(err => {
-            next(err);
-        });
-    };
-};
-*/
 const getUpdateHandler = (service) => {
-    return function (req, res, next) {
-        /**if (req.body.roles[0].includes(',')) {
-            req.body.roles = req.body.roles[0].split(',');
-        }**/
-        api(req).patch('/' + service + '/' + req.params.id, {
-            // TODO: sanitize
-            json: req.body
-        }).then(data => {
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const { username, password, activated } = req.body;
+            await api(req, { useCallback: false, json: true, version: 'v3' })
+                .patch(`/${service}/${id}`, {
+                    json: {
+                        username,
+                        password,
+                        activated: activated === 'on',
+                    }
+                });
             res.redirect(req.header('Referer'));
-        }).catch(err => {
+        } catch (err) {
             next(err);
-        });
+        }
     };
 };
-
 
 const getDetailHandler = (service) => {
-    return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const data = await api(req, { useCallback: false, json: true, version: 'v3' })
+                .get(`/${service}/${id}`);
             res.json(data);
-        }).catch(err => {
+        } catch (err) {
             next(err);
-        });
+        }
     };
 };
 
-
 const getDeleteHandler = (service) => {
-    return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(account => {
-                api(req).delete('/users/' + account.userId)
-                    .then(_ => {
-                        res.redirect(req.header('Referer'));
-                    });
-        }).catch(err => {
+    return async function (req, res, next) {
+        try {
+            const { id } = req.params;
+            const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
+                .delete(`/${service}/${id}`);
+            await api(req).delete(`/users/${userId}`);
+            res.redirect(req.header('Referer'));
+        } catch (err) {
             next(err);
-        });
+        }
     };
 };
 
@@ -109,99 +98,92 @@ router.get('/search' , function (req, res, next) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/accounts/', {
+    api(req, { useCallback: false, json: true, version: 'v3' })
+        .get('/account', {
             qs: {
-                username: {
-                    $regex: _.escapeRegExp(req.query.q),
-                    $options: 'i'
-                },
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort
+                type: 'username',
+                value: req.query.q,
+                limit: itemsPerPage,
+                skip: itemsPerPage * (currentPage - 1),
             }
-        }
-    ).then(data => {
-        const head = [
-            'ID',
-            'Username',
-            'Aktiviert',
-            'UserId',
-            ''
-        ];
-
-        const body = data.map(item => {
-            return [
-                item._id ||"",
-                item.username ||"",
-                item.activated ? '✔️' : '❌',
-                item.userId ||"",
-                getTableActions(item, '/accounts/')
+        })
+        .then(data => {
+            const head = [
+                'ID',
+                'Username',
+                'Aktiviert',
+                'UserId',
+                ''
             ];
+
+            const body = data.data.map(item => {
+                return [
+                    item.id ||"",
+                    item.username ||"",
+                    item.activated ? '✔️' : '❌',
+                    item.userId ||"",
+                    getTableActions(item, '/accounts/')
+                ];
+            });
+
+            const pagination = {
+                currentPage,
+                numPages: Math.ceil(data.total / itemsPerPage),
+                baseUrl: '/accounts/search/?q=' + res.req.query.q + '&p={{page}}'
+            };
+
+            res.render('accounts/accounts', {
+                title: 'Account',
+                head,
+                body,
+                pagination,
+                user: res.locals.currentUser ||"",
+                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+            });
         });
-
-        let sortQuery = '';
-        if (req.query.sort) {
-            sortQuery = '&sort=' + req.query.sort;
-        }
-
-        const pagination = {
-            currentPage,
-            numPages: Math.ceil(data.total / itemsPerPage),
-            baseUrl: '/users/search/?q=' + res.req.query.q + '&p={{page}}' + sortQuery
-        };
-
-        res.render('accounts/accounts', {
-            title: 'Account',
-            head,
-            body,
-            pagination,
-            user: res.locals.currentUser ||"",
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-        });
-    });
 });
 
-router.patch('/:id', getUpdateHandler('accounts'));
-router.get('/:id', getDetailHandler('accounts'));
-router.delete('/:id', getDeleteHandler('accounts'));
-//router.post('/', getCreateHandler('accounts'));
+router.patch('/:id', getUpdateHandler('account'));
+router.get('/:id', getDetailHandler('account'));
+router.delete('/:id', getDeleteHandler('account'));
 
 router.get('/account/:id' , function (req, res, next) {
     const itemsPerPage = 100;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/accounts/', {
+    api(req, { useCallback: false, json: true, version: 'v3' })
+        .get('/account', {
             qs: {
-                userId: req.params.id,
-                $limit: itemsPerPage,
-                $skip: itemsPerPage * (currentPage - 1),
-                $sort: req.query.sort
+                type: 'userId',
+                value: req.params.id,
+                limit: itemsPerPage,
+                skip: itemsPerPage * (currentPage - 1),
             }
-        }
-    ).then(data => {
-        const head = [
-            'ID',
-            'Username',
-            'Aktiviert',
-            ''
-        ];
-
-        const body = data.map(item => {
-            return [
-                item._id ||"",
-                item.username ||"",
-                item.activated ? '✔️' : '❌',
-                getTableActions(item, '/accounts/')
+        })
+        .then(data => {
+            const head = [
+                'ID',
+                'Username',
+                'Aktiviert',
+                ''
             ];
-        });
 
-        res.render('accounts/accounts', {
-            title: 'Account',
-            head,
-            body,
-            user: res.locals.currentUser ||""
+            const body = data.data.map(item => {
+                return [
+                    item.id ||"",
+                    item.username ||"",
+                    item.activated ? '✔️' : '❌',
+                    getTableActions(item, '/accounts/')
+                ];
+            });
+
+            res.render('accounts/accounts', {
+                title: 'Account',
+                head,
+                body,
+                user: res.locals.currentUser ||""
+            });
         });
-    });
 });
 
 router.get('/' , function (req, res, next) {
