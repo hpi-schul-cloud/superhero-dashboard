@@ -28,6 +28,13 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     </label>
 </div>
 <div class="form-group">
+    <label class="control-label">In der Schulcloud ausblenden?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isHidden" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, es soll es ausgeblendet werden
+    </label>
+</div>
+<div class="form-group">
     <label class="control-label" for="key">OAuth- bzw. LTI-ClientId</label>
     <input type="text" name="oAuthClientId" id="oAuthClientId" class="form-control" placeholder="">
 </div>
@@ -70,6 +77,11 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert)</label>
     <input type="text" name="redirect_url" id="redirect-url" class="form-control" placeholder="">
 </div>
+<div class="form-group">
+    <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert)</label>
+    <input type="text" name="redirect_url" id="redirect-url" class="form-control" placeholder="">
+</div>
+
 <div class="form-group">
     <label class="control-label" for="lti_message_type">Token Endpoint Auth Method</label>
     <select name="token_endpoint_auth_method">

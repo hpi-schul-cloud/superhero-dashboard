@@ -55,6 +55,7 @@ const sanitizeTool = (req, create=false) => {
   req.body.scope = req.body.scope || "openid offline";
   req.body.skipConsent = !!req.body.skipConsent;
   req.body.openNewTab = !!req.body.openNewTab;
+  req.body.isHidden = !!req.body.isHidden;
   return req;
 }
 
