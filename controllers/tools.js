@@ -57,6 +57,7 @@ const sanitizeTool = (req, create=false) => {
   req.body.skipConsent = !!req.body.skipConsent;
   req.body.openNewTab = !!req.body.openNewTab;
   req.body.frontchannel_logout_uri = req.body.frontchannel_logout_uri || null;
+  req.body.isHidden = !!req.body.isHidden;
   return req;
 };
 
@@ -227,7 +228,7 @@ const showTools = (req, res) => {
     res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
   });
-}
+};
 
 // secure routes
 router.use(authHelper.authChecker);
