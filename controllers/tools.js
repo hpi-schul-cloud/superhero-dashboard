@@ -37,6 +37,7 @@ const getClient = (body, create = false) => ({
   "token_endpoint_auth_method": body.token_endpoint_auth_method,
   "subject_type": "pairwise",
   "scope": body.scope,
+  "frontchannel_logout_uri": body.frontchannel_logout_uri,
 });
 
 const sanitizeTool = (req, create=false) => {
@@ -55,9 +56,10 @@ const sanitizeTool = (req, create=false) => {
   req.body.scope = req.body.scope || "openid offline";
   req.body.skipConsent = !!req.body.skipConsent;
   req.body.openNewTab = !!req.body.openNewTab;
+  req.body.frontchannel_logout_uri = req.body.frontchannel_logout_uri || null;
   req.body.isHidden = !!req.body.isHidden;
   return req;
-}
+};
 
 const createTool = (req, service, next) => {
   api(req).post('/' + service + '/', {
@@ -72,7 +74,7 @@ const createTool = (req, service, next) => {
     }
     next(err);
   });
-}
+};
 
 const getCreateHandler = (service) => {
     return function (req, res, next) {
@@ -121,6 +123,7 @@ const getDetailHandler = (service) => {
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
               data.scope = client.scope;
+              data.frontchannel_logout_uri = client.frontchannel_logout_uri;
               res.json(data);
             });
           } else {
@@ -225,7 +228,7 @@ const showTools = (req, res) => {
     res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
   });
-}
+};
 
 // secure routes
 router.use(authHelper.authChecker);
