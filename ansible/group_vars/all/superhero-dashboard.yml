@@ -2,4 +2,3 @@
 SHD_PORT: 3033
 SUPERHERO_DASHBOARD_IMAGE: schulcloud/superhero-dashboard
 SHD_PREFIX: dashboard.
-FEATURE_LEGACY_HYDRA_ENABLED: false
