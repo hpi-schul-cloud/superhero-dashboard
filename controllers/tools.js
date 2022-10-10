@@ -11,6 +11,12 @@ const moment = require('moment');
 moment.locale('de');
 const PASSWORD = "******";
 
+const getVersion = () => {
+    return process.env.FEATURE_LEGACY_HYDRA_ENABLED ? 'v1' : 'v3';
+};
+
+const VERSION = getVersion();
+
 const getTableActions = (item, path) => {
     return [
         {
@@ -68,7 +74,7 @@ const createTool = (req, service, next) => {
     next();
   }).catch(err => {
     if(req.body.isLocal) {
-      api(req).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
+      api(req, { version: VERSION }).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
         next(err);
       });
     }
@@ -80,7 +86,7 @@ const getCreateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
-        return api(req).post('/oauth2/clients/', {
+        return api(req, { version: VERSION }).post('/oauth2/clients/', {
           json: getClient(req.body, true)
         }).then(response => {
           req.body.oAuthClientId = response.client_id;
@@ -101,7 +107,7 @@ const getUpdateHandler = (service) => {
           json: req.body
       }).then(data => {
         if(data.isLocal) {
-          return api(req).put(`/oauth2/clients/${data.oAuthClientId}`, {
+          return api(req, { version: VERSION }).put(`/oauth2/clients/${data.oAuthClientId}`, {
             json: getClient(req.body)
           }).then(_ => {
             res.redirect(req.header('Referer'));
@@ -118,7 +124,7 @@ const getDetailHandler = (service) => {
     return function (req, res, next) {
         api(req).get('/' + service + '/' + req.params.id).then(data => {
           if(data.isLocal) {
-            api(req).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
+            api(req, { version: VERSION }).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
@@ -140,7 +146,7 @@ const getDeleteHandler = (service) => {
     return function (req, res, next) {
         api(req).delete('/' + service + '/' + req.params.id).then(data => {
           if(data.isLocal) {
-            api(req).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
+            api(req, { version: VERSION }).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
               res.redirect(req.header('Referer'));
             });
           } else {
