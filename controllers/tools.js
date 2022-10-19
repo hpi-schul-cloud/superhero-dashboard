@@ -67,8 +67,8 @@ const sanitizeTool = (req, create=false) => {
   return req;
 };
 
-const createTool = (req, service, next) => {
-  api(req).post('/' + service + '/', {
+const createTool = (req, next) => {
+  api(req, { version: VERSION }).post('/ltitools/', {
     json: req.body
   }).then(tool => {
     next();
@@ -82,7 +82,7 @@ const createTool = (req, service, next) => {
   });
 };
 
-const getCreateHandler = (service) => {
+const getCreateHandler = () => {
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
@@ -90,20 +90,20 @@ const getCreateHandler = (service) => {
           json: getClient(req.body, true)
         }).then(response => {
           req.body.oAuthClientId = response.client_id;
-          createTool(req, service, next);
+          createTool(req, next);
         }).catch(err => {
           next(err);
         });
       } else {
-        createTool(req, service, next);
+        createTool(req, next);
       }
     };
 };
 
-const getUpdateHandler = (service) => {
+const getUpdateHandler = () => {
     return function (req, res, next) {
       req = sanitizeTool(req);
-      return api(req).patch('/' + service + '/' + req.params.id, {
+      return api(req, { version: VERSION }).patch('/ltitools/' + req.params.id, {
           json: req.body
       }).then(data => {
         if(data.isLocal) {
@@ -120,9 +120,9 @@ const getUpdateHandler = (service) => {
     };
 };
 
-const getDetailHandler = (service) => {
+const getDetailHandler = () => {
     return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
+        api(req, { version: VERSION }).get('/ltitools/' + req.params.id).then(data => {
           if(data.isLocal) {
             api(req, { version: VERSION }).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
               data.secret = PASSWORD;
@@ -142,9 +142,9 @@ const getDetailHandler = (service) => {
     };
 };
 
-const getDeleteHandler = (service) => {
+const getDeleteHandler = () => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(data => {
+        api(req, { version: VERSION }).delete('/ltitools/' + req.params.id).then(data => {
           if(data.isLocal) {
             api(req, { version: VERSION }).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
               res.redirect(req.header('Referer'));
@@ -231,24 +231,96 @@ const showTools = (req, res) => {
       baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
     };
 
-    res.render('tools/tools', {title: 'Tools', head, body, pagination, user: res.locals.currentUser, limit: true,
-      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud', versions, messageTypes, privacies, authMethods});
+    res.render('tools/tools', {
+		title: 'Tools',
+		head,
+		body,
+		pagination,
+		user: res.locals.currentUser,
+		limit: true,
+		themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+		versions,
+		messageTypes,
+		privacies,
+		authMethods
+	});
   });
+};
+
+const showToolsNest = (req, res) => {
+	const itemsPerPage = (req.query.limit || 10);
+	const currentPage = parseInt(req.query.p) || 1;
+	api(req, { version: 'v3' }).get('/ltitools', {
+		qs: {
+			name: (req.query.q ? {
+				$regex: _.escapeRegExp(req.query.q),
+				$options: 'i'
+			} : undefined),
+			'isTemplate': true,
+			limit: itemsPerPage,
+			skip: itemsPerPage * (currentPage - 1),
+			sort: req.query.sort,
+		},
+	}).then((tools) => {
+		const body = tools.data.map(item => {
+			return [
+				item._id ||"",
+				item.name ||"",
+				item.oAuthClientId || "",
+				getTableActions(item, '/tools/')
+			];
+		});
+
+		let sortQuery = '';
+		if (req.query.sort) {
+			sortQuery = '&sort=' + req.query.sort;
+		}
+
+		let limitQuery = '';
+		if (req.query.limit) {
+			limitQuery = '&limit=' + req.query.limit;
+		}
+
+		const pagination = {
+			currentPage,
+			numPages: Math.ceil(tools.total / itemsPerPage),
+			baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
+		};
+
+		res.render('tools/tools', {
+			title: 'Tools',
+			head,
+			body,
+			pagination,
+			user: res.locals.currentUser,
+			limit: true,
+			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+			versions,
+			messageTypes,
+			privacies,
+			authMethods
+		});
+	});
 };
 
 // secure routes
 router.use(authHelper.authChecker);
 
-router.get('/search' , showTools);
+if(VERSION === 'v3') {
+	router.get('/search', showToolsNest);
+	router.all('/', showToolsNest);
+} else {
+	router.get('/search', showTools);
+	router.all('/', showTools);
+}
 
 router.patch('/:id', getUpdateHandler('ltitools'));
 router.get('/:id', getDetailHandler('ltitools'));
 router.delete('/:id', getDeleteHandler('ltitools'));
 router.post('/', getCreateHandler('ltitools'));
-router.all('/', showTools);
 
 router.get('/', function (req, res, next) {
-    api(req).get('/ltitools/').then(ltitools => {
+    api(req, { version: VERSION }).get('/ltitools/').then(ltitools => {
         res.render('tools/tools', {
             title: 'Tools',
             user: res.locals.currentUser,
