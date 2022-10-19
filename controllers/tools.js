@@ -11,11 +11,16 @@ const moment = require('moment');
 moment.locale('de');
 const PASSWORD = "******";
 
-const getVersion = () => {
+const getHydraVersion = () => {
     return process.env.FEATURE_LEGACY_HYDRA_ENABLED ? 'v1' : 'v3';
 };
 
-const VERSION = getVersion();
+const getLtiVersion = () => {
+    return process.env.FEATURE_LEGACY_LTI_TOOLS_ENABLED ? 'v1' : 'v3';
+};
+
+const HYDRA_VERSION = getHydraVersion();
+const LTI_VERSION = getLtiVersion();
 
 const getTableActions = (item, path) => {
     return [
@@ -68,13 +73,13 @@ const sanitizeTool = (req, create=false) => {
 };
 
 const createTool = (req, next) => {
-  api(req, { version: VERSION }).post('/ltitools/', {
+  api(req, { version: LTI_VERSION }).post('/ltitools/', {
     json: req.body
   }).then(tool => {
     next();
   }).catch(err => {
     if(req.body.isLocal) {
-      api(req, { version: VERSION }).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
+      api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
         next(err);
       });
     }
@@ -86,7 +91,7 @@ const getCreateHandler = () => {
     return function (req, res, next) {
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
-        return api(req, { version: VERSION }).post('/oauth2/clients/', {
+        return api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
           json: getClient(req.body, true)
         }).then(response => {
           req.body.oAuthClientId = response.client_id;
@@ -103,11 +108,11 @@ const getCreateHandler = () => {
 const getUpdateHandler = () => {
     return function (req, res, next) {
       req = sanitizeTool(req);
-      return api(req, { version: VERSION }).patch('/ltitools/' + req.params.id, {
+      return api(req, { version: LTI_VERSION }).patch('/ltitools/' + req.params.id, {
           json: req.body
       }).then(data => {
         if(data.isLocal) {
-          return api(req, { version: VERSION }).put(`/oauth2/clients/${data.oAuthClientId}`, {
+          return api(req, { version: HYDRA_VERSION }).put(`/oauth2/clients/${data.oAuthClientId}`, {
             json: getClient(req.body)
           }).then(_ => {
             res.redirect(req.header('Referer'));
@@ -122,9 +127,9 @@ const getUpdateHandler = () => {
 
 const getDetailHandler = () => {
     return function (req, res, next) {
-        api(req, { version: VERSION }).get('/ltitools/' + req.params.id).then(data => {
+        api(req, { version: LTI_VERSION }).get('/ltitools/' + req.params.id).then(data => {
           if(data.isLocal) {
-            api(req, { version: VERSION }).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
+            api(req, { version: HYDRA_VERSION }).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
               data.secret = PASSWORD;
               data.redirect_url = client.redirect_uris.join(";");
               data.token_endpoint_auth_method = client.token_endpoint_auth_method;
@@ -144,9 +149,9 @@ const getDetailHandler = () => {
 
 const getDeleteHandler = () => {
     return function (req, res, next) {
-        api(req, { version: VERSION }).delete('/ltitools/' + req.params.id).then(data => {
+        api(req, { version: LTI_VERSION }).delete('/ltitools/' + req.params.id).then(data => {
           if(data.isLocal) {
-            api(req, { version: VERSION }).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
+            api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
               res.redirect(req.header('Referer'));
             });
           } else {
@@ -252,10 +257,7 @@ const showToolsNest = (req, res) => {
 	const currentPage = parseInt(req.query.p) || 1;
 	api(req, { version: 'v3' }).get('/ltitools', {
 		qs: {
-			name: (req.query.q ? {
-				$regex: _.escapeRegExp(req.query.q),
-				$options: 'i'
-			} : undefined),
+			name: req.query.q,
 			'isTemplate': true,
 			limit: itemsPerPage,
 			skip: itemsPerPage * (currentPage - 1),
@@ -306,7 +308,7 @@ const showToolsNest = (req, res) => {
 // secure routes
 router.use(authHelper.authChecker);
 
-if(VERSION === 'v3') {
+if(LTI_VERSION === 'v3') {
 	router.get('/search', showToolsNest);
 	router.all('/', showToolsNest);
 } else {
@@ -320,7 +322,7 @@ router.delete('/:id', getDeleteHandler('ltitools'));
 router.post('/', getCreateHandler('ltitools'));
 
 router.get('/', function (req, res, next) {
-    api(req, { version: VERSION }).get('/ltitools/').then(ltitools => {
+    api(req, { version: LTI_VERSION }).get('/ltitools/').then(ltitools => {
         res.render('tools/tools', {
             title: 'Tools',
             user: res.locals.currentUser,
