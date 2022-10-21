@@ -89,22 +89,17 @@ const createTool = (req, next) => {
 
 const getCreateHandler = () => {
     return function (req, res, next) {
-		console.log('AXXXXXXXXXXXXXXXXXXXXXXXXXX');
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
-	      console.log('B');
         return api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
           json: getClient(req.body, true)
         }).then(response => {
-	        console.log('C');
           req.body.oAuthClientId = response.client_id;
           createTool(req, next);
         }).catch(err => {
           next(err);
-	        console.log('D');
         });
       } else {
-	      console.log('E');
         createTool(req, next);
       }
     };
@@ -260,24 +255,42 @@ const showTools = (req, res) => {
 const showToolsNest = (req, res) => {
 	const itemsPerPage = (req.query.limit || 10);
 	const currentPage = parseInt(req.query.p) || 1;
+
+    let sortOrder;
+    let sortBy;
+    if (req.query.sort) {
+        if (req.query.sort.startsWith('-')) {
+            sortOrder = 'desc';
+            sortBy = req.query.sort.substring(1);
+        } else {
+            sortOrder = 'asc';
+            sortBy = req.query.sort;
+        }
+
+        if(sortBy === '_id') {
+            sortBy = 'id';
+        } else if(sortBy === 'undefined') {
+            sortBy = undefined;
+        }
+    }
+
 	api(req, { version: 'v3' }).get('/ltitools', {
 		qs: {
 			name: req.query.q,
 			'isTemplate': true,
 			limit: itemsPerPage,
 			skip: itemsPerPage * (currentPage - 1),
-			sort: req.query.sort,
+            sortOrder,
+            sortBy,
 		},
 	}).then((tools) => {
 		const body = tools.data.map(item => {
-			item._id = item.id;
 			return [
 				item._id ||"",
 				item.name ||"",
 				item.oAuthClientId || "",
 				getTableActions(item, '/tools/')
 			];
-
 		});
 
 		let sortQuery = '';
