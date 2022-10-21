@@ -89,17 +89,22 @@ const createTool = (req, next) => {
 
 const getCreateHandler = () => {
     return function (req, res, next) {
+		console.log('AXXXXXXXXXXXXXXXXXXXXXXXXXX');
       req = sanitizeTool(req, true);
       if(req.body.isLocal) {
+	      console.log('B');
         return api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
           json: getClient(req.body, true)
         }).then(response => {
+	        console.log('C');
           req.body.oAuthClientId = response.client_id;
           createTool(req, next);
         }).catch(err => {
           next(err);
+	        console.log('D');
         });
       } else {
+	      console.log('E');
         createTool(req, next);
       }
     };
@@ -265,12 +270,14 @@ const showToolsNest = (req, res) => {
 		},
 	}).then((tools) => {
 		const body = tools.data.map(item => {
+			item._id = item.id;
 			return [
 				item._id ||"",
 				item.name ||"",
 				item.oAuthClientId || "",
 				getTableActions(item, '/tools/')
 			];
+
 		});
 
 		let sortQuery = '';
@@ -310,16 +317,20 @@ router.use(authHelper.authChecker);
 
 if(LTI_VERSION === 'v3') {
 	router.get('/search', showToolsNest);
-	router.all('/', showToolsNest);
 } else {
 	router.get('/search', showTools);
-	router.all('/', showTools);
 }
 
-router.patch('/:id', getUpdateHandler('ltitools'));
-router.get('/:id', getDetailHandler('ltitools'));
-router.delete('/:id', getDeleteHandler('ltitools'));
-router.post('/', getCreateHandler('ltitools'));
+router.patch('/:id', getUpdateHandler());
+router.get('/:id', getDetailHandler());
+router.delete('/:id', getDeleteHandler());
+router.post('/', getCreateHandler());
+
+if(LTI_VERSION === 'v3') {
+	router.all('/', showToolsNest);
+} else {
+	router.all('/', showTools);
+}
 
 router.get('/', function (req, res, next) {
     api(req, { version: LTI_VERSION }).get('/ltitools/').then(ltitools => {
