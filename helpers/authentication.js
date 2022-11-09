@@ -65,21 +65,26 @@ const populateCurrentUser = (req, res) => {
     return Promise.resolve();
 };
 
+const CTL_ENABLED = !!process.env.FEATURE_CTL_TOOLS_ENABLED;
+const LTI_ENABLED = !process.env.FEATURE_LTI_TOOLS_DISABLED;
 
 const restrictSidebar = (req, res) => {
-    res.locals.sidebarItems = [{
-        name: 'Übersicht',
-        icon: 'th-large',
-        link: '/dashboard/',
-    },{
-        name: 'Statistiken',
-        icon: 'line-chart',
-        link: '/statistics/',
-    }, {
-        name: 'Schulen',
-        icon: 'graduation-cap',
-        link: '/schools/'
-    },
+    res.locals.sidebarItems = [
+        {
+            name: 'Übersicht',
+            icon: 'th-large',
+            link: '/dashboard/',
+        },
+        {
+            name: 'Statistiken',
+            icon: 'line-chart',
+            link: '/statistics/',
+        },
+        {
+            name: 'Schulen',
+            icon: 'graduation-cap',
+            link: '/schools/'
+        },
         {
             name: 'Users',
             icon: 'user',
@@ -113,12 +118,14 @@ const restrictSidebar = (req, res) => {
         {
             name: 'Tools',
             icon: 'window-maximize',
-            link: '/tools/'
+            link: '/tools/',
+            enabled: LTI_ENABLED,
         },
         {
             name: 'CTL Tools',
             icon: 'window-maximize',
-            link: '/ctltools/'
+            link: '/ctltools/',
+            enabled: CTL_ENABLED,
         },
         {
             name: 'Datenspeicher',
@@ -126,6 +133,8 @@ const restrictSidebar = (req, res) => {
             link: '/storageproviders/'
         },
     ];
+
+    res.locals.sidebarItems = res.locals.sidebarItems.filter((item) => item.enabled == null || item.enabled);
 };
 
 module.exports = {
