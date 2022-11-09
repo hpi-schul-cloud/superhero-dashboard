@@ -217,7 +217,7 @@ const showTools = (req, res) => {
         item._id ||"",
         item.name ||"",
         item.oAuthClientId || "",
-        getTableActions(item, '/tools/')
+        getTableActions(item, '/ctltools/')
       ];
     });
 
@@ -234,10 +234,10 @@ const showTools = (req, res) => {
     const pagination = {
       currentPage,
       numPages: Math.ceil(tools.total / itemsPerPage),
-      baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
+      baseUrl: '/ctltools/?p={{page}}' + sortQuery + limitQuery
     };
 
-    res.render('tools/tools', {
+    res.render('ctltools/ctltools', {
         title: 'Tools',
         head,
         body,
@@ -430,7 +430,7 @@ const showToolsCtl = (req, res) => {
             baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
         };
 
-        res.render('tools/tools', {
+        res.render('ctltools/ctltools', {
             title: 'Tools',
             head,
             body,
@@ -457,7 +457,7 @@ if(LTI_VERSION === 'v3') {
 
     router.get('/', (req, res, next) => {
         api(req).get('/tools/').then(tools => {
-            res.render('tools/tools', {
+            res.render('ctltools/ctltools', {
                 title: 'Tools',
                 user: res.locals.currentUser,
                 tools: tools.data,
@@ -476,7 +476,7 @@ if(LTI_VERSION === 'v3') {
 
     router.get('/', function (req, res, next) {
         api(req).get('/ltitools/').then(ltitools => {
-            res.render('tools/tools', {
+            res.render('ctltools/ctltools', {
                 title: 'Tools',
                 user: res.locals.currentUser,
                 tools: ltitools.data,

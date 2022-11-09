@@ -1,0 +1,69 @@
+{{#extend "lib/loggedin"}}
+
+    {{#content "styles" mode="append"}}
+        <link rel="stylesheet" href="/styles/events/events.css"/>
+    {{/content}}
+
+    {{#content "scripts" mode="append"}}
+        <script src="/scripts/ctltools.js" type="text/javascript" defer></script>
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="container-fluid">
+            <div class="row mobile-no-margin-right">
+                <div class="card h-100">
+                    <div class="card-block">
+                        <h5 class="card-title">OAuth2-Endpunkte</h5>
+                        <div class="card-text">
+                            <h6>Authorization: /oauth2/auth</h6>
+                            <h6>Token: /oauth2/token</h6>
+                            <h6>Token: /oauth2/token</h6>
+                            <h6>Userinfo: /userinfo</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-9"></div>
+                <div class="col-sm-3" style="padding-bottom: 20px">
+                    <form class="search-wrapper" action="/ctltools/search/" method="get">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control search-field" placeholder="Suche nach Tools..." name="q" />
+                            <span class="input-group-btn">
+                                            <button type="submit" class="btn btn-secondary">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </span>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-12 no-padding">
+                    {{> "lib/components/table" head=head body=body}}
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-create-tool">Neues Tool hinzufügen</button>
+
+            <div class="row">
+                {{> "lib/components/pagination" settings=pagination }}
+            </div>
+        </div>
+
+        {{#embed "lib/components/modal-form" class="add-modal" action="/ctltools"}}
+            {{#content "fields"}}
+                {{> "ctltools/forms/add-tool"}}
+            {{/content}}
+        {{/embed}}
+        {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/ctltools"}}
+            {{#content "fields"}}
+                {{> "ctltools/forms/add-tool"}}
+            {{/content}}
+        {{/embed}}
+        {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal" action="/ctltools"}}
+            {{#content "fields"}}
+                {{> "lib/components/delete-form"}}
+            {{/content}}
+        {{/embed}}
+    {{/content}}
+{{/extend}}
