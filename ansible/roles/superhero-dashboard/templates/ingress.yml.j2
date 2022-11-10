@@ -1,5 +1,5 @@
 #jinja2: trim_blocks: "True", lstrip_blocks: "True"
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ NAMESPACE }}-shd-ingress
@@ -32,7 +32,8 @@ spec:
       paths:
       ### SHD
       - path: /
+        pathType: ImplementationSpecific
         backend:
-          serviceName: shd-svc
-          servicePort: {{ SHD_PORT }}
-
+          service:
+            name: shd-svc
+            port: {{ SHD_PORT }}
