@@ -48,10 +48,10 @@ const mapToolToOauthClient = (body, create = false) => {
         client_id: create ? config.clientId : undefined,
         client_name: body.name,
         client_secret: config.clientSecret,
-        redirect_uris: config.redirectUris.split(";"), // missing
-        token_endpoint_auth_method: config.tokenEndpointAuthMethod, // missing
-        subject_type: "pairwise", // maybe missing
-        scope: config.scope, // missing
+        redirect_uris: config.redirectUris.split(";"),
+        token_endpoint_auth_method: config.tokenEndpointAuthMethod,
+        subject_type: "pairwise",
+        scope: config.scope,
         frontchannel_logout_uri: config.frontchannelLogoutUri,
     };
 };
