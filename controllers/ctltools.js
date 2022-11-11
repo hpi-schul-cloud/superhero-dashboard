@@ -56,7 +56,6 @@ const sanitizeTool = (req, create=false) => {
   req.body.key = req.body.key || null;
   req.body.resource_link_id = req.body.resource_link_id || null;
   req.body.toolType = req.body.toolType || null;
-  console.log(req.body.toolType);
   req.body.lti_version = req.body.lti_version || null;
   req.body.lti_message_type = req.body.lti_message_type || null;
   req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
@@ -93,6 +92,7 @@ const createTool = (req, service, next) => {
 const getCreateHandler = (service) => {
     return function (req, res, next) {
       req = sanitizeTool(req, true);
+      console.log(req.body);
       if(req.body.isLocal) {
         return api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
           json: getClient(req.body, true)
@@ -174,13 +174,11 @@ const head = [
 ];
 
 const versions = [
-  {label: 'none', value: '-'},
   {label: '1.1', value: 'LTI-1p0'},
   {label: '1.3', value: '1.3.0'},
 ];
 
 const messageTypes = [
-  {label: '-', value: 'none'},
   {label: 'basic-lti-launch-request', value: 'basic-lti-launch-request'},
   {label: 'LtiResourceLinkRequest', value: 'LtiResourceLinkRequest'},
   {label: 'LtiDeepLinkingRequest', value: 'LtiDeepLinkingRequest'},
@@ -206,24 +204,24 @@ const toolTypes = [
 ];
 
 const customParameterTypes = [
-    {label: 'String', value: 'STRING'},
-    {label: 'Number', value: 'NUMBER'},
-    {label: 'Boolean', value: 'BOOLEAN'},
-    {label: 'KursId', value: 'AUTO_COURSEID'},
-    {label: 'Kursname', value: 'AUTO_COURSENAME'},
-    {label: 'SchulId', value: 'AUTO_SCHOOLID'},
+    {label: 'String', value: 'string'},
+    {label: 'Number', value: 'number'},
+    {label: 'Boolean', value: 'boolean'},
+    {label: 'KursId', value: 'auto_courseid'},
+    {label: 'Kursname', value: 'auto_coursename'},
+    {label: 'SchulId', value: 'auto_schoolid'},
 ];
 
 const customParameterLocations = [
-    {label: 'Path-Parameter', value: 'PATH'},
-    {label: 'Query-Parameter', value: 'QUERY'},
-    {label: 'Token-Parameter', value: 'TOKEN'},
+    {label: 'Path-Parameter', value: 'path'},
+    {label: 'Query-Parameter', value: 'query'},
+    {label: 'Token-Parameter', value: 'token'},
 ];
 
 const customParameterScopes = [
-    {label: 'Global', value: 'GLOBAL'},
-    {label: 'Schule', value: 'SCHOOL'},
-    {label: 'Kurs', value: 'COURSE'},
+    {label: 'Global', value: 'global'},
+    {label: 'Schule', value: 'school'},
+    {label: 'Kurs', value: 'course'},
 ];
 
 const showTools = (req, res) => {

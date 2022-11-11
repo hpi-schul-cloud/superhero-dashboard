@@ -53,7 +53,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.btn-delete').on('click', function (e) {
+    $('.btn-delete').on('click', function(e) {
         e.preventDefault();
         var entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
@@ -69,35 +69,53 @@ $(document).ready(function () {
         });
     });
 
-    $('.nav-link').on('click', function () {
+    $('.nav-link').on('click', function() {
         $navToolType.attr('value',$(this).attr('aria-controls'));
     });
 
-    $('.btn-add-custom-parameter').on('click', (e) => {
-        // e.preventDefault();
-        var newCustomParam = $customParameterTemplate.clone().appendTo('#custom-parameter-list');
-        newCustomParam.attr('class', 'custom-parameter');
-        newCustomParam.attr('id', `custom-parameter-${customParameterId}`);
-        newCustomParam.attr('style',null);
-        newCustomParam.find('.parameters-name').attr('name', `parameters[${customParameterId}][name]`);
-        newCustomParam.find('.parameters-type').attr('name', `parameters[${customParameterId}][type]`);
-        newCustomParam.find('.parameters-scope').attr('name', `parameters[${customParameterId}][scope]`);
-        newCustomParam.find('.parameters-location').attr('name', `parameters[${customParameterId}][location]`);
-        newCustomParam.find('.parameters-default').attr('name', `parameters[${customParameterId}][default]`);
-        newCustomParam.find('.parameters-regex').attr('name', `parameters[${customParameterId}][regex]`);
+    $('.btn-add-custom-parameter').on('click', function(e) {
+        const newCustomParamContainer = $customParameterTemplate.clone(true);
+        newCustomParamContainer.appendTo('#custom-parameter-list');
+        newCustomParamContainer.attr('class', 'custom-parameter-container');
+        newCustomParamContainer.attr('id', `custom-parameter-${customParameterId}`);
+        newCustomParamContainer.attr('style', null);
+
+        newCustomParamContainer.find('select').each(function (e) {
+            $(this).attr('style', null);
+            $(this).siblings('div').remove();
+        });
+
+        // Bind labels to input fields
+        newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-type-label').attr('for', `parameters-type-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-type').attr('id', `parameters-type-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-scope-label').attr('for', `parameters-scope-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-scope').attr('id', `parameters-scope-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-location-label').attr('for', `parameters-location-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-location').attr('id', `parameters-location-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-default-label').attr('for', `parameters-default-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-default').attr('id', `parameters-default-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex-label').attr('for', `parameters-regex-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex').attr('id', `parameters-regex-${customParameterId}`);
+
         customParameterId++;
     });
 
-    $('.btn-remove-custom-parameter').on('click', (e) => {
-        e.preventDefault();
-        var curr = $(this).parent();
-        console.log(curr);
-        $(this).parent().parent().removeChild($(this).parent());
+    $('.btn-remove-custom-parameter').on('click', function(e) {
+        $(this).parent('.custom-parameter-container').remove();
     });
 
-    $('.modal-form').on('submit', function(e){
-        e.preventDefault();
-        $(this).find('.custom-parameter').each(function(index) {
+    const modal = $('.add-modal, .edit-modal').find('.modal-form');
+
+    modal.find('.btn-close').on('click', function(e) {
+        modal.find('#custom-parameter-list').children().remove();
+    });
+
+    modal.on('submit', function(e) {
+        $('.tab-pane').not('.active').remove();
+
+        $(this).find('.custom-parameter-container').each(function (index) {
             $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
             $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
             $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
@@ -105,7 +123,6 @@ $(document).ready(function () {
             $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
             $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
         });
-        console.log($('.modal-form').serializeArray());
     });
 
     const dictionary = {
