@@ -55,6 +55,8 @@ const getClient = (body, create = false) => ({
 const sanitizeTool = (req, create=false) => {
   req.body.key = req.body.key || null;
   req.body.resource_link_id = req.body.resource_link_id || null;
+  req.body.toolType = req.body.toolType || null;
+  console.log(req.body.toolType);
   req.body.lti_version = req.body.lti_version || null;
   req.body.lti_message_type = req.body.lti_message_type || null;
   req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
@@ -197,6 +199,33 @@ const authMethods = [
   {label: 'client_secret_post', value: 'client_secret_post'},
 ];
 
+const toolTypes = [
+    {label: 'Basic', value:'basic', active:'active'},
+    {label: 'OAuth2', value:'oauth2'},
+    {label: 'Lti 1.1', value:'lti11'},
+];
+
+const customParameterTypes = [
+    {label: 'String', value: 'STRING'},
+    {label: 'Number', value: 'NUMBER'},
+    {label: 'Boolean', value: 'BOOLEAN'},
+    {label: 'KursId', value: 'AUTO_COURSEID'},
+    {label: 'Kursname', value: 'AUTO_COURSENAME'},
+    {label: 'SchulId', value: 'AUTO_SCHOOLID'},
+];
+
+const customParameterLocations = [
+    {label: 'Path-Parameter', value: 'PATH'},
+    {label: 'Query-Parameter', value: 'QUERY'},
+    {label: 'Token-Parameter', value: 'TOKEN'},
+];
+
+const customParameterScopes = [
+    {label: 'Global', value: 'GLOBAL'},
+    {label: 'Schule', value: 'SCHOOL'},
+    {label: 'Kurs', value: 'COURSE'},
+];
+
 const showTools = (req, res) => {
   const itemsPerPage = (req.query.limit || 10);
   const currentPage = parseInt(req.query.p) || 1;
@@ -248,7 +277,11 @@ const showTools = (req, res) => {
         versions,
         messageTypes,
         privacies,
-        authMethods
+        authMethods,
+        toolTypes,
+        customParameterTypes,
+        customParameterScopes,
+        customParameterLocations
     });
   });
 };
@@ -282,6 +315,7 @@ const mapOauthClientToOauthConfig = (client) => {
 
 const sanitizeCtlTool = (req, create=false) => {
     req.body.key = req.body.key || null;
+    req.body.toolType = req.body.toolType || null;
     req.body.resource_link_id = req.body.resource_link_id || null;
     req.body.lti_version = req.body.lti_version || null;
     req.body.lti_message_type = req.body.lti_message_type || null;

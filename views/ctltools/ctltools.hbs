@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary btn-create-tool">Neues Tool hinzufügen</button>
+            <button class="btn btn-primary btn-create-ctl-tool">Neues Tool hinzufügen</button>
 
             <div class="row">
                 {{> "lib/components/pagination" settings=pagination }}
@@ -52,12 +52,12 @@
 
         {{#embed "lib/components/modal-form" class="add-modal" action="/ctltools"}}
             {{#content "fields"}}
-                {{> "ctltools/forms/add-tool"}}
+                {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
         {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/ctltools"}}
             {{#content "fields"}}
-                {{> "ctltools/forms/add-tool"}}
+                {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
         {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal" action="/ctltools"}}

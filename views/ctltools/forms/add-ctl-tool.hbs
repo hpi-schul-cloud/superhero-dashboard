@@ -1,0 +1,156 @@
+Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, lediglich die Vorlage für neue Instanzen.
+<div class="form-group">
+    <label class="control-label" for="name">Name</label>
+    <input type="text" name="name" id="name" class="form-control" placeholder="Learn App" required>
+</div>
+<div class="form-group">
+    <label class="control-label" for="url">URL</label>
+    <input type="text" name="url" id="url" class="form-control" placeholder="https://app.com">
+</div>
+<div class="form-group">
+    <label class="control-label" for="logo_url">Logo-URL</label>
+    <input type="text" name="logo_url" id="logo_url" class="form-control" placeholder="">
+</div>
+<div class="form-group">
+    <label class="control-label">Direkt in neuem Tab öffnen?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="openNewTab" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, direkt in neuem Tab öffnen
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label">In der Schulcloud ausblenden?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isHidden" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, es soll es ausgeblendet werden
+    </label>
+</div>
+<h3>Konfiguration</h3>
+<div class="form-group">
+    <label class="control-label" for="baseUrl">BaseURL</label>
+    <input type="text" name="baseUrl" id="baseUrl" class="form-control" placeholder="http://base.url" required>
+</div>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    {{#each toolTypes}}
+        <li class="nav-item">
+            <a class="nav-link {{this.active}}" id="{{this.value}}-tab" data-toggle="tab" href="#{{this.value}}" role="tab" aria-controls="{{this.value}}">{{this.label}}</a>
+        </li>
+    {{/each}}
+</ul>
+<input class="nav-tool-type" type="hidden" name="toolType" id="toolType" value="basic" />
+<div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+    </div>
+    <div class="tab-pane" id="oauth2" role="tabpanel" aria-labelledby="oauth2-tab">
+        <h4>OAuth2</h4>
+        <div class="form-group">
+            <label class="control-label" for="oAuthClientId">ClientId</label>
+            <input type="text" name="oAuthClientId" id="oAuthClientId" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="oAuthClientSecret">ClientSecret</label>
+            <input type="text" name="oAuthClientSecret" id="oAuthClientSecret" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert)</label>
+            <input type="text" name="redirect_url" id="redirect-url" class="form-control" placeholder="">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="lti_message_type">Token Endpoint Auth Method</label>
+            <select name="token_endpoint_auth_method">
+                {{#each authMethods}}
+                    <option value="{{this.value}}">{{this.label}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="scope">Scope</label>
+            <input type="text" name="scope" id="scope" class="form-control" placeholder="openid offline">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="frontchannel_logout_uri">Frontchannel Logout URL</label>
+            <input type="text" name="frontchannel_logout_uri" id="frontchannel_logout_uri" class="form-control">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Consent skippen? (Zustimmung liegt in anderer Form vor)</label>
+            <label  style="width: 100%">
+                <input type="checkbox" name="skipConsent" value="1" class="form-control" style="width:10%;display:inline-block;">
+                Ja, skippen
+            </label>
+        </div>
+    </div>
+<div class="tab-pane" id="lti11" role="tabpanel" aria-labelledby="lti11-tab">
+    <h4>LTI1.1</h4>
+    <div class="form-group">
+        <label class="control-label" for="key">Key</label>
+        <textarea name="key" id="key" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="secret">Secret</label>
+        <input type="text" name="secret" id="secret" class="form-control" placeholder="" pattern=".{6,64}"
+               title="Mindestens 6 Zeichen">
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="lti_message_type">Message Type</label>
+        <select name="lti_message_type">
+            {{#each messageTypes}}
+                <option value="{{this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="privacy_permission">Privatsphäre</label>
+        <select name="privacy_permission">
+            {{#each privacies}}
+                <option value="{{this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>
+</div>
+<hr/>
+<h3>Custom Parameters</h3>
+<div id="custom-parameter-list">
+
+</div>
+<button type="button" class="btn btn-primary btn-add-custom-parameter">+</button>
+<div id="custom-parameter-template" style="display:none;">
+    <div class="form-group">
+        <label class="control-label" for="parameters-999-name">Name</label>
+        <input type="text" name="parameters[999][name]" id="parameters-999-name" class="form-control parameters-name" placeholder="Custom Parameter">
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="custom_parameter_type">Typ</label>
+        <select name="parameters[999][type]" id="custom_parameter_type" class="parameters-type">
+            {{#each customParameterTypes}}
+                <option value="{{this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="parameters-999-scope">Scope</label>
+        <select name="parameters[999][scope]" id="parameters-999-scope" class="parameters-scope">
+            {{#each customParameterScopes}}
+                <option value="{{this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="parameters-999-location">Location</label>
+        <select name="parameters[999][location]" id="parameters-999-location" class="parameters-location">
+            {{#each customParameterLocations}}
+                <option value="{{this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="parameters-999-default">Default</label>
+        <input type="text" name="parameters[999][default]" id="parameters-999-default" class="form-control parameters-default" placeholder="Default">
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="parameters-999-regex">Regex (nur für Strings relevant)</label>
+        <input type="text" name="parameters[999][regex]" id="parameters-999-regex" class="form-control parameters-regex" placeholder="" title="Regex">
+    </div>
+    <button type="button" class="btn btn-primary btn-remove-custom-parameter">-</button>
+</div>

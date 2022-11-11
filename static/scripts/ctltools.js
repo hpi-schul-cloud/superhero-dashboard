@@ -2,9 +2,14 @@ $(document).ready(function () {
     var $editModal = $('.edit-modal');
     var $reglinkmodal = $('.reglink-modal');
     var $deleteModal = $('.delete-modal');
+    var $navToolType = $('.nav-tool-type');
+    var $customParameterTemplate = $('#custom-parameter-template');
+    var $customParameters = $('#custom-parameters');
+    var customParameterId = 0;
 
-    $('.btn-create-tool').click(function () {
+    $('.btn-create-ctl-tool').click(function () {
         let $createToolModal = $('.add-modal');
+        customParameterId = 0;
         populateModalForm($createToolModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
@@ -31,7 +36,7 @@ $(document).ready(function () {
             $editModal.modal('show');
         });
     });
-    
+
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -43,7 +48,7 @@ $(document).ready(function () {
                 submitLabel: false,
                 fields: result
             });
-            
+
             $reglinkmodal.modal('show');
         });
     });
@@ -62,6 +67,45 @@ $(document).ready(function () {
 
             $deleteModal.modal('show');
         });
+    });
+
+    $('.nav-link').on('click', function () {
+        $navToolType.attr('value',$(this).attr('aria-controls'));
+    });
+
+    $('.btn-add-custom-parameter').on('click', (e) => {
+        // e.preventDefault();
+        var newCustomParam = $customParameterTemplate.clone().appendTo('#custom-parameter-list');
+        newCustomParam.attr('class', 'custom-parameter');
+        newCustomParam.attr('id', `custom-parameter-${customParameterId}`);
+        newCustomParam.attr('style',null);
+        newCustomParam.find('.parameters-name').attr('name', `parameters[${customParameterId}][name]`);
+        newCustomParam.find('.parameters-type').attr('name', `parameters[${customParameterId}][type]`);
+        newCustomParam.find('.parameters-scope').attr('name', `parameters[${customParameterId}][scope]`);
+        newCustomParam.find('.parameters-location').attr('name', `parameters[${customParameterId}][location]`);
+        newCustomParam.find('.parameters-default').attr('name', `parameters[${customParameterId}][default]`);
+        newCustomParam.find('.parameters-regex').attr('name', `parameters[${customParameterId}][regex]`);
+        customParameterId++;
+    });
+
+    $('.btn-remove-custom-parameter').on('click', (e) => {
+        e.preventDefault();
+        var curr = $(this).parent();
+        console.log(curr);
+        $(this).parent().parent().removeChild($(this).parent());
+    });
+
+    $('.modal-form').on('submit', function(e){
+        e.preventDefault();
+        $(this).find('.custom-parameter').each(function(index) {
+            $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
+            $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
+            $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
+            $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
+            $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
+            $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
+        });
+        console.log($('.modal-form').serializeArray());
     });
 
     const dictionary = {
@@ -128,7 +172,7 @@ $(document).ready(function () {
             location = location.map(entity => {
                 if (entity.includes('sort')) {
                     if (entity === 'sort=' + dictionary[$(j).text()]) {
-                        entity = 'sort=-' + dictionary[$(j).text()]
+                        entity = 'sort=-' + dictionary[$(j).text()];
                     } else {
                         entity = 'sort=' + dictionary[$(j).text()];
                     }

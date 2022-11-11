@@ -15,7 +15,6 @@ $(document).ready(function () {
         });
         $createToolModal.modal('show');
     });
-
     $('.btn-edit').on('click', function (e) {
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -31,7 +30,7 @@ $(document).ready(function () {
             $editModal.modal('show');
         });
     });
-    
+
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -43,7 +42,7 @@ $(document).ready(function () {
                 submitLabel: false,
                 fields: result
             });
-            
+
             $reglinkmodal.modal('show');
         });
     });
