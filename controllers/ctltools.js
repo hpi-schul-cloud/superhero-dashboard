@@ -15,13 +15,7 @@ const getHydraVersion = () => {
     return process.env.FEATURE_LEGACY_HYDRA_ENABLED ? 'v1' : 'v3';
 };
 
-const getLtiVersion = () => {
-    return 'v1';
-    // return process.env.FEATURE_LEGACY_LTI_TOOLS_ENABLED ? 'v1' : 'v3';
-};
-
 const HYDRA_VERSION = getHydraVersion();
-const LTI_VERSION = getLtiVersion();
 
 const getTableActions = (item, path) => {
     return [
