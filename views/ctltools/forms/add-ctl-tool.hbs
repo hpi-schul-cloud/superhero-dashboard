@@ -1,6 +1,6 @@
 Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, lediglich die Vorlage für neue Instanzen.
 <div class="form-group">
-    <label class="control-label" for="name">Name</label>
+    <label class="control-label" for="name">Name *</label>
     <input type="text" name="name" id="name" class="form-control" placeholder="Learn App" required>
 </div>
 <div class="form-group">
@@ -27,7 +27,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
 </div>
 <h3>Konfiguration</h3>
 <div class="form-group">
-    <label class="control-label" for="baseUrl">BaseURL</label>
+    <label class="control-label" for="baseUrl">BaseURL *</label>
     <input type="text" name="config[baseUrl]" id="baseUrl" class="form-control" placeholder="http://base.url" required>
 </div>
 
@@ -45,19 +45,19 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <div class="tab-pane" id="oauth2" role="tabpanel" aria-labelledby="oauth2-tab">
         <h4>OAuth2</h4>
         <div class="form-group">
-            <label class="control-label" for="oauth-client-id">ClientId</label>
+            <label class="control-label" for="oauth-client-id">ClientId *</label>
             <input type="text" name="config[clientId]" id="oauth-client-id" class="form-control" placeholder="">
         </div>
         <div class="form-group">
-            <label class="control-label" for="oauth-client-secret">ClientSecret</label>
+            <label class="control-label" for="oauth-client-secret">ClientSecret *</label>
             <input type="text" name="config[clientSecret]" id="oauth-client-secret" class="form-control" placeholder="">
         </div>
         <div class="form-group">
-            <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert)</label>
+            <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert) *</label>
             <input type="text" name="config[redirectUris]" id="redirect-url" class="form-control" placeholder="">
         </div>
         <div class="form-group">
-            <label class="control-label" for="token_endpoint_auth_method">Token Endpoint Auth Method</label>
+            <label class="control-label" for="token_endpoint_auth_method">Token Endpoint Auth Method *</label>
             <select name="config[tokenEndpointAuthMethod]" id="token_endpoint_auth_method">
                 {{#each authMethods}}
                     <option value="{{this.value}}">{{this.label}}</option>
@@ -83,16 +83,16 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <div class="tab-pane" id="lti11" role="tabpanel" aria-labelledby="lti11-tab">
         <h4>LTI1.1</h4>
         <div class="form-group">
-            <label class="control-label" for="key">Key</label>
-            <textarea name="config[key]" id="key" class="form-control"></textarea>
+            <label class="control-label" for="key">Key *</label>
+            <textarea name="config[key]" id="key" class="form-control" ></textarea>
         </div>
         <div class="form-group">
-            <label class="control-label" for="secret">Secret</label>
+            <label class="control-label" for="secret">Secret *</label>
             <input type="text" name="config[secret]" id="secret" class="form-control" placeholder="" pattern=".{6,64}"
                    title="Mindestens 6 Zeichen">
         </div>
         <div class="form-group">
-            <label class="control-label" for="lti_message_type">Message Type</label>
+            <label class="control-label" for="lti_message_type">Message Type *</label>
             <select name="config[lti_message_type]" id="lti_message_type">
                 {{#each messageTypes}}
                     <option value="{{this.value}}">{{this.label}}</option>
@@ -100,7 +100,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
             </select>
         </div>
         <div class="form-group">
-            <label class="control-label" for="privacy_permission">Privatsphäre</label>
+            <label class="control-label" for="privacy_permission">Privatsphäre *</label>
             <select name="config[privacy_permission]" id="privacy_permission">
                 {{#each privacies}}
                     <option value="{{this.value}}">{{this.label}}</option>

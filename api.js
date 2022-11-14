@@ -10,7 +10,7 @@ const api = (req, { useCallback = false, json = true, version = 'v1' } = {}) => 
         headers['x-api-key'] = process.env.API_KEY;
     }
 
-    const baseUrl = process.env.BACKEND_URL || 'http://localhost:3030/api/';
+    const baseUrl = process.env.BACKEND_URL || 'http://localhost:3031/api/';
     const handler = useCallback ? request : rp;
     return handler.defaults({
 		baseUrl: new URL(version, baseUrl).href,
