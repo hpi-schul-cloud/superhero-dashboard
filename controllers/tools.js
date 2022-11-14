@@ -64,7 +64,6 @@ const sanitizeTool = (req, create=false) => {
   req.body.openNewTab = !!req.body.openNewTab;
   req.body.frontchannel_logout_uri = req.body.frontchannel_logout_uri || null;
   req.body.isHidden = !!req.body.isHidden;
-  console.log(req.body);
   return req;
 };
 
