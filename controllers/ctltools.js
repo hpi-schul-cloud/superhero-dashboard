@@ -2,70 +2,14 @@
  * One Controller per layout view
  */
 
-const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
+
 const PASSWORD = "******";
-
-const getHydraVersion = () => {
-    return process.env.FEATURE_LEGACY_HYDRA_ENABLED ? 'v1' : 'v3';
-};
-
-const HYDRA_VERSION = getHydraVersion();
-
-const getTableActions = (item, path) => {
-    return [
-        {
-            link: path + item.id,
-            class: 'btn-edit',
-            icon: 'edit',
-            title: 'bearbeiten'
-        },
-        {
-            link: path + item.id,
-            class: 'btn-delete',
-            icon: 'trash-o',
-            method: 'delete',
-            title: 'löschen'
-        }
-    ];
-};
-
-const head = [
-  'ID',
-  'Name',
-  'OAuthClientId',
-  '',
-];
-
-const mapToolToOauthClient = (body, create = false) => {
-    const { config } = body;
-    return {
-        client_id: create ? config.clientId : undefined,
-        client_name: body.name,
-        client_secret: config.clientSecret,
-        redirect_uris: config.redirectUris.split(";"),
-        token_endpoint_auth_method: config.tokenEndpointAuthMethod,
-        subject_type: "pairwise",
-        scope: config.scope,
-        frontchannel_logout_uri: config.frontchannelLogoutUri,
-    };
-};
-
-const mapOauthClientToOauthConfig = (client) => {
-    return {
-        clientId: client.client_id,
-        clientSecret: PASSWORD,
-        redirectUris: client.redirect_uris.join(";"),
-        tokenEndpointAuthMethod: client.token_endpoint_auth_method,
-        scope: client.scope,
-        frontchannelLogoutUri: client.frontchannel_logout_uri,
-    };
-};
 
 const sanitizeSecret = (secret, create) => secret === PASSWORD && !create ? undefined : secret;
 
@@ -82,14 +26,15 @@ const sanitizeToolInputs = (body, create=false) => {
                 // undefine the property prohibits database update of immutable
                 body.config.clientId = undefined;
             }
-            body.config.skipConsent = !!body.config.skipConsent;
             body.config.clientSecret = sanitizeSecret(body.config.clientSecret);
+            body.config.skipConsent = !!body.config.skipConsent;
+            body.config.redirectUris = body.config.redirectUris.split(';');
+            body.config.scope = body.config.scope || undefined;
+            body.config.frontchannelLogoutUri = body.config.frontchannelLogoutUri || undefined;
             break;
         case 'lti11':
             body.config.secret = sanitizeSecret(body.config.secret);
             body.config.resource_link_id = body.config.resource_link_id || undefined;
-            body.config.launch_presentation_locale = body.config.launch_presentation_locale || undefined;
-            body.config.launch_presentation_document_target = body.config.launch_presentation_document_target || undefined;
             break;
         case 'basic':
             break;
@@ -111,12 +56,7 @@ const getUpdateHandler = (req, res, next) => {
 
     api(req, { version: 'v3' }).patch(`/tools/${req.params.id}`, {
         json: req.body
-    }).then(data => {
-        if(data.config.type === 'oauth2') {
-            api(req, { version: HYDRA_VERSION }).put(`/oauth2/clients/${data.config.clientId}`, {
-                json: mapToolToOauthClient(req.body)
-            });
-        }
+    }).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
         next(err);
@@ -126,40 +66,21 @@ const getUpdateHandler = (req, res, next) => {
 const getDetailHandler = (req, res, next) => {
     api(req, { version: 'v3' }).get(`/tools/${req.params.id}`).then(data => {
         if (data.config.type === 'oauth2') {
-            api(req, { version: HYDRA_VERSION }).get(`/oauth2/clients/${data.config.clientId}`).then(client => {
-                data.config = { ...data.config, ...mapOauthClientToOauthConfig(client) };
-                res.json(data);
-            });
+            data.config.redirectUris = data.config.redirectUris.join(';');
+            data.config.clientSecret = PASSWORD;
         } else if (data.config.type === 'lti11') {
-            req.body.config.secret = PASSWORD;
+            data.config.secret = PASSWORD;
         }
+        res.json(data);
     }).catch(err => {
         next(err);
     });
 };
 
 const getDeleteHandler = (req, res, next) => {
-    api(req, { version: 'v3' }).delete(`/tools/${req.params.id}`).then(data => {
-        if (data.config.type === 'oauth2') {
-            api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${data.config.clientId}`);
-        }
+    api(req, { version: 'v3' }).delete(`/tools/${req.params.id}`).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
-        next(err);
-    });
-};
-
-const createTool = (req, next) => {
-    api(req, { version: 'v3' }).post('/tools/', {
-        json: req.body
-    }).then(_ => {
-        next();
-    }).catch(err => {
-        if (req.body.config.type === 'oauth2') {
-            api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${req.body.config.clientId}`).then(_ => {
-                next(err);
-            });
-        }
         next(err);
     });
 };
@@ -167,19 +88,39 @@ const createTool = (req, next) => {
 const getCreateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.body, true);
 
-    if(req.body.config.type === 'oauth2') {
-        api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
-            json: mapToolToOauthClient(req.body, true)
-        }).then(response => {
-            req.body.config.clientId = response.client_id;
-            createTool(req, next);
-        }).catch(err => {
-            next(err);
-        });
-    } else {
-        createTool(req, next);
-    }
+    api(req, { version: 'v3' }).post('/tools/', {
+        json: req.body
+    }).then(() => {
+        next();
+    }).catch(err => {
+        next(err);
+    });
 };
+
+const getTableActions = (item, path) => {
+    return [
+        {
+            link: path + item.id,
+            class: 'btn-edit',
+            icon: 'edit',
+            title: 'bearbeiten'
+        },
+        {
+            link: path + item.id,
+            class: 'btn-delete',
+            icon: 'trash-o',
+            method: 'delete',
+            title: 'löschen'
+        }
+    ];
+};
+
+const head = [
+    'ID',
+    'Name',
+    'OAuthClientId',
+    '',
+];
 
 const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
@@ -258,8 +199,6 @@ const showTools = (req, res) => {
     });
 };
 
-
-// secure routes
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
