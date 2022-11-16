@@ -9,11 +9,22 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const PASSWORD = "******";
+const PASSWORD = '******';
 
 const sanitizeSecret = (secret, create) => secret === PASSWORD && !create ? undefined : secret;
 
-const sanitizeToolInputs = (body, create=false) => {
+const trimWhitespaces = (object) => {
+    Object.keys(object).forEach((key) => {
+        const type = typeof object[key];
+        if (type === 'object') {
+            trimWhitespaces(object[key]);
+        } else if (type === 'string') {
+            object[key] = object[key].trim();
+        }
+    });
+};
+
+const sanitizeToolInputs = (body, create= false) => {
     body.url = body.url || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
@@ -48,6 +59,9 @@ const sanitizeToolInputs = (body, create=false) => {
             param.regex = param.regex || undefined;
         });
     }
+
+    trimWhitespaces(body);
+
     return body;
 };
 
