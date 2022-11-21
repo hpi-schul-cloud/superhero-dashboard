@@ -68,7 +68,7 @@ const sanitizeToolInputs = (body, create= false) => {
 const getUpdateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.body);
 
-    api(req, { version: 'v3' }).patch(`/tools/${req.params.id}`, {
+    api(req, { version: 'v3' }).put(`/tools/${req.params.id}`, {
         json: req.body
     }).then(() => {
         res.redirect(req.header('Referer'));
