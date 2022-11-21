@@ -9,10 +9,6 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const PASSWORD = '******';
-
-const sanitizeSecret = (secret, create) => secret === PASSWORD && !create ? undefined : secret;
-
 const trimWhitespaces = (object) => {
     Object.keys(object).forEach((key) => {
         const type = typeof object[key];
@@ -37,14 +33,14 @@ const sanitizeToolInputs = (body, create= false) => {
                 // undefine the property prohibits database update of immutable
                 body.config.clientId = undefined;
             }
-            body.config.clientSecret = sanitizeSecret(body.config.clientSecret);
+            body.config.clientSecret = body.config.clientSecret || undefined;
             body.config.skipConsent = !!body.config.skipConsent;
             body.config.redirectUris = body.config.redirectUris.split(';');
             body.config.scope = body.config.scope || undefined;
             body.config.frontchannelLogoutUri = body.config.frontchannelLogoutUri || undefined;
             break;
         case 'lti11':
-            body.config.secret = sanitizeSecret(body.config.secret);
+            body.config.secret = body.config.secret || undefined;
             body.config.resource_link_id = body.config.resource_link_id || undefined;
             break;
         case 'basic':
@@ -81,9 +77,6 @@ const getDetailHandler = (req, res, next) => {
     api(req, { version: 'v3' }).get(`/tools/${req.params.id}`).then(data => {
         if (data.config.type === 'oauth2') {
             data.config.redirectUris = data.config.redirectUris.join(';');
-            data.config.clientSecret = PASSWORD;
-        } else if (data.config.type === 'lti11') {
-            data.config.secret = PASSWORD;
         }
         res.json(data);
     }).catch(err => {
@@ -134,6 +127,57 @@ const head = [
     'Name',
     'OAuthClientId',
     '',
+];
+
+const versions = [
+  { label: '1.1', value: 'LTI-1p0' },
+  { label: '1.3', value: '1.3.0' },
+];
+
+const messageTypes = [
+  { label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
+  { label: 'LtiResourceLinkRequest', value: 'LtiResourceLinkRequest' },
+  { label: 'LtiDeepLinkingRequest', value: 'LtiDeepLinkingRequest' },
+];
+
+const privacies = [
+  { label: 'Anonym', value: 'anonymous' },
+  { label: 'Pseudonym', value: 'pseudonymous' },
+  { label: 'E-Mail', value: 'e-mail' },
+  { label: 'Name', value: 'name' },
+  { label: 'Öffentlich', value: 'public' },
+];
+
+const authMethods = [
+  { label: 'client_secret_basic', value: 'client_secret_basic' },
+  { label: 'client_secret_post', value: 'client_secret_post' },
+];
+
+const toolTypes = [
+    { label: 'Basic', value:'basic', active:'active' },
+    { label: 'OAuth2', value:'oauth2' },
+    { label: 'Lti 1.1', value:'lti11' },
+];
+
+const customParameterTypes = [
+    { label: 'String', value: 'string' },
+    { label: 'Number', value: 'number' },
+    { label: 'Boolean', value: 'boolean' },
+    { label: 'KursId', value: 'auto_courseid' },
+    { label: 'Kursname', value: 'auto_coursename' },
+    { label: 'SchulId', value: 'auto_schoolid' },
+];
+
+const customParameterLocations = [
+    { label: 'Path-Parameter', value: 'path' },
+    { label: 'Query-Parameter', value: 'query' },
+    { label: 'Token-Parameter', value: 'token' },
+];
+
+const customParameterScopes = [
+    { label: 'Global', value: 'global' },
+    { label: 'Schule', value: 'school' },
+    { label: 'Kurs', value: 'course' },
 ];
 
 const showTools = (req, res) => {
@@ -200,6 +244,14 @@ const showTools = (req, res) => {
             user: res.locals.currentUser,
             limit: true,
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            versions,
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
         });
     }).catch(() => {
         res.render('ctltools/ctltools', {
@@ -209,6 +261,14 @@ const showTools = (req, res) => {
             user: res.locals.currentUser,
             limit: true,
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            versions,
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
         });
     });
 };

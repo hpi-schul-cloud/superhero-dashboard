@@ -50,12 +50,12 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" class="add-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=true class="add-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=false method="patch" class="edit-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
