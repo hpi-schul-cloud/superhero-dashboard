@@ -8,8 +8,8 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
     <input type="text" name="url" id="url" class="form-control" placeholder="https://app.com">
 </div>
 <div class="form-group">
-    <label class="control-label" for="logo_url">Logo-URL</label>
-    <input type="text" name="logo_url" id="logo_url" class="form-control" placeholder="">
+    <label class="control-label" for="logoUrl">Logo-URL</label>
+    <input type="text" name="logoUrl" id="logoUrl" class="form-control" placeholder="">
 </div>
 <div class="form-group">
     <label class="control-label">Direkt in neuem Tab öffnen?</label>
@@ -38,7 +38,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         </li>
     {{/each}}
 </ul>
-<input class="nav-tool-type" type="hidden" name="config[type]" id="tool-type" value="basic" />
+<input class="nav-tool-type" type="hidden" name="config[type]" value="basic" id="tool-type"></input>
 <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
     </div>

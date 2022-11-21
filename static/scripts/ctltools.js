@@ -15,9 +15,10 @@ $(document).ready(function () {
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
             fields: {
-                silent: false
+                silent: false,
             }
         });
+        $navToolType.attr('value', 'basic');
         $createToolModal.modal('show');
     });
 
@@ -117,6 +118,7 @@ $(document).ready(function () {
 
     modal.find('.btn-close').on('click', function(e) {
         modal.find('#custom-parameter-list').children().remove();
+        $navToolType.attr('value', 'basic');
     });
 
     modal.on('submit', function(e) {
