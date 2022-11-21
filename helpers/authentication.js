@@ -128,6 +128,11 @@ const restrictSidebar = (req, res) => {
             enabled: CTL_ENABLED,
         },
         {
+            name: 'CTL Tools',
+            icon: 'window-maximize',
+            link: '/ctltools/'
+        },
+        {
             name: 'Datenspeicher',
             icon: 'server',
             link: '/storageproviders/'
