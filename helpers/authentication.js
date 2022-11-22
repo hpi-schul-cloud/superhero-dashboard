@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const { api } = require('../api');
 const permissionsHelper = require('./permissions');
 
+const CTL_ENABLED = process.env.FEATURE_CTL_TOOLS_ENABLED === "False";
+const LTI_ENABLED = process.env.FEATURE_LTI_TOOLS_ENABLED === "False";
+
 const isJWT = (req) => {
     return (req && req.cookies && req.cookies.jwt);
 };
@@ -65,9 +68,6 @@ const populateCurrentUser = (req, res) => {
     return Promise.resolve();
 };
 
-const CTL_ENABLED = !!process.env.FEATURE_CTL_TOOLS_ENABLED;
-const LTI_ENABLED = !process.env.FEATURE_LTI_TOOLS_DISABLED;
-
 const restrictSidebar = (req, res) => {
     res.locals.sidebarItems = [
         {
@@ -126,11 +126,6 @@ const restrictSidebar = (req, res) => {
             icon: 'window-maximize',
             link: '/ctltools/',
             enabled: CTL_ENABLED,
-        },
-        {
-            name: 'CTL Tools',
-            icon: 'window-maximize',
-            link: '/ctltools/'
         },
         {
             name: 'Datenspeicher',
