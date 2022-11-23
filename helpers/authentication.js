@@ -3,7 +3,7 @@ const { api } = require('../api');
 const permissionsHelper = require('./permissions');
 
 const CTL_ENABLED = (process.env.FEATURE_CTL_TOOLS_ENABLED || "false").toLowerCase() === "true";
-const LTI_ENABLED = (process.env.FEATURE_LTI_TOOLS_ENABLED || "false").toLowerCase() === "true";
+const LTI_ENABLED = (process.env.FEATURE_LTI_TOOLS_ENABLED || "true").toLowerCase() === "true";
 
 const isJWT = (req) => {
     return (req && req.cookies && req.cookies.jwt);
