@@ -203,7 +203,7 @@ const showTools = (req, res) => {
     }
 
     api(req, { version: 'v3' }).get('/tools', {
-        json: {
+        qs: {
             name: req.query.q,
             limit: itemsPerPage,
             skip: itemsPerPage * (currentPage - 1),
