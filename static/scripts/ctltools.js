@@ -15,9 +15,10 @@ $(document).ready(function () {
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
             fields: {
-                silent: false
+                silent: false,
             }
         });
+        $navToolType.attr('value', 'basic');
         $createToolModal.modal('show');
     });
 
@@ -69,23 +70,15 @@ $(document).ready(function () {
         });
     });
 
-    const requiredFieldsInConfig = {
-        basic: [],
-        oauth2: ['#oauth-client-id', '#oauth-client-secret', '#redirect-url', '#token_endpoint_auth_method'],
-        lti11: ['#key', '#secret', '#lti_message_type', '#privacy_permission']
-    };
-
     $('.nav-link').on('click', function() {
         var type = $(this).attr('aria-controls');
         $navToolType.attr('value', type);
 
-        $('.tab-content').find('input').each(function() {
+        $('.required').each(function() {
             $(this).removeAttr('required');
         });
 
-        requiredFieldsInConfig[type].forEach((field) => {
-            $(field).prop('required', true);
-        });
+        $(`#${type}`).find('.required').prop('required', true);
     });
 
     $('.btn-add-custom-parameter').on('click', function(e) {
@@ -125,6 +118,7 @@ $(document).ready(function () {
 
     modal.find('.btn-close').on('click', function(e) {
         modal.find('#custom-parameter-list').children().remove();
+        $navToolType.attr('value', 'basic');
     });
 
     modal.on('submit', function(e) {

@@ -18,7 +18,6 @@
                         <div class="card-text">
                             <h6>Authorization: /oauth2/auth</h6>
                             <h6>Token: /oauth2/token</h6>
-                            <h6>Token: /oauth2/token</h6>
                             <h6>Userinfo: /userinfo</h6>
                         </div>
                     </div>
@@ -32,10 +31,10 @@
                         <div class="input-group input-group-sm">
                             <input type="text" class="form-control search-field" placeholder="Suche nach Tools..." name="q" />
                             <span class="input-group-btn">
-                                            <button type="submit" class="btn btn-secondary">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                        </span>
+                                <button type="submit" class="btn btn-secondary">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </span>
                         </div>
                     </form>
                 </div>
@@ -51,12 +50,12 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" class="add-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=true class="add-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" method="patch" class="edit-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=false method="put" class="edit-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}

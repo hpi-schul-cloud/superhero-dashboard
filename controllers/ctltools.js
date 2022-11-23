@@ -2,31 +2,118 @@
  * One Controller per layout view
  */
 
-const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
-const PASSWORD = "******";
 
-const getHydraVersion = () => {
-    return process.env.FEATURE_LEGACY_HYDRA_ENABLED ? 'v1' : 'v3';
+const trimWhitespaces = (object) => {
+    Object.keys(object).forEach((key) => {
+        const type = typeof object[key];
+        if (type === 'object') {
+            trimWhitespaces(object[key]);
+        } else if (type === 'string') {
+            object[key] = object[key].trim();
+        }
+    });
 };
 
-const HYDRA_VERSION = getHydraVersion();
+const sanitizeToolInputs = (body, create= false) => {
+    body.url = body.url || undefined;
+    body.logoUrl = body.logoUrl || undefined;
+    body.openNewTab = !!body.openNewTab;
+    body.isHidden = !!body.isHidden;
+    body.config.baseUrl = body.config.baseUrl || undefined;
+
+    switch (body.config.type) {
+        case 'oauth2':
+            if(!create) {
+                // undefine the property prohibits database update of immutable
+                body.config.clientId = undefined;
+            }
+            body.config.clientSecret = body.config.clientSecret || undefined;
+            body.config.skipConsent = !!body.config.skipConsent;
+            body.config.redirectUris = body.config.redirectUris.split(';');
+            body.config.scope = body.config.scope || undefined;
+            body.config.frontchannelLogoutUri = body.config.frontchannelLogoutUri || undefined;
+            break;
+        case 'lti11':
+            body.config.secret = body.config.secret || undefined;
+            body.config.resource_link_id = body.config.resource_link_id || undefined;
+            break;
+        case 'basic':
+            break;
+        default:
+            throw new Error('Unknown tool config type');
+    }
+
+    if(body.parameters && Array.isArray(body.parameters)) {
+        body.parameters.forEach((param) => {
+            param.default = param.default || undefined;
+            param.regex = param.regex || undefined;
+        });
+    }
+
+    trimWhitespaces(body);
+
+    return body;
+};
+
+const getUpdateHandler = (req, res, next) => {
+    req.body = sanitizeToolInputs(req.body);
+
+    api(req, { version: 'v3' }).put(`/tools/${req.params.id}`, {
+        json: req.body
+    }).then(() => {
+        res.redirect(req.header('Referer'));
+    }).catch(err => {
+        next(err);
+    });
+};
+
+const getDetailHandler = (req, res, next) => {
+    api(req, { version: 'v3' }).get(`/tools/${req.params.id}`).then(data => {
+        if (data.config.type === 'oauth2') {
+            data.config.redirectUris = data.config.redirectUris.join(';');
+        }
+        res.json(data);
+    }).catch(err => {
+        next(err);
+    });
+};
+
+const getDeleteHandler = (req, res, next) => {
+    api(req, { version: 'v3' }).delete(`/tools/${req.params.id}`).then(() => {
+        res.redirect(req.header('Referer'));
+    }).catch(err => {
+        next(err);
+    });
+};
+
+const getCreateHandler = (req, res, next) => {
+    req.body = sanitizeToolInputs(req.body, true);
+
+    api(req, { version: 'v3' }).post('/tools/', {
+        json: req.body
+    }).then(() => {
+        next();
+    }).catch(err => {
+        next(err);
+    });
+};
 
 const getTableActions = (item, path) => {
     return [
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-edit',
             icon: 'edit',
             title: 'bearbeiten'
         },
         {
-            link: path + item._id,
+            link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete',
@@ -35,140 +122,11 @@ const getTableActions = (item, path) => {
     ];
 };
 
-const getClient = (body, create = false) => ({
-  "client_id": (create ? body.oAuthClientId : undefined),
-  "client_name": body.name,
-  "client_secret": body.secret,
-  "redirect_uris": body.redirect_url.split(";"),
-  "token_endpoint_auth_method": body.token_endpoint_auth_method,
-  "subject_type": "pairwise",
-  "scope": body.scope,
-  "frontchannel_logout_uri": body.frontchannel_logout_uri,
-});
-
-const sanitizeTool = (req, create=false) => {
-  req.body.key = req.body.key || null;
-  req.body.resource_link_id = req.body.resource_link_id || null;
-  req.body.toolType = req.body.toolType || null;
-  req.body.lti_version = req.body.lti_version || null;
-  req.body.lti_message_type = req.body.lti_message_type || null;
-  req.body.secret = (req.body.secret === PASSWORD ? undefined : req.body.secret);
-  req.body.isTemplate = true;
-  if(create || !req.body.isLocal) { // non-local (LTI) tools can be updated forever, local (OAuth2) only during creation
-    req.body.oAuthClientId = req.body.oAuthClientId || "";
-  } else {
-    req.body.oAuthClientId = undefined; // undefine the property prohibits database update
-  }
-  req.body.isLocal = (create ? !!req.body.isLocal : undefined);
-  req.body.scope = req.body.scope || "openid offline";
-  req.body.skipConsent = !!req.body.skipConsent;
-  req.body.openNewTab = !!req.body.openNewTab;
-  req.body.frontchannel_logout_uri = req.body.frontchannel_logout_uri || null;
-  req.body.isHidden = !!req.body.isHidden;
-  return req;
-};
-
-const createTool = (req, service, next) => {
-  api(req).post('/' + service + '/', {
-    json: req.body
-  }).then(tool => {
-    next();
-  }).catch(err => {
-    if(req.body.isLocal) {
-      api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${req.body.oAuthClientId}`).then(_ => {
-        next(err);
-      });
-    }
-    next(err);
-  });
-};
-
-const getCreateHandler = (service) => {
-    return function (req, res, next) {
-      req = sanitizeTool(req, true);
-      if(req.body.isLocal) {
-        return api(req, { version: HYDRA_VERSION }).post('/oauth2/clients/', {
-          json: getClient(req.body, true)
-        }).then(response => {
-          req.body.oAuthClientId = response.client_id;
-          createTool(req, service, next);
-        }).catch(err => {
-          next(err);
-        });
-      } else {
-        createTool(req, service, next);
-      }
-    };
-};
-
-const getUpdateHandler = (service) => {
-    return function (req, res, next) {
-      req = sanitizeTool(req);
-      return api(req).patch('/' + service + '/' + req.params.id, {
-          json: req.body
-      }).then(data => {
-        if(data.isLocal) {
-          return api(req, { version: HYDRA_VERSION }).put(`/oauth2/clients/${data.oAuthClientId}`, {
-            json: getClient(req.body)
-          }).then(_ => {
-            res.redirect(req.header('Referer'));
-          });
-        }
-      res.redirect(req.header('Referer'));
-      }).catch(err => {
-          next(err);
-      });
-    };
-};
-
-const getDetailHandler = (service) => {
-    return function (req, res, next) {
-        api(req).get('/' + service + '/' + req.params.id).then(data => {
-          if(data.isLocal) {
-            api(req, { version: HYDRA_VERSION }).get(`/oauth2/clients/${data.oAuthClientId}`).then(client => {
-              data.secret = PASSWORD;
-              data.redirect_url = client.redirect_uris.join(";");
-              data.token_endpoint_auth_method = client.token_endpoint_auth_method;
-              data.scope = client.scope;
-              data.frontchannel_logout_uri = client.frontchannel_logout_uri;
-              res.json(data);
-            });
-          } else {
-            data.secret = PASSWORD;
-            res.json(data);
-          }
-        }).catch(err => {
-          next(err);
-        });
-    };
-};
-
-const getDeleteHandler = (service) => {
-    return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(data => {
-          if(data.isLocal) {
-            api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${data.oAuthClientId}`).then(_ => {
-              res.redirect(req.header('Referer'));
-            });
-          } else {
-            res.redirect(req.header('Referer'));
-          }
-        }).catch(err => {
-            next(err);
-        });
-    };
-};
-
 const head = [
-  'ID',
-  'Name',
-  'OAuthClientId',
-  '',
-];
-
-const versions = [
-  { label: '1.1', value: 'LTI-1p0' },
-  { label: '1.3', value: '1.3.0' },
+    'ID',
+    'Name',
+    'OAuthClientId',
+    '',
 ];
 
 const messageTypes = [
@@ -218,85 +176,104 @@ const customParameterScopes = [
 ];
 
 const showTools = (req, res) => {
-  const itemsPerPage = (req.query.limit || 10);
-  const currentPage = parseInt(req.query.p) || 1;
-  api(req).get('/ltitools', {
-    qs: {
-      name: (req.query.q ? {
-        $regex: _.escapeRegExp(req.query.q),
-        $options: 'i'
-      } : undefined),
-      $limit: itemsPerPage,
-      $skip: itemsPerPage * (currentPage - 1),
-      $sort: req.query.sort,
-      'isTemplate': true,
-    },
-  }).then((tools) => {
-    const body = tools.data.map(item => {
-      return [
-        item._id ||"",
-        item.name ||"",
-        item.oAuthClientId || "",
-        getTableActions(item, '/ctltools/')
-      ];
-    });
+    const itemsPerPage = (req.query.limit || 10);
+    const currentPage = parseInt(req.query.p) || 1;
 
-    let sortQuery = '';
+    let sortOrder;
+    let sortBy;
     if (req.query.sort) {
-      sortQuery = '&sort=' + req.query.sort;
+        if (req.query.sort.startsWith('-')) {
+            sortOrder = 'desc';
+            sortBy = req.query.sort.substring(1);
+        } else {
+            sortOrder = 'asc';
+            sortBy = req.query.sort;
+        }
+
+        if(sortBy === '_id') {
+            sortBy = 'id';
+        } else if(sortBy === 'undefined') {
+            sortBy = undefined;
+        }
     }
 
-    let limitQuery = '';
-    if (req.query.limit) {
-      limitQuery = '&limit=' + req.query.limit;
-    }
+    api(req, { version: 'v3' }).get('/tools', {
+        qs: {
+            name: req.query.q,
+            limit: itemsPerPage,
+            skip: itemsPerPage * (currentPage - 1),
+            sortOrder,
+            sortBy,
+        },
+    }).then((tools) => {
+        const body = tools.data.map(item => {
+            return [
+                item.id || "",
+                item.name || "",
+                item.config.clientId || "",
+                getTableActions(item, '/ctltools/')
+            ];
+        });
 
-    const pagination = {
-      currentPage,
-      numPages: Math.ceil(tools.total / itemsPerPage),
-      baseUrl: '/ctltools/?p={{page}}' + sortQuery + limitQuery
-    };
+        let sortQuery = '';
+        if (req.query.sort) {
+            sortQuery = '&sort=' + req.query.sort;
+        }
 
-    res.render('ctltools/ctltools', {
-        title: 'Tools',
-        head,
-        body,
-        pagination,
-        user: res.locals.currentUser,
-        limit: true,
-        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-        versions,
-        messageTypes,
-        privacies,
-        authMethods,
-        toolTypes,
-        customParameterTypes,
-        customParameterScopes,
-        customParameterLocations
+        let limitQuery = '';
+        if (req.query.limit) {
+            limitQuery = '&limit=' + req.query.limit;
+        }
+
+        const pagination = {
+            currentPage,
+            numPages: Math.ceil(tools.total / itemsPerPage),
+            baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
+        };
+
+        res.render('ctltools/ctltools', {
+            title: 'Tools',
+            head,
+            body,
+            pagination,
+            user: res.locals.currentUser,
+            limit: true,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
+        });
+    }).catch(() => {
+        res.render('ctltools/ctltools', {
+            title: 'Tools',
+            head,
+            body: [],
+            user: res.locals.currentUser,
+            limit: true,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
+        });
     });
-  });
 };
 
-// secure routes
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
+router.put('/:id', getUpdateHandler);
+router.get('/:id', getDetailHandler);
+router.delete('/:id', getDeleteHandler);
+router.post('/', getCreateHandler);
 
-router.patch('/:id', getUpdateHandler('ltitools'));
-router.get('/:id', getDetailHandler('ltitools'));
-router.delete('/:id', getDeleteHandler('ltitools'));
-router.post('/', getCreateHandler('ltitools'));
 router.all('/', showTools);
-
-router.get('/', function (req, res, next) {
-    api(req).get('/ltitools/').then(ltitools => {
-        res.render('ctltools/ctltools', {
-            title: 'Tools',
-            user: res.locals.currentUser,
-            tools: ltitools.data,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
-        });
-    });
-});
 
 module.exports = router;
