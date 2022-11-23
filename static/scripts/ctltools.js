@@ -1,16 +1,17 @@
 $(document).ready(function () {
-    var $editModal = $('.edit-modal');
-    var $reglinkmodal = $('.reglink-modal');
-    var $deleteModal = $('.delete-modal');
-    var $navToolType = $('.nav-tool-type');
-    var $customParameterTemplate = $('#custom-parameter-template');
-    var $customParameters = $('#custom-parameters');
-    var customParameterId = 0;
+    const $addModal = $('.add-modal');
+    const $editModal = $('.edit-modal');
+    const $reglinkmodal = $('.reglink-modal');
+    const $deleteModal = $('.delete-modal');
+    const $navToolType = $('.nav-tool-type');
+    const $customParameterTemplate = $('#custom-parameter-template');
+    let customParameterId = 0;
+
 
     $('.btn-create-ctl-tool').click(function () {
-        let $createToolModal = $('.add-modal');
         customParameterId = 0;
-        populateModalForm($createToolModal, {
+
+        populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
@@ -19,10 +20,12 @@ $(document).ready(function () {
             }
         });
         $navToolType.attr('value', 'basic');
-        $createToolModal.modal('show');
+        $addModal.modal('show');
     });
 
     $('.btn-edit').on('click', function (e) {
+        customParameterId = 0;
+
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
@@ -34,6 +37,7 @@ $(document).ready(function () {
                 fields: result
             });
 
+            populateCustomParameter($editModal, result.parameters);
             $editModal.modal('show');
         });
     });
@@ -81,9 +85,56 @@ $(document).ready(function () {
         $(`#${type}`).find('.required').prop('required', true);
     });
 
-    $('.btn-add-custom-parameter').on('click', function(e) {
+    $addModal.find('.btn-add-custom-parameter').on('click', function(e) {
+        addCustomParameter($addModal);
+    });
+    $editModal.find('.btn-add-custom-parameter').on('click', function(e) {
+        addCustomParameter($editModal);
+    });
+
+
+    $('.btn-remove-custom-parameter').on('click', function(e) {
+        $(this).parent('.custom-parameter-container').remove();
+    });
+
+    const $modalForms = $('.add-modal, .edit-modal').find('.modal-form');
+
+
+
+    $modalForms.find('.btn-close').on('click', function(e) {
+        $modalForms.find('.custom-parameter-list').children().remove();
+        $navToolType.attr('value', 'basic');
+    });
+
+    $modalForms.on('submit', function(e) {
+        $('.tab-pane').not('.active').remove();
+
+        $(this).find('.custom-parameter-container').each(function (index) {
+            $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
+            $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
+            $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
+            $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
+            $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
+            $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
+        });
+    });
+
+    function populateCustomParameter($modal, parameters) {
+        parameters.forEach(param => {
+            const customParameter = addCustomParameter($modal);
+
+            customParameter.find('.parameters-name').attr('value', param.name);
+            customParameter.find('.parameters-type').attr('value', param.type);
+            customParameter.find('.parameters-scope').attr('value', param.scope);
+            customParameter.find('.parameters-location').attr('value', param.location);
+            customParameter.find('.parameters-default').attr('value', param.default);
+            customParameter.find('.parameters-regex').attr('value', param.regex);
+        });
+    }
+
+    function addCustomParameter($modal) {
         const newCustomParamContainer = $customParameterTemplate.clone(true);
-        newCustomParamContainer.appendTo('#custom-parameter-list');
+        newCustomParamContainer.appendTo($modal.find('.custom-parameter-list'));
         newCustomParamContainer.attr('class', 'custom-parameter-container');
         newCustomParamContainer.attr('id', `custom-parameter-${customParameterId}`);
         newCustomParamContainer.attr('style', null);
@@ -108,31 +159,9 @@ $(document).ready(function () {
         newCustomParamContainer.find('.parameters-regex').attr('id', `parameters-regex-${customParameterId}`);
 
         customParameterId++;
-    });
 
-    $('.btn-remove-custom-parameter').on('click', function(e) {
-        $(this).parent('.custom-parameter-container').remove();
-    });
-
-    const modal = $('.add-modal, .edit-modal').find('.modal-form');
-
-    modal.find('.btn-close').on('click', function(e) {
-        modal.find('#custom-parameter-list').children().remove();
-        $navToolType.attr('value', 'basic');
-    });
-
-    modal.on('submit', function(e) {
-        $('.tab-pane').not('.active').remove();
-
-        $(this).find('.custom-parameter-container').each(function (index) {
-            $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
-            $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
-            $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
-            $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
-            $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
-            $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
-        });
-    });
+        return newCustomParamContainer;
+    }
 
     const dictionary = {
         'Vorname': 'firstName',
@@ -153,8 +182,7 @@ $(document).ready(function () {
         'Status': 'state',
         'Erstellungsdatum': 'createdAt',
         'Anmerkungen': 'notes',
-        'Abkürzung': 'abbreviation',
-        'Logo': 'logoUrl',
+        'Abkürzung': 'abbreviation', 'Logo': 'logoUrl',
         'E-Mail-Adresse': 'email',
         'Klassen': 'classIds',
         'Lehrer': 'teacherIds',
