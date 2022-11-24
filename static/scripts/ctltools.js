@@ -1,15 +1,18 @@
 $(document).ready(function () {
+    const addModalId = 'add';
+    const editModalId = 'edit';
     const $addModal = $('.add-modal');
     const $editModal = $('.edit-modal');
     const $reglinkmodal = $('.reglink-modal');
     const $deleteModal = $('.delete-modal');
-    const $navToolType = $('.nav-tool-type');
     const $customParameterTemplate = $('#custom-parameter-template');
     let customParameterId = 0;
 
-
     $('.btn-create-ctl-tool').click(function () {
         customParameterId = 0;
+
+        $addModal.find('.custom-parameter-list').children().remove();
+        $addModal.find('.nav-tool-type').attr('value', 'basic');
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -19,12 +22,14 @@ $(document).ready(function () {
                 silent: false,
             }
         });
-        $navToolType.attr('value', 'basic');
         $addModal.modal('show');
     });
 
     $('.btn-edit').on('click', function (e) {
         customParameterId = 0;
+
+        $editModal.find('.custom-parameter-list').children().remove();
+        $editModal.find('.nav-tool-type').attr('value', 'basic');
 
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -36,10 +41,10 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
-
             populateCustomParameter($editModal, result.parameters);
-            $editModal.modal('show');
+            $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
         });
+        $editModal.modal('show');
     });
 
     $('.btn-reglink').on('click', function (e) {
@@ -74,37 +79,36 @@ $(document).ready(function () {
         });
     });
 
-    $('.nav-link').on('click', function() {
-        var type = $(this).attr('aria-controls');
-        $navToolType.attr('value', type);
+    function useTabHandler($modal, modalId) {
+        $modal.find('.nav-link').on('click', function () {
+            const type = $(this).attr('aria-controls');
+            $modal.find('.nav-tool-type').attr('value', type);
 
-        $('.required').each(function() {
-            $(this).removeAttr('required');
+            $('.required').each(function () {
+                $(this).removeAttr('required');
+            });
+
+            $(`#${type}-${modalId}`).find('.required').prop('required', true);
         });
+    }
 
-        $(`#${type}`).find('.required').prop('required', true);
-    });
+    useTabHandler($addModal, addModalId);
+    useTabHandler($editModal, editModalId);
 
-    $addModal.find('.btn-add-custom-parameter').on('click', function(e) {
+    $addModal.find('.btn-add-custom-parameter').on('click', function() {
         addCustomParameter($addModal);
     });
-    $editModal.find('.btn-add-custom-parameter').on('click', function(e) {
+    $editModal.find('.btn-add-custom-parameter').on('click', function() {
         addCustomParameter($editModal);
     });
 
-
-    $('.btn-remove-custom-parameter').on('click', function(e) {
+    $('.btn-remove-custom-parameter').on('click', function() {
         $(this).parent('.custom-parameter-container').remove();
     });
 
     const $modalForms = $('.add-modal, .edit-modal').find('.modal-form');
 
-    $modalForms.find('.btn-close').on('click', function(e) {
-        $modalForms.find('.custom-parameter-list').children().remove();
-        $navToolType.attr('value', 'basic');
-    });
-
-    $modalForms.on('submit', function(e) {
+    $modalForms.on('submit', function() {
         $('.tab-pane').not('.active').remove();
 
         $(this).find('.custom-parameter-container').each(function (index) {
@@ -122,11 +126,12 @@ $(document).ready(function () {
             const customParameter = addCustomParameter($modal);
 
             customParameter.find('.parameters-name').attr('value', param.name);
-            customParameter.find('.parameters-type').attr('value', param.type);
-            customParameter.find('.parameters-scope').attr('value', param.scope);
-            customParameter.find('.parameters-location').attr('value', param.location);
             customParameter.find('.parameters-default').attr('value', param.default);
             customParameter.find('.parameters-regex').attr('value', param.regex);
+
+            customParameter.find('.parameters-type').find(`option[value=${param.type}]`).prop('selected', true);
+            customParameter.find('.parameters-scope').find(`option[value=${param.scope}]`).prop('selected', true);
+            customParameter.find('.parameters-location').find(`option[value=${param.location}]`).prop('selected', true);
         });
     }
 
@@ -217,7 +222,7 @@ $(document).ready(function () {
     };
 
     $('tr th').each(function(i,j) {
-        $(j).on('click', function (e) {
+        $(j).on('click', function () {
 
             let location = window.location.search.split('&');
             let contained = false;
