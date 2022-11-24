@@ -99,8 +99,6 @@ $(document).ready(function () {
 
     const $modalForms = $('.add-modal, .edit-modal').find('.modal-form');
 
-
-
     $modalForms.find('.btn-close').on('click', function(e) {
         $modalForms.find('.custom-parameter-list').children().remove();
         $navToolType.attr('value', 'basic');
@@ -182,7 +180,8 @@ $(document).ready(function () {
         'Status': 'state',
         'Erstellungsdatum': 'createdAt',
         'Anmerkungen': 'notes',
-        'Abkürzung': 'abbreviation', 'Logo': 'logoUrl',
+        'Abkürzung': 'abbreviation',
+        'Logo': 'logoUrl',
         'E-Mail-Adresse': 'email',
         'Klassen': 'classIds',
         'Lehrer': 'teacherIds',

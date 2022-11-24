@@ -129,11 +129,6 @@ const head = [
     '',
 ];
 
-const versions = [
-  { label: '1.1', value: 'LTI-1p0' },
-  { label: '1.3', value: '1.3.0' },
-];
-
 const messageTypes = [
   { label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
   { label: 'LtiResourceLinkRequest', value: 'LtiResourceLinkRequest' },
@@ -203,7 +198,7 @@ const showTools = (req, res) => {
     }
 
     api(req, { version: 'v3' }).get('/tools', {
-        json: {
+        qs: {
             name: req.query.q,
             limit: itemsPerPage,
             skip: itemsPerPage * (currentPage - 1),
@@ -244,7 +239,22 @@ const showTools = (req, res) => {
             user: res.locals.currentUser,
             limit: true,
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-            versions,
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
+        });
+    }).catch(() => {
+        res.render('ctltools/ctltools', {
+            title: 'Tools',
+            head,
+            body: [],
+            user: res.locals.currentUser,
+            limit: true,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
             messageTypes,
             privacies,
             authMethods,
