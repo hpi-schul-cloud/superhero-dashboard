@@ -1,3 +1,5 @@
 ---
 SUPERHERO_DASHBOARD_IMAGE: ghcr.io/hpi-schul-cloud/superhero-dashboard
 SHD_PREFIX: shd-
+
+FEATURE_CTL_TOOLS_ENABLED: true
