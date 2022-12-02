@@ -228,7 +228,7 @@ const showTools = (req, res) => {
         const pagination = {
             currentPage,
             numPages: Math.ceil(tools.total / itemsPerPage),
-            baseUrl: '/tools/?p={{page}}' + sortQuery + limitQuery
+            baseUrl: '/ctltools/?p={{page}}' + sortQuery + limitQuery
         };
 
         res.render('ctltools/ctltools', {
@@ -236,6 +236,22 @@ const showTools = (req, res) => {
             head,
             body,
             pagination,
+            user: res.locals.currentUser,
+            limit: true,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations
+        });
+    }).catch(() => {
+        res.render('ctltools/ctltools', {
+            title: 'Tools',
+            head,
+            body: [],
             user: res.locals.currentUser,
             limit: true,
             themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',

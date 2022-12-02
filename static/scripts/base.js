@@ -42,40 +42,47 @@ function populateModalForm(modal, data) {
     }
 
     // fields
-    $('[name]', $form).not('[data-force-value]').each(function () {
-        var value = (data.fields || {})[$(this).prop('name').replace('[]', '')] || '';
-        switch ($(this).prop("type")) {
-            case "radio":
-            case "checkbox":
-                $(this).each(function () {
-                    if (($(this).attr('name') == $(this).prop('name')) && value) {
-                        $(this).attr("checked", value);
+    if(data.fields) {
+        $('[name]', $form).not('[data-force-value]').each(function () {
+            const propSelectors = $(this).prop('name').replace('[]', '').replace(']', '').split('[');
+
+            const value = propSelectors.reduce((accumulator, currentValue) => {
+                return accumulator ? accumulator[currentValue] : undefined;
+            }, data.fields) || '';
+
+            switch ($(this).prop("type")) {
+                case "radio":
+                case "checkbox":
+                    $(this).each(function () {
+                        if (($(this).attr('name') == $(this).prop('name')) && value) {
+                            $(this).attr("checked", value);
+                        } else {
+                            $(this).removeAttr("checked");
+                        }
+                    });
+                    break;
+                case "datetime-local":
+                    $(this).val(value.slice(0, 16)).trigger("chosen:updated");
+                    break;
+                case "date":
+                    $(this).val(value.slice(0, 10)).trigger("chosen:updated");
+                    break;
+                case "color":
+                    $(this).attr("value", value);
+                    $(this).attr("placeholder", value);
+                    break;
+                default:
+                    if ($(this).prop('nodeName') == "TEXTAREA" && $(this).hasClass("customckeditor")) {
+                        if (CKEDITOR.instances.description) {
+                            CKEDITOR.instances.description.setData(value);
+                        }
                     } else {
-                        $(this).removeAttr("checked");
+                        $(this).val(value).trigger("chosen:updated");
                     }
-                });
-                break;
-            case "datetime-local":
-                $(this).val(value.slice(0, 16)).trigger("chosen:updated");
-                break;
-            case "date":
-                $(this).val(value.slice(0, 10)).trigger("chosen:updated");
-                break;
-            case "color":
-                $(this).attr("value", value);
-                $(this).attr("placeholder", value);
-                break;
-            default:
-                if ($(this).prop('nodeName') == "TEXTAREA" && $(this).hasClass("customckeditor")) {
-                    if (CKEDITOR.instances.description) {
-                        CKEDITOR.instances.description.setData(value);
-                    }
-                } else {
-                    $(this).val(value).trigger("chosen:updated");
-                }
-        }
-        $(this).change().trigger("input");
-    });
+            }
+            $(this).change().trigger("input");
+        });
+    }
 }
 
 $(document).ready(function () {
@@ -146,8 +153,8 @@ $(document).ready(function () {
             a.addEventListener("click", function (a) {
                 d = a.target;
                 while (!f.test(d.nodeName))d = d.parentNode;
-                "href" in d && (d.href.indexOf("http") || ~d.href.indexOf(e.host)) && (a.preventDefault(), e.href = d.href)
-            }, !1)
+                "href" in d && (d.href.indexOf("http") || ~d.href.indexOf(e.host)) && (a.preventDefault(), e.href = d.href);
+            }, !1);
         }
     })(document, window.navigator, "standalone");
     
