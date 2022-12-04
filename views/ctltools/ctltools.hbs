@@ -50,19 +50,19 @@
             </div>
         </div>
 
-        {{#embed "lib/components/modal-form" requireSecret=true class="add-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=true modalId="add" class="add-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
-        {{#embed "lib/components/modal-form" requireSecret=false method="put" class="edit-modal" action="/ctltools"}}
+        {{#embed "lib/components/modal-form" requireSecret=false modalId="edit" method="put" class="edit-modal" action="/ctltools"}}
             {{#content "fields"}}
                 {{> "ctltools/forms/add-ctl-tool"}}
             {{/content}}
         {{/embed}}
         {{#embed "lib/components/modal-form" roles=roles method="delete" class="delete-modal" action="/ctltools"}}
             {{#content "fields"}}
-                {{> "lib/components/delete-form"}}
+                {{> "ctltools/forms/delete-form"}}
             {{/content}}
         {{/embed}}
     {{/content}}

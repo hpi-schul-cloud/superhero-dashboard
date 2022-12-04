@@ -34,15 +34,15 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     {{#each toolTypes}}
         <li class="nav-item">
-            <a class="nav-link {{this.active}}" id="{{this.value}}-tab" data-toggle="tab" href="#{{this.value}}" role="tab" aria-controls="{{this.value}}">{{this.label}}</a>
+            <a class="nav-link {{this.active}}" id="{{this.value}}-tab-{{../modalId}}" data-toggle="tab" href="#{{this.value}}-{{../modalId}}" role="tab" aria-controls="{{this.value}}">{{this.label}}</a>
         </li>
     {{/each}}
 </ul>
 <input class="nav-tool-type" type="hidden" name="config[type]" value="basic" id="tool-type"></input>
 <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane show active" id="basic" role="tabpanel" aria-labelledby="basic-tab">
+    <div class="tab-pane show active" id="basic-{{modalId}}" role="tabpanel" aria-labelledby="basic-tab-{{modalId}}">
     </div>
-    <div class="tab-pane" id="oauth2" role="tabpanel" aria-labelledby="oauth2-tab">
+    <div class="tab-pane" id="oauth2-{{modalId}}" role="tabpanel" aria-labelledby="oauth2-tab-{{modalId}}">
         <h4>OAuth2</h4>
         <div class="form-group">
             <label class="control-label" for="oauth-client-id">ClientId *</label>
@@ -80,7 +80,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
             </label>
         </div>
     </div>
-    <div class="tab-pane" id="lti11" role="tabpanel" aria-labelledby="lti11-tab">
+    <div class="tab-pane" id="lti11-{{modalId}}" role="tabpanel" aria-labelledby="lti11-tab-{{modalId}}">
         <h4>LTI1.1</h4>
         <div class="form-group">
             <label class="control-label" for="key">Key *</label>
@@ -117,8 +117,8 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
 <hr/>
 
 <h3>Custom Parameters</h3>
-<div id="custom-parameter-list"></div>
-<button type="button" class="btn btn-primary btn-add-custom-parameter">+</button>
+<div class="custom-parameter-list"></div>
+<button type="button" class="btn btn-primary btn-add-custom-parameter mt-1">+</button>
 <div id="custom-parameter-template" style="display:none;">
     <div class="form-group">
         <label class="control-label parameters-name-label">Name</label>
