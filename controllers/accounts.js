@@ -10,6 +10,12 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
+const getMostSignificantRole = (roles) => {
+	return roles.find((role) => role === 'administrator') ||
+		roles.find((role) => role === 'teacher') ||
+		roles.find((role) => role === 'student');
+};
+
 const getTableActions = (item, path) => {
     let tableActions = [
         {
@@ -78,13 +84,36 @@ const getDetailHandler = (service) => {
 };
 
 const getDeleteHandler = (service) => {
+    let roles;
     return async function (req, res, next) {
         try {
             const { id } = req.params;
             const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
                 .delete(`/${service}/${id}`);
-            await api(req).delete(`/users/${userId}`);
-            res.redirect(req.header('Referer'));
+            api(req)
+                .get('/users/' + userId, { qs: { $populate: ['roles'] } })
+                .then(async (user) => {
+                    roles = user.roles.map((role) => {
+                        return role.name;
+                    });
+                    return roles;
+                })
+                .then((roles) => {
+                    const pathRole = getMostSignificantRole(roles);
+                    if (pathRole === undefined) {
+                        const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
+                        error.status = 403;
+                        throw error;
+                    }
+                    api(req)
+                        .delete(`/users/v2/admin/${pathRole}/${userId}`)
+                        .then((data) => {
+                            res.redirect(req.header('Referer'));
+                        })
+                        .catch((err) => {
+                            next(err);
+                        });
+                });
         } catch (err) {
             next(err);
         }
