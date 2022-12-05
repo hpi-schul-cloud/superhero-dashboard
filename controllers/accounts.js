@@ -90,30 +90,23 @@ const getDeleteHandler = (service) => {
             const { id } = req.params;
             const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
                 .delete(`/${service}/${id}`);
-            api(req)
-                .get('/users/' + userId, { qs: { $populate: ['roles'] } })
-                .then(async (user) => {
-                    roles = user.roles.map((role) => {
-                        return role.name;
-                    });
-                    return roles;
-                })
-                .then((roles) => {
-                    const pathRole = getMostSignificantRole(roles);
-                    if (pathRole === undefined) {
-                        const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
-                        error.status = 403;
-                        throw error;
-                    }
-                    api(req)
-                        .delete(`/users/v2/admin/${pathRole}/${userId}`)
-                        .then((data) => {
-                            res.redirect(req.header('Referer'));
-                        })
-                        .catch((err) => {
-                            next(err);
-                        });
-                });
+            const user = await api(req)
+                .get('/users/' + userId, { qs: { $populate: ['roles'] } });
+            const roles = user.roles.map((role) => {
+                return role.name;
+            });
+            const pathRole = getMostSignificantRole(roles);
+
+            if (pathRole === undefined) {
+                const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
+                error.status = 403;
+                throw error;
+            }
+
+            const data = await api(req)
+                .delete(`/users/v2/admin/${pathRole}/${userId}`);
+
+            res.redirect(req.header('Referer'));
         } catch (err) {
             next(err);
         }
