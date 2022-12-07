@@ -6,6 +6,7 @@ $(document).ready(function () {
     const $reglinkmodal = $('.reglink-modal');
     const $deleteModal = $('.delete-modal');
     const $customParameterTemplate = $('#custom-parameter-template');
+    const $customParameterList = $('#custom-parameter-list');
     let customParameterId = 0;
 
     $('.btn-create-ctl-tool').click(function () {
@@ -79,6 +80,18 @@ $(document).ready(function () {
         });
     });
 
+    $('.parameters-regex').on('input', function(e){
+        var splitId = $(this).id.split('-');
+        var customId = splitId[splitId.length-1];
+        var regexComment = $customParameterList.find(`parameters-regex-comment-${customId}`);
+        if ($(this).val().length > 0 ) {
+            regexComment.prop('required', true);
+        } else {
+            $(this).removeAttr('required');
+        }
+
+    });
+
     function useTabHandler($modal, modalId) {
         $modal.find('.nav-link').on('click', function () {
             const type = $(this).attr('aria-controls');
@@ -148,6 +161,8 @@ $(document).ready(function () {
         });
 
         // Bind labels to input fields
+        newCustomParamContainer.find('.parameters-is-optional-label').attr('for', `parameters-is-optional-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-type-label').attr('for', `parameters-type-${customParameterId}`);
@@ -160,6 +175,8 @@ $(document).ready(function () {
         newCustomParamContainer.find('.parameters-default').attr('id', `parameters-default-${customParameterId}`);
         newCustomParamContainer.find('.parameters-regex-label').attr('for', `parameters-regex-${customParameterId}`);
         newCustomParamContainer.find('.parameters-regex').attr('id', `parameters-regex-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex-comment-label').attr('for', `parameters-regex-comment-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex-comment').attr('id', `parameters-regex-comment-${customParameterId}`);
 
         customParameterId++;
 
