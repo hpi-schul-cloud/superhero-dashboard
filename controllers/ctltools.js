@@ -53,6 +53,9 @@ const sanitizeToolInputs = (body, create= false) => {
         body.parameters.forEach((param) => {
             param.default = param.default || undefined;
             param.regex = param.regex || undefined;
+            if (!param.regex) {
+                param.regexComment = param.regexComment || undefined;
+            }
         });
     }
 
