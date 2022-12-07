@@ -51,6 +51,7 @@ const sanitizeToolInputs = (body, create= false) => {
 
     if(body.parameters && Array.isArray(body.parameters)) {
         body.parameters.forEach((param) => {
+            param.isOptional = param.isOptional;
             param.default = param.default || undefined;
             param.regex = param.regex || undefined;
             if (!param.regex) {

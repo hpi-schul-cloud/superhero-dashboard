@@ -125,12 +125,14 @@ $(document).ready(function () {
         $('.tab-pane').not('.active').remove();
 
         $(this).find('.custom-parameter-container').each(function (index) {
+            $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
             $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
             $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
             $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
             $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
             $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
             $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
+            $(this).find('.parameters-regex-comment').attr('name', `parameters[${index}][regexComment]`);
         });
     });
 
@@ -138,9 +140,11 @@ $(document).ready(function () {
         parameters.forEach(param => {
             const customParameter = addCustomParameter($modal);
 
+            customParameter.find('.parameters-is-optional').attr('value', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
             customParameter.find('.parameters-default').attr('value', param.default);
             customParameter.find('.parameters-regex').attr('value', param.regex);
+            customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
 
             customParameter.find('.parameters-type').find(`option[value=${param.type}]`).prop('selected', true);
             customParameter.find('.parameters-scope').find(`option[value=${param.scope}]`).prop('selected', true);
