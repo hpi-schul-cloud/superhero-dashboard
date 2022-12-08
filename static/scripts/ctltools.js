@@ -6,7 +6,7 @@ $(document).ready(function () {
     const $reglinkmodal = $('.reglink-modal');
     const $deleteModal = $('.delete-modal');
     const $customParameterTemplate = $('#custom-parameter-template');
-    const $customParameterList = $('#custom-parameter-list');
+    const $customParameterList = $('.custom-parameter-list');
     let customParameterId = 0;
 
     $('.btn-create-ctl-tool').click(function () {
@@ -81,13 +81,15 @@ $(document).ready(function () {
     });
 
     $('.parameters-regex').on('input', function(e){
-        var splitId = $(this).id.split('-');
+        var splitId = $(this).attr("id").split('-');
+        console.log(splitId);
         var customId = splitId[splitId.length-1];
-        var regexComment = $customParameterList.find(`parameters-regex-comment-${customId}`);
+        var regexComment = $(`#parameters-regex-comment-${customId}`);
+        console.log($(this).val().length);
         if ($(this).val().length > 0 ) {
             regexComment.prop('required', true);
         } else {
-            $(this).removeAttr('required');
+            regexComment.removeAttr('required');
         }
 
     });
