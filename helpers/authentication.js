@@ -14,9 +14,10 @@ const isAuthenticated = (req) => {
         return Promise.resolve(false);
     }
 
-    return api(req).post('/authentication', {json: {
-        strategy: 'jwt',
-        accessToken: req.cookies.jwt
+    return api(req, { version: 'v3' })
+        .post('/authentication/local', { json: {
+            strategy: 'jwt',
+            accessToken: req.cookies.jwt
     }}).then(_ => {
         return true;
     }).catch(_ => {
