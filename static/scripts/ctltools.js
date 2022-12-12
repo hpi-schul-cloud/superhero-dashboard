@@ -79,6 +79,18 @@ $(document).ready(function () {
         });
     });
 
+    $('.parameters-regex').on('input', function(e){
+        var splitId = $(this).attr("id").split('-');
+        var customIdIndex = splitId[splitId.length-1];
+        var regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
+        if ($(this).val().length > 0 ) {
+            regexComment.prop('required', true);
+        } else {
+            regexComment.removeAttr('required');
+        }
+
+    });
+
     function useTabHandler($modal, modalId) {
         $modal.find('.nav-link').on('click', function () {
             const type = $(this).attr('aria-controls');
@@ -112,12 +124,14 @@ $(document).ready(function () {
         $('.tab-pane').not('.active').remove();
 
         $(this).find('.custom-parameter-container').each(function (index) {
+            $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
             $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
             $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
             $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
             $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
             $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
             $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
+            $(this).find('.parameters-regex-comment').attr('name', `parameters[${index}][regexComment]`);
         });
     });
 
@@ -125,9 +139,11 @@ $(document).ready(function () {
         parameters.forEach(param => {
             const customParameter = addCustomParameter($modal);
 
+            customParameter.find('.parameters-is-optional').attr('value', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
             customParameter.find('.parameters-default').attr('value', param.default);
             customParameter.find('.parameters-regex').attr('value', param.regex);
+            customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
 
             customParameter.find('.parameters-type').find(`option[value=${param.type}]`).prop('selected', true);
             customParameter.find('.parameters-scope').find(`option[value=${param.scope}]`).prop('selected', true);
@@ -148,6 +164,8 @@ $(document).ready(function () {
         });
 
         // Bind labels to input fields
+        newCustomParamContainer.find('.parameters-is-optional-label').attr('for', `parameters-is-optional-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-type-label').attr('for', `parameters-type-${customParameterId}`);
@@ -160,6 +178,8 @@ $(document).ready(function () {
         newCustomParamContainer.find('.parameters-default').attr('id', `parameters-default-${customParameterId}`);
         newCustomParamContainer.find('.parameters-regex-label').attr('for', `parameters-regex-${customParameterId}`);
         newCustomParamContainer.find('.parameters-regex').attr('id', `parameters-regex-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex-comment-label').attr('for', `parameters-regex-comment-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-regex-comment').attr('id', `parameters-regex-comment-${customParameterId}`);
 
         customParameterId++;
 
