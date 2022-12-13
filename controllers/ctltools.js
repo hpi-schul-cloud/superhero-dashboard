@@ -68,7 +68,7 @@ const sanitizeToolInputs = (body, create= false) => {
 const getUpdateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.body);
 
-    api(req, { version: 'v3' }).put(`/tools/${req.params.id}`, {
+    api(req, { version: 'v3' }).post(`/tools/${req.params.id}`, {
         json: req.body
     }).then(() => {
         res.redirect(req.header('Referer'));
@@ -289,7 +289,7 @@ const showTools = (req, res) => {
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
-router.post('/:id', getUpdateHandler);
+router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
