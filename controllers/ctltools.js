@@ -20,7 +20,8 @@ const trimWhitespaces = (object) => {
     });
 };
 
-const sanitizeToolInputs = (body, create= false) => {
+const sanitizeToolInputs = (id, body, create= false) => {
+    body.id = id;
     body.url = body.url || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
@@ -66,7 +67,7 @@ const sanitizeToolInputs = (body, create= false) => {
 };
 
 const getUpdateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(req.body);
+    req.body = sanitizeToolInputs(req.params.id, req.body);
 
     api(req, { version: 'v3' }).post(`/tools/${req.params.id}`, {
         json: req.body
