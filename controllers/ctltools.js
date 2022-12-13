@@ -21,7 +21,7 @@ const trimWhitespaces = (object) => {
 };
 
 const sanitizeToolInputs = (id, body, create= false) => {
-    body.id = id;
+    body.id = id || undefined;
     body.url = body.url || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
