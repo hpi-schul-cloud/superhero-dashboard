@@ -92,7 +92,6 @@ $(document).ready(function () {
         'Typ': 'type',
         'Url': 'url',
         'Alias': 'alias',
-
         'subject': 'Titel',
         'firstName': 'Vorname',
         'lastName': 'Nachname',
