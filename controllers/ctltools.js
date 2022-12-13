@@ -47,6 +47,8 @@ const sanitizeToolInputs = (id, body, create= false) => {
         case 'basic':
             break;
         default:
+            // eslint-disable-next-line no-console
+            console.log('Config type was not set! Server will crash');
             throw new Error('Unknown tool config type');
     }
 
@@ -98,7 +100,7 @@ const getDeleteHandler = (req, res, next) => {
 };
 
 const getCreateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(req.body, true);
+    req.body = sanitizeToolInputs(undefined, req.body, true);
 
     api(req, { version: 'v3' }).post('/tools/', {
         json: req.body
