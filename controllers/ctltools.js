@@ -289,7 +289,7 @@ const showTools = (req, res) => {
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
-router.put('/:id', getUpdateHandler);
+router.post('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
