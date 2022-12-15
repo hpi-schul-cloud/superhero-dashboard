@@ -134,7 +134,7 @@ $(document).ready(function () {
         parameters.forEach(param => {
             const customParameter = addCustomParameter($modal);
 
-            customParameter.find('.parameters-is-optional').attr('value', param.isOptional);
+            customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
             customParameter.find('.parameters-default').attr('value', param.default);
             customParameter.find('.parameters-regex').attr('value', param.regex);
