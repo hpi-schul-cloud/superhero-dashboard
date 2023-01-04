@@ -12,15 +12,11 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
-        $addModal.find('.nav-tool-type').attr('value', 'basic');
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
-            fields: {
-                silent: false,
-            }
         });
         $addModal.modal('show');
     });
@@ -29,7 +25,6 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $editModal.find('.custom-parameter-list').children().remove();
-        $editModal.find('.nav-tool-type').attr('value', 'basic');
 
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -139,7 +134,7 @@ $(document).ready(function () {
         parameters.forEach(param => {
             const customParameter = addCustomParameter($modal);
 
-            customParameter.find('.parameters-is-optional').attr('value', param.isOptional);
+            customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
             customParameter.find('.parameters-default').attr('value', param.default);
             customParameter.find('.parameters-regex').attr('value', param.regex);

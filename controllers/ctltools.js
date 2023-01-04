@@ -20,7 +20,8 @@ const trimWhitespaces = (object) => {
     });
 };
 
-const sanitizeToolInputs = (body, create= false) => {
+const sanitizeToolInputs = (id, body, create= false) => {
+    body.id = id;
     body.url = body.url || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
@@ -46,12 +47,14 @@ const sanitizeToolInputs = (body, create= false) => {
         case 'basic':
             break;
         default:
+            // eslint-disable-next-line no-console
+            console.log('Config type was not set! Server will crash');
             throw new Error('Unknown tool config type');
     }
 
     if(body.parameters && Array.isArray(body.parameters)) {
         body.parameters.forEach((param) => {
-            param.isOptional = param.isOptional;
+            param.isOptional = !!param.isOptional;
             param.default = param.default || undefined;
             param.regex = param.regex || undefined;
             if (!param.regex) {
@@ -65,10 +68,14 @@ const sanitizeToolInputs = (body, create= false) => {
     return body;
 };
 
-const getUpdateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(req.body);
+const sanitizeToolInputsForUpdate = (req) => {
+    return sanitizeToolInputs(req.params.id, req.body, false);
+};
 
-    api(req, { version: 'v3' }).put(`/tools/${req.params.id}`, {
+const getUpdateHandler = (req, res, next) => {
+    req.body = sanitizeToolInputsForUpdate(req);
+
+    api(req, { version: 'v3' }).post(`/tools/${req.params.id}`, {
         json: req.body
     }).then(() => {
         res.redirect(req.header('Referer'));
@@ -96,8 +103,12 @@ const getDeleteHandler = (req, res, next) => {
     });
 };
 
+const sanitizeToolInputsForCreate = (req) => {
+    return sanitizeToolInputs(undefined, req.body, true);
+};
+
 const getCreateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(req.body, true);
+    req.body = sanitizeToolInputsForCreate(req);
 
     api(req, { version: 'v3' }).post('/tools/', {
         json: req.body
