@@ -20,7 +20,7 @@
     "handlebars": "^4.7.7",
     "handlebars-layouts": "^3.1.4",
     "handlebars-wax": "^6.1.0",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.21",
     "maxmind": "^2.3.0",
     "method-override": "^3.0.0",
