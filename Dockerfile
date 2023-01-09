@@ -1,4 +1,4 @@
-FROM docker.io/node:16
+FROM docker.io/node:16-alpine
 
 ENV TZ=Europe/Berlin
 EXPOSE 3033
