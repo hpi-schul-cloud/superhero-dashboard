@@ -10,6 +10,10 @@
     "startd": "echo 'Do you mean 'npm run watch'?'",
     "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
   },
+  "engines": {
+    "node": "16",
+    "npm": "8"
+  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.6.2",
