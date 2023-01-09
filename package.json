@@ -38,7 +38,7 @@
     "showdown": "^1.9.1",
     "string_decoder": "^1.0.1",
     "string-strip-html": "^8.4.0",
-    "truncate-html": "^0.0.1",
+    "truncate-html": "^1.0.4",
     "url": "^0.11.0"
   },
   "devDependencies": {
