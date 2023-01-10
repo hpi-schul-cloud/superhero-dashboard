@@ -1,5 +1,5 @@
 const {src, dest, series, parallel, watch, lastRun} = require('gulp');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const sassGrapher = require('gulp-sass-grapher');
 const path = require('path');
 const rimraf = require('gulp-rimraf');
