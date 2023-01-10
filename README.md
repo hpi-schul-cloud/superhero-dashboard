@@ -4,7 +4,7 @@
 
 ## Requirements
 
-* node.js 12 or later (You can install it from https://nodejs.org/en/download/)
+* node.js 16 or later (You can install it from https://nodejs.org/en/download/)
 
 ## Setup
 
