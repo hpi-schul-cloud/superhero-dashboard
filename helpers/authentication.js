@@ -9,7 +9,18 @@ const isJWT = (req) => {
 };
 
 const isAuthenticated = (req) => {
-    return Promise.resolve(isJWT(req));
+   if(!isJWT(req)) {
+        return Promise.resolve(false);
+    }
+
+    return api(req).post('/authentication', {json: {
+        strategy: 'jwt',
+        accessToken: req.cookies.jwt
+    }}).then(_ => {
+        return true;
+    }).catch(_ => {
+        return false;
+    });
 };
 
 const authChecker = (req, res, next) => {
