@@ -20,7 +20,7 @@ const trimWhitespaces = (object) => {
     });
 };
 
-const sanitizeToolInputs = (id, body, create= false) => {
+const sanitizeToolInputs = (id, body) => {
     body.id = id;
     body.url = body.url || undefined;
     body.logoUrl = body.logoUrl || undefined;
@@ -30,10 +30,7 @@ const sanitizeToolInputs = (id, body, create= false) => {
 
     switch (body.config.type) {
         case 'oauth2':
-            if(!create) {
-                // undefine the property prohibits database update of immutable
-                body.config.clientId = undefined;
-            }
+            body.config.clientId = body.config.clientId || undefined;
             body.config.clientSecret = body.config.clientSecret || undefined;
             body.config.skipConsent = !!body.config.skipConsent;
             body.config.redirectUris = body.config.redirectUris.split(';');
@@ -68,12 +65,8 @@ const sanitizeToolInputs = (id, body, create= false) => {
     return body;
 };
 
-const sanitizeToolInputsForUpdate = (req) => {
-    return sanitizeToolInputs(req.params.id, req.body, false);
-};
-
 const getUpdateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputsForUpdate(req);
+    req.body = sanitizeToolInputs(req.params.id, req.body);
 
     api(req, { version: 'v3' }).post(`/tools/${req.params.id}`, {
         json: req.body
@@ -103,12 +96,8 @@ const getDeleteHandler = (req, res, next) => {
     });
 };
 
-const sanitizeToolInputsForCreate = (req) => {
-    return sanitizeToolInputs(undefined, req.body, true);
-};
-
 const getCreateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputsForCreate(req);
+    req.body = sanitizeToolInputs(undefined, req.body);
 
     api(req, { version: 'v3' }).post('/tools/', {
         json: req.body
