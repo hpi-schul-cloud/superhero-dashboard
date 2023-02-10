@@ -124,7 +124,7 @@ $(document).ready(function () {
             $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
             $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
             $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
-            $(this).find('.parameters-default').attr('name', `parameters[${index}][default]`);
+            $(this).find('.parameters-default').attr('name', `parameters[${index}][defaultValue]`);
             $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
             $(this).find('.parameters-regex-comment').attr('name', `parameters[${index}][regexComment]`);
         });
@@ -136,7 +136,7 @@ $(document).ready(function () {
 
             customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
-            customParameter.find('.parameters-default').attr('value', param.default);
+            customParameter.find('.parameters-default').attr('value', param.defaultValue);
             customParameter.find('.parameters-regex').attr('value', param.regex);
             customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
 
