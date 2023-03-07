@@ -63,7 +63,7 @@
     "gulp-count": "^1.0.0",
     "gulp-filelog": "^0.4.1",
     "gulp-header": "^2.0.9",
-    "gulp-imagemin": "^8.0.0",
+    "gulp-imagemin": "^6.2.0",
     "gulp-optimize-js": "^1.1.0",
     "gulp-plumber": "^1.2.1",
     "gulp-rimraf": "^1.0.0",
