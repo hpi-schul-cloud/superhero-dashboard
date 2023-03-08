@@ -9,7 +9,6 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci && npm cache clean --force
 
-COPY bin /app/bin
 COPY controllers /app/controllers
 COPY helpers /app/helpers
 COPY static /app/static
