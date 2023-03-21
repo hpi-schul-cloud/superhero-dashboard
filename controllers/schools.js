@@ -20,6 +20,8 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
 ];
 
+const USER_MIGRATION_ENABLED = (process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED || "false").toLowerCase() === "true";
+
 const getTableActions = (item, path) => [
   {
     link: path + item._id,
@@ -170,24 +172,40 @@ const getHandler = async (req, res) => {
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
           $sort: req.query.sort,
-          $populate: 'federalState',
+          $populate: ['federalState','systems'],
         },
       }),
       getStorageProviders(req),
     ]);
 
-    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
+    let head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage','Migration gestartet', 'Migration verpflichtend', 'Migration abgeschlossen', 'Migration final beendet', 'Login-System',''];
 
-    const body = schools.data.map((item) => {
+    let body = schools.data.map((item) => {
       return [
         item._id || '',
         item.name || '',
         item.timezone || '',
         (item.federalState || {}).name || '',
         item.fileStorageType || '',
+        item.oauthMigrationStart || '',
+        item.oauthMigrationMandatory || '',
+        item.oauthMigrationFinished || '',
+        Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? item.oauthMigrationFinalFinish : '',
+        item.systems.map(system => system.alias).join(',') || '',
         getTableActions(item, '/schools/'),
       ];
     });
+
+    if(USER_MIGRATION_ENABLED){
+      head = head
+        .filter((item) => item !== 'Migration gestartet')
+        .filter((item) => item !== 'Migration verpflichtend')
+        .filter((item) => item !== 'Migration abgeschlossen')
+        .filter((item) => item !== 'Migration final beendet')
+        .filter((item) => item !== 'Login-System');
+
+      body.forEach(item => item.splice(5, 5));
+    }
 
     const sortQuery = req.query.sort ? `&sort=${req.query.sort}` : '';
     const limitQuery = req.query.limit ? `&limit=${req.query.limit}` : '';
