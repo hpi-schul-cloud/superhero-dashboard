@@ -178,7 +178,7 @@ const getHandler = async (req, res) => {
       getStorageProviders(req),
     ]);
 
-    let head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage','Migration gestartet', 'Migration verpflichtend', 'Migration abgeschlossen', 'Migration final beendet', 'Login-System',''];
+    let head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage',''];
 
     let body = schools.data.map((item) => {
       return [
@@ -187,24 +187,27 @@ const getHandler = async (req, res) => {
         item.timezone || '',
         (item.federalState || {}).name || '',
         item.fileStorageType || '',
-        item.oauthMigrationStart || '',
-        item.oauthMigrationMandatory || '',
-        item.oauthMigrationFinished || '',
-        Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? item.oauthMigrationFinalFinish : '',
-        item.systems.map(system => system.alias).join(',') || '',
         getTableActions(item, '/schools/'),
       ];
     });
 
     if(USER_MIGRATION_ENABLED){
-      head = head
-        .filter((item) => item !== 'Migration gestartet')
-        .filter((item) => item !== 'Migration verpflichtend')
-        .filter((item) => item !== 'Migration abgeschlossen')
-        .filter((item) => item !== 'Migration final beendet')
-        .filter((item) => item !== 'Login-System');
+      const migrationHead = ['Migration gestartet', 'Migration verpflichtend', 'Migration abgeschlossen', 'Migration final beendet', 'Login-System'];
+      head.splice(5, 0, ...migrationHead);
 
-      body.forEach(item => item.splice(5, 5));
+      const migrationBody = schools.data.map((item) => {
+        return [
+          item.oauthMigrationStart || '',
+          item.oauthMigrationMandatory || '',
+          item.oauthMigrationFinished || '',
+          Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? item.oauthMigrationFinalFinish : '',
+          item.systems.map(system => system.alias).join(',') || '',
+        ];
+      });
+
+      body.forEach((item, i) => {
+        item.splice(5, 0, ...migrationBody[i]);
+      });
     }
 
     const sortQuery = req.query.sort ? `&sort=${req.query.sort}` : '';
