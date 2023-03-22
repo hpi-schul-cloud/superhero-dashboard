@@ -46,7 +46,7 @@ const getStorageTypes = () => [
 ];
 
 const getDateFormat = (date) => {
-  const formattedDate = moment().utc(date).format("DD.MM.YYYY HH:MM");
+  const formattedDate = moment(date).utc().format("DD.MM.YYYY HH:mm");
   return formattedDate;
 };
 
@@ -201,18 +201,12 @@ const getHandler = async (req, res) => {
       head.splice(5, 0, ...migrationHead);
 
       const migrationBody = schools.data.map((item) => {
-        const oauthMigrationStart = item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '' ;
-        const oauthMigrationMandatory = item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '' ;
-        const oauthMigrationFinished = item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '' ;
-        const oauthMigrationFinalFinish = Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '' ;
-        const systems = item.systems.map(system => system.alias).join(',') || '';
-
         return [
-          oauthMigrationStart,
-          oauthMigrationMandatory,
-          oauthMigrationFinished,
-          oauthMigrationFinalFinish,
-          systems
+          item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
+          item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
+          item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
+          Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
+          item.systems.map(system => system.alias).join(',') || '',
         ];
       });
 
