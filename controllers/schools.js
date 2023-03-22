@@ -45,6 +45,11 @@ const getStorageTypes = () => [
   },
 ];
 
+const getDateFormat = (date) => {
+  const formattedDate = moment().utc(date).format("DD.MM.YYYY HH:MM");
+  return formattedDate;
+};
+
 const getStorageProviders = async (req) => {
   const providers = await api(req).get('/storageProvider/');
   return providers.data.map((p) => ({
@@ -178,9 +183,9 @@ const getHandler = async (req, res) => {
       getStorageProviders(req),
     ]);
 
-    let head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage',''];
+    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
 
-    let body = schools.data.map((item) => {
+    const body = schools.data.map((item) => {
       return [
         item._id || '',
         item.name || '',
@@ -196,12 +201,18 @@ const getHandler = async (req, res) => {
       head.splice(5, 0, ...migrationHead);
 
       const migrationBody = schools.data.map((item) => {
+        const oauthMigrationStart = item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '' ;
+        const oauthMigrationMandatory = item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '' ;
+        const oauthMigrationFinished = item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '' ;
+        const oauthMigrationFinalFinish = Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '' ;
+        const systems = item.systems.map(system => system.alias).join(',') || '';
+
         return [
-          item.oauthMigrationStart || '',
-          item.oauthMigrationMandatory || '',
-          item.oauthMigrationFinished || '',
-          Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? item.oauthMigrationFinalFinish : '',
-          item.systems.map(system => system.alias).join(',') || '',
+          oauthMigrationStart,
+          oauthMigrationMandatory,
+          oauthMigrationFinished,
+          oauthMigrationFinalFinish,
+          systems
         ];
       });
 
