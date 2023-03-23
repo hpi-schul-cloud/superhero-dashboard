@@ -23,7 +23,7 @@ $(document).ready(function () {
             if(result.roles){
                 result.roles = result.roles.map(role => {
                     return role.name;
-                })
+                });
             }
             populateModalForm($editModal, {
                 action: entry,
@@ -36,7 +36,7 @@ $(document).ready(function () {
             $editModal.modal('show');
         });
     });
-    
+
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
         var entry = $(this).attr('href');
@@ -48,7 +48,7 @@ $(document).ready(function () {
                 submitLabel: false,
                 fields: result
             });
-            
+
             $reglinkmodal.modal('show');
         });
     });
@@ -98,6 +98,10 @@ $(document).ready(function () {
         'Typ': 'type',
         'Url': 'url',
         'Alias': 'alias',
+        'Migration gestartet': 'oauthMigrationStart',
+        'Migration verpflichtend': 'oauthMigrationMandatory',
+        'Migration abgeschlossen': 'oauthMigrationFinished',
+        'Migration final beendet': 'oauthMigrationFinalFinish',
 
         'subject': 'Titel',
         'firstName': 'Vorname',
@@ -121,7 +125,11 @@ $(document).ready(function () {
         'permissions': 'Permissions',
         'teacherIds': 'Lehrer',
         'classIds': 'Klasse(n)',
-        'email': 'E-Mail-Adresse'
+        'email': 'E-Mail-Adresse',
+        'oauthMigrationStart': 'Migration gestartet',
+        'oauthMigrationMandatory': 'Migration verpflichtend',
+        'oauthMigrationFinished': 'Migration abgeschlossen',
+        'oauthMigrationFinalFinish': 'Migration final beendet'
     };
 
     $('tr th').each(function(i,j) {
@@ -133,7 +141,7 @@ $(document).ready(function () {
             location = location.map(entity => {
                 if (entity.includes('sort')) {
                     if (entity === 'sort=' + dictionary[$(j).text()]) {
-                        entity = 'sort=-' + dictionary[$(j).text()]
+                        entity = 'sort=-' + dictionary[$(j).text()];
                     } else {
                         entity = 'sort=' + dictionary[$(j).text()];
                     }
