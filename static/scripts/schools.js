@@ -102,6 +102,7 @@ $(document).ready(function () {
         'Migration verpflichtend': 'oauthMigrationMandatory',
         'Migration abgeschlossen': 'oauthMigrationFinished',
         'Migration final beendet': 'oauthMigrationFinalFinish',
+        'Login-System': 'systems',
 
         'subject': 'Titel',
         'firstName': 'Vorname',
@@ -129,7 +130,8 @@ $(document).ready(function () {
         'oauthMigrationStart': 'Migration gestartet',
         'oauthMigrationMandatory': 'Migration verpflichtend',
         'oauthMigrationFinished': 'Migration abgeschlossen',
-        'oauthMigrationFinalFinish': 'Migration final beendet'
+        'oauthMigrationFinalFinish': 'Migration final beendet',
+        'systems': 'Login-System'
     };
 
     $('tr th').each(function(i,j) {
