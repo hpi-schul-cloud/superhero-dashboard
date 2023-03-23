@@ -78,6 +78,34 @@ const getAllCounties = (federalStates) => {
   return counties;
 };
 
+const getMigrationHead = () => {
+  if(!USER_MIGRATION_ENABLED){
+    return [];
+  }
+
+  return [
+    'Migration gestartet',
+    'Migration verpflichtend',
+    'Migration abgeschlossen',
+    'Migration final beendet',
+    'Login-System'
+  ];
+};
+
+const getMigrationBody = (item) => {
+  if(!USER_MIGRATION_ENABLED){
+    return [];
+  }
+
+  return [
+    item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
+    item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
+    item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
+    Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
+    item.systems.map(system => system.alias).join(',') || ''
+  ];
+};
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
     api(req)
@@ -183,7 +211,7 @@ const getHandler = async (req, res) => {
       getStorageProviders(req),
     ]);
 
-    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
+    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
     const body = schools.data.map((item) => {
       return [
@@ -192,28 +220,10 @@ const getHandler = async (req, res) => {
         item.timezone || '',
         (item.federalState || {}).name || '',
         item.fileStorageType || '',
+        ...getMigrationBody(item),
         getTableActions(item, '/schools/'),
       ];
     });
-
-    if(USER_MIGRATION_ENABLED){
-      const migrationHead = ['Migration gestartet', 'Migration verpflichtend', 'Migration abgeschlossen', 'Migration final beendet', 'Login-System'];
-      head.splice(5, 0, ...migrationHead);
-
-      const migrationBody = schools.data.map((item) => {
-        return [
-          item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
-          item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
-          item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
-          Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
-          item.systems.map(system => system.alias).join(',') || '',
-        ];
-      });
-
-      body.forEach((item, i) => {
-        item.splice(5, 0, ...migrationBody[i]);
-      });
-    }
 
     const sortQuery = req.query.sort ? `&sort=${req.query.sort}` : '';
     const limitQuery = req.query.limit ? `&limit=${req.query.limit}` : '';
