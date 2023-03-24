@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { getTimezones } = require('../helpers/timeZoneHelper');
+const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 const { api } = require('../api');
 const moment = require('moment-timezone');
 
@@ -20,7 +21,7 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
 ];
 
-const USER_MIGRATION_ENABLED = (process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED || "false").toLowerCase() === "true";
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => [
   {
