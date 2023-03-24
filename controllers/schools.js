@@ -7,6 +7,7 @@ const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { getTimezones } = require('../helpers/timeZoneHelper');
+const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 const { api } = require('../api');
 const moment = require('moment-timezone');
 
@@ -19,6 +20,8 @@ const SCHOOL_FEATURES = [
   'studentVisibility',
   'messengerSchoolRoom',
 ];
+
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => [
   {
@@ -42,6 +45,11 @@ const getStorageTypes = () => [
     value: 'awsS3',
   },
 ];
+
+const getDateFormat = (date) => {
+  const formattedDate = moment(date).utc().format("DD.MM.YYYY HH:mm");
+  return formattedDate;
+};
 
 const getStorageProviders = async (req) => {
   const providers = await api(req).get('/storageProvider/');
@@ -69,6 +77,34 @@ const getAllCounties = (federalStates) => {
   });
 
   return counties;
+};
+
+const getMigrationHead = () => {
+  if(!USER_MIGRATION_ENABLED){
+    return [];
+  }
+
+  return [
+    'Migration gestartet',
+    'Migration verpflichtend',
+    'Migration abgeschlossen',
+    'Migration final beendet',
+    'Login-System'
+  ];
+};
+
+const getMigrationBody = (item) => {
+  if(!USER_MIGRATION_ENABLED){
+    return [];
+  }
+
+  return [
+    item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
+    item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
+    item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
+    Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
+    item.systems.map(system => system.alias).join(',') || ''
+  ];
 };
 
 const getCreateHandler = (service) => {
@@ -170,13 +206,13 @@ const getHandler = async (req, res) => {
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
           $sort: req.query.sort,
-          $populate: 'federalState',
+          $populate: ['federalState','systems'],
         },
       }),
       getStorageProviders(req),
     ]);
 
-    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ''];
+    const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
     const body = schools.data.map((item) => {
       return [
@@ -185,6 +221,7 @@ const getHandler = async (req, res) => {
         item.timezone || '',
         (item.federalState || {}).name || '',
         item.fileStorageType || '',
+        ...getMigrationBody(item),
         getTableActions(item, '/schools/'),
       ];
     });
