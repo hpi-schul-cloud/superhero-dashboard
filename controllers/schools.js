@@ -47,7 +47,7 @@ const getStorageTypes = () => [
 ];
 
 const getDateFormat = (date) => {
-  const formattedDate = moment(date).utc().format("DD.MM.YYYY HH:mm");
+  const formattedDate = moment(date).format("DD.MM.YYYY HH:mm");
   return formattedDate;
 };
 
