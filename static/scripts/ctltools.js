@@ -121,6 +121,8 @@ $(document).ready(function () {
         $(this).find('.custom-parameter-container').each(function (index) {
             $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
             $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
+            $(this).find('.parameters-displayName').attr('name', `parameters[${index}][displayName]`);
+            $(this).find('.parameters-description').attr('name', `parameters[${index}][description]`);
             $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
             $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
             $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
@@ -136,6 +138,8 @@ $(document).ready(function () {
 
             customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
             customParameter.find('.parameters-name').attr('value', param.name);
+            customParameter.find('.parameters-displayName').attr('value', param.displayName);
+            customParameter.find('.parameters-description').attr('value', param.description);
             customParameter.find('.parameters-default').attr('value', param.defaultValue);
             customParameter.find('.parameters-regex').attr('value', param.regex);
             customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
@@ -163,6 +167,10 @@ $(document).ready(function () {
         newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-displayName-label').attr('for', `parameters-displayName-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-displayName').attr('id', `parameters-displayName-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-description-label').attr('for', `parameters-description-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-description').attr('id', `parameters-description-${customParameterId}`);
         newCustomParamContainer.find('.parameters-type-label').attr('for', `parameters-type-${customParameterId}`);
         newCustomParamContainer.find('.parameters-type').attr('id', `parameters-type-${customParameterId}`);
         newCustomParamContainer.find('.parameters-scope-label').attr('for', `parameters-scope-${customParameterId}`);

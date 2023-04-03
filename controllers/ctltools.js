@@ -170,7 +170,7 @@ const customParameterTypes = [
 const customParameterLocations = [
     { label: 'Path-Parameter', value: 'path' },
     { label: 'Query-Parameter', value: 'query' },
-    { label: 'Token-Parameter', value: 'token' },
+    { label: 'Body-Parameter', value: 'body' },
 ];
 
 const customParameterScopes = [
