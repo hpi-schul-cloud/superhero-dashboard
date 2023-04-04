@@ -1,4 +1,5 @@
-Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, lediglich die Vorlage für neue Instanzen.
+<p>Hinweis: Änderungen, die zur Erhöhung der Versionsnummer dieser Konfiguration führen, haben Auswirkungen auf die von dieser Konfiguration abhängigen Tools, die Kursen bereits zugeordnet wurden.<p>
+<p>Zur Erhöhung der Versionsnummer führen folgende Änderungen: Hinzufüge, Entfernen, Umbenennen von Pflicht-Custom Parametern; Änderung des Typs, Scopes oder des regulären Ausdrucks der Parameter</p>
 <div class="form-group">
     <label class="control-label" for="name">Name *</label>
     <input type="text" name="name" id="name" class="form-control" placeholder="Learn App" required>
@@ -128,11 +129,19 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         </label>
     </div>
     <div class="form-group">
-        <label class="control-label parameters-name-label">Name</label>
-        <input type="text" class="form-control parameters-name" placeholder="Custom Parameter">
+        <label class="control-label parameters-name-label">Name *</label>
+        <input type="text" class="form-control parameters-name" placeholder="custom-parameter">
     </div>
     <div class="form-group">
-        <label class="control-label parameters-type-label">Typ</label>
+        <label class="control-label parameters-displayName-label">Benutzerfreundlicher Anzeigename *</label>
+        <input type="text" class="form-control parameters-displayName" placeholder="Custom Parameter">
+    </div>
+    <div class="form-group">
+        <label class="control-label parameters-description-label">Kommentar</label>
+        <input type="text" class="form-control parameters-description" placeholder="Erklärung des Parameters">
+    </div>
+    <div class="form-group">
+        <label class="control-label parameters-type-label">Typ *</label>
         <select id="custom_parameter_type" class="parameters-type">
             {{#each customParameterTypes}}
                 <option value="{{this.value}}">{{this.label}}</option>
@@ -140,7 +149,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         </select>
     </div>
     <div class="form-group">
-        <label class="control-label parameters-scope-label">Scope</label>
+        <label class="control-label parameters-scope-label">Scope *</label>
         <select class="parameters-scope">
             {{#each customParameterScopes}}
                 <option value="{{this.value}}">{{this.label}}</option>
@@ -148,7 +157,7 @@ Hinweis: Änderungen betreffen keine bereits instanzierten Tools in Kursen, ledi
         </select>
     </div>
     <div class="form-group">
-        <label class="control-label parameters-location-label">Location</label>
+        <label class="control-label parameters-location-label">Location *</label>
         <select class="parameters-location">
             {{#each customParameterLocations}}
                 <option value="{{this.value}}">{{this.label}}</option>
