@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const { api } = require('../api');
 const { isFeatureFlagTrue } = require('./featureFlagHelper');
 
-const CTL_ENABLED = isFeatureFlagTrue(process.env.FEATURE_LTI_TOOLS_ENABLED);
-const LTI_ENABLED = isFeatureFlagTrue(process.env.FEATURE_CTL_TOOLS_ENABLED);
+const CTL_ENABLED = isFeatureFlagTrue(process.env.FEATURE_CTL_TOOLS_ENABLED);
+const LTI_ENABLED = isFeatureFlagTrue(process.env.FEATURE_LTI_TOOLS_ENABLED);
 
 const isJWT = (req) => {
     return (req && req.cookies && req.cookies.jwt);
