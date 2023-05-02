@@ -162,8 +162,8 @@ const customParameterTypes = [
     { label: 'String', value: 'string' },
     { label: 'Number', value: 'number' },
     { label: 'Boolean', value: 'boolean' },
-    { label: 'KursId', value: 'auto_courseid' },
-    { label: 'Kursname', value: 'auto_coursename' },
+    { label: 'ContextId', value: 'auto_contextid' },
+    { label: 'Contextname', value: 'auto_contextname' },
     { label: 'SchulId', value: 'auto_schoolid' },
 ];
 
@@ -176,7 +176,7 @@ const customParameterLocations = [
 const customParameterScopes = [
     { label: 'Global', value: 'global' },
     { label: 'Schule', value: 'school' },
-    { label: 'Kurs', value: 'course' },
+    { label: 'Context', value: 'context' },
 ];
 
 const showTools = (req, res) => {
