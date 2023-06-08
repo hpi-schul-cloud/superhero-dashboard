@@ -212,8 +212,6 @@ const getHandler = async (req, res) => {
       getStorageProviders(req),
     ]);
 
-    console.log(schools.data.find((school) => school.name.startsWith("Paul")).userLoginMigration);
-
     const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
     const body = schools.data.map((item) => {
