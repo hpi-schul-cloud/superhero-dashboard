@@ -21,7 +21,7 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
 ];
 
-const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const USER_MIGRATION_ENABLED = true;//isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => [
   {
@@ -99,10 +99,10 @@ const getMigrationBody = (item) => {
   }
 
   return [
-    item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
-    item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
-    item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
-    Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
+    item.userLoginMigration?.startedAt ? getDateFormat(item.userLoginMigration.startedAt) : '',
+    item.userLoginMigration?.mandatorySince ? getDateFormat(item.userLoginMigration.mandatorySince) : '',
+    item.userLoginMigration?.closedAt ? getDateFormat(item.userLoginMigration.closedAt) : '',
+    item.userLoginMigration?.finishedAt && Date.now() >= new Date(item.userLoginMigration.finishedAt).getTime() ? getDateFormat(item.userLoginMigration.finishedAt) : '',
     item.systems.map(system => system.alias).join(',') || ''
   ];
 };
@@ -206,11 +206,13 @@ const getHandler = async (req, res) => {
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
           $sort: req.query.sort,
-          $populate: ['federalState','systems'],
+          $populate: ['federalState', 'systems', 'userLoginMigration'],
         },
       }),
       getStorageProviders(req),
     ]);
+
+    console.log(schools.data.find((school) => school.name.startsWith("Paul")).userLoginMigration);
 
     const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
