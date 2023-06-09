@@ -21,7 +21,7 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
 ];
 
-const USER_MIGRATION_ENABLED = true;//isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => [
   {
