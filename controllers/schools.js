@@ -99,10 +99,10 @@ const getMigrationBody = (item) => {
   }
 
   return [
-    item.oauthMigrationStart ? getDateFormat(item.oauthMigrationStart) : '',
-    item.oauthMigrationMandatory ? getDateFormat(item.oauthMigrationMandatory) : '',
-    item.oauthMigrationFinished ? getDateFormat(item.oauthMigrationFinished) : '',
-    Date.now() >= new Date(item.oauthMigrationFinalFinish).getTime() ? getDateFormat(item.oauthMigrationFinalFinish) : '',
+    item.userLoginMigration?.startedAt ? getDateFormat(item.userLoginMigration.startedAt) : '',
+    item.userLoginMigration?.mandatorySince ? getDateFormat(item.userLoginMigration.mandatorySince) : '',
+    item.userLoginMigration?.closedAt ? getDateFormat(item.userLoginMigration.closedAt) : '',
+    item.userLoginMigration?.finishedAt && Date.now() >= new Date(item.userLoginMigration.finishedAt).getTime() ? getDateFormat(item.userLoginMigration.finishedAt) : '',
     item.systems.map(system => system.alias).join(',') || ''
   ];
 };
@@ -206,7 +206,7 @@ const getHandler = async (req, res) => {
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
           $sort: req.query.sort,
-          $populate: ['federalState','systems'],
+          $populate: ['federalState', 'systems', 'userLoginMigration'],
         },
       }),
       getStorageProviders(req),
