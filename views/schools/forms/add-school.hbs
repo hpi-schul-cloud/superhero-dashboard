@@ -46,6 +46,11 @@
 </div>
 
 <div class="form-group">
+    <label class="control-label" for="externalId">External Id</label>
+    <input id="externalId" name="ldapSchoolIdentifier" class="form-control" readonly></input>
+</div>
+
+<div class="form-group">
     <label class="control-label" for="timezone">Time zone</label>
     <select name="timezone" type="text">
         {{#each timeZones}}
