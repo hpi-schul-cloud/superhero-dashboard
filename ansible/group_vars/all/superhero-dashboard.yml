@@ -1,4 +1,4 @@
 ---
 SHD_PORT: 3033
-SUPERHERO_DASHBOARD_IMAGE: schulcloud/superhero-dashboard
+SUPERHERO_DASHBOARD_IMAGE: quay.io/schulcloudverbund/superhero-dashboard
 SHD_PREFIX: dashboard.
