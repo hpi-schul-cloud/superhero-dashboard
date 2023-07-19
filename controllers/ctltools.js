@@ -162,9 +162,10 @@ const customParameterTypes = [
     { label: 'String', value: 'string' },
     { label: 'Number', value: 'number' },
     { label: 'Boolean', value: 'boolean' },
-    { label: 'ContextId', value: 'auto_contextid' },
-    { label: 'Contextname', value: 'auto_contextname' },
-    { label: 'SchulId', value: 'auto_schoolid' },
+    { label: 'Context Id', value: 'auto_contextid' },
+    { label: 'Context Name', value: 'auto_contextname' },
+    { label: 'Schul Id', value: 'auto_schoolid' },
+    { label: 'Offizielle Schulnummer', value: 'auto_schoolnumber' },
 ];
 
 const customParameterLocations = [
