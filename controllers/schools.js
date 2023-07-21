@@ -20,6 +20,7 @@ const SCHOOL_FEATURES = [
   'studentVisibility',
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
+  'showOutdatedUsers ',
 ];
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
