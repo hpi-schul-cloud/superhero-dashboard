@@ -24,6 +24,7 @@ const SCHOOL_FEATURES = [
 ];
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const SHOW_OUTDATED_USERS = isFeatureFlagTrue(process.env.FEATURE_SHOW_OUTDATED_USERS);
 
 const getTableActions = (item, path) => [
   {
@@ -109,6 +110,14 @@ const getMigrationBody = (item) => {
   ];
 };
 
+const filterSchoolFeature = (features) => {
+  if(!SHOW_OUTDATED_USERS){
+    return features.filter(item => item !== 'showOutdatedUsers');
+  }
+
+  return features;
+}
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
     api(req)
@@ -129,7 +138,9 @@ const getUpdateHandler = (service) => {
   return function (req, res, next) {
     // parse school features
     req.body.features = [];
-    for (let feature of SCHOOL_FEATURES) {
+    const schoolfeatures = filterSchoolFeature(SCHOOL_FEATURES)
+
+    for (let feature of schoolfeatures) {
       let key = 'hasFeature_' + feature;
       if (req.body[key]) {
         req.body.features.push(feature);
@@ -155,8 +166,9 @@ const getDetailHandler = (service) => {
     api(req)
       .get('/' + service + '/' + req.params.id)
       .then((data) => {
+        const schoolfeatures = filterSchoolFeature(SCHOOL_FEATURES)
         // parse school features
-        for (let feature of SCHOOL_FEATURES) {
+        for (let feature of schoolfeatures) {
           let key = 'hasFeature_' + feature;
           if (data.features) {
             data[key] = data.features.indexOf(feature) !== -1;
