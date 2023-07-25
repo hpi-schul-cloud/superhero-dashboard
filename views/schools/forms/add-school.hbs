@@ -125,13 +125,16 @@
     </label>
 </div>
 
-<div class="form-group">
-    <label>
-        <input
-            type="checkbox"
-            name="hasFeature_showOutdatedUsers"
-            value="true"
-        />
-        Veraltete Nutzer-Accounts ausblenden
-    </label>
-</div>
+{{#if SHOW_OUTDATED_USERS}}
+    <div class="form-group">
+        <label>
+            <input
+                type="checkbox"
+                name="hasFeature_showOutdatedUsers"
+                value="true"
+            />
+         Veraltete Nutzer-Accounts ausblenden
+        </label>
+    </div>
+{{/if}}
+
