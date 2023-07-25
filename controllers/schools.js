@@ -110,14 +110,6 @@ const getMigrationBody = (item) => {
   ];
 };
 
-const filterSchoolFeature = (features) => {
-  if(!SHOW_OUTDATED_USERS){
-    return features.filter(item => item !== 'showOutdatedUsers');
-  }
-
-  return features;
-}
-
 const getCreateHandler = (service) => {
   return function (req, res, next) {
     api(req)
@@ -138,9 +130,7 @@ const getUpdateHandler = (service) => {
   return function (req, res, next) {
     // parse school features
     req.body.features = [];
-    const schoolfeatures = filterSchoolFeature(SCHOOL_FEATURES)
-
-    for (let feature of schoolfeatures) {
+    for (let feature of SCHOOL_FEATURES) {
       let key = 'hasFeature_' + feature;
       if (req.body[key]) {
         req.body.features.push(feature);
@@ -166,9 +156,8 @@ const getDetailHandler = (service) => {
     api(req)
       .get('/' + service + '/' + req.params.id)
       .then((data) => {
-        const schoolfeatures = filterSchoolFeature(SCHOOL_FEATURES)
         // parse school features
-        for (let feature of schoolfeatures) {
+        for (let feature of SCHOOL_FEATURES) {
           let key = 'hasFeature_' + feature;
           if (data.features) {
             data[key] = data.features.indexOf(feature) !== -1;
@@ -265,6 +254,7 @@ const getHandler = async (req, res) => {
       storageProvider,
       limit: true,
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+      SHOW_OUTDATED_USERS
     });
   } catch (err) {
     res.render('schools/schools', {
