@@ -124,3 +124,17 @@
         Oauth2 basierte Provisionierung erlauben
     </label>
 </div>
+
+{{#if SHOW_OUTDATED_USERS}}
+    <div class="form-group">
+        <label>
+            <input
+                type="checkbox"
+                name="hasFeature_showOutdatedUsers"
+                value="true"
+            />
+         Veraltete Nutzer-Accounts anzeigen
+        </label>
+    </div>
+{{/if}}
+

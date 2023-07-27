@@ -20,9 +20,11 @@ const SCHOOL_FEATURES = [
   'studentVisibility',
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
+  'showOutdatedUsers',
 ];
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const SHOW_OUTDATED_USERS = isFeatureFlagTrue(process.env.FEATURE_SHOW_OUTDATED_USERS);
 
 const getTableActions = (item, path) => [
   {
@@ -252,6 +254,7 @@ const getHandler = async (req, res) => {
       storageProvider,
       limit: true,
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+      SHOW_OUTDATED_USERS
     });
   } catch (err) {
     res.render('schools/schools', {
