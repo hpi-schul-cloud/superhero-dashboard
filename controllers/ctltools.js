@@ -68,7 +68,7 @@ const sanitizeToolInputs = (id, body) => {
 const getUpdateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.params.id, req.body);
 
-    api(req, { version: 'v3' }).post(`/tools/${req.params.id}`, {
+    api(req, { version: 'v3' }).post(`/tools/external-tools/${req.params.id}`, {
         json: req.body
     }).then(() => {
         res.redirect(req.header('Referer'));
@@ -78,7 +78,7 @@ const getUpdateHandler = (req, res, next) => {
 };
 
 const getDetailHandler = (req, res, next) => {
-    api(req, { version: 'v3' }).get(`/tools/${req.params.id}`).then(data => {
+    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`).then(data => {
         if (data.config.type === 'oauth2') {
             data.config.redirectUris = data.config.redirectUris.join(';');
         }
@@ -89,7 +89,7 @@ const getDetailHandler = (req, res, next) => {
 };
 
 const getDeleteHandler = (req, res, next) => {
-    api(req, { version: 'v3' }).delete(`/tools/${req.params.id}`).then(() => {
+    api(req, { version: 'v3' }).delete(`/tools/external-tools/${req.params.id}`).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
         next(err);
@@ -99,7 +99,7 @@ const getDeleteHandler = (req, res, next) => {
 const getCreateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(undefined, req.body);
 
-    api(req, { version: 'v3' }).post('/tools/', {
+    api(req, { version: 'v3' }).post('/tools/external-tools/', {
         json: req.body
     }).then(() => {
         next();
@@ -202,7 +202,7 @@ const showTools = (req, res) => {
         }
     }
 
-    api(req, { version: 'v3' }).get('/tools', {
+    api(req, { version: 'v3' }).get('/tools/external-tools', {
         qs: {
             name: req.query.q,
             limit: itemsPerPage,
