@@ -105,6 +105,10 @@
             <input type="text" name="config[resource_link_id]" id="resource_link_id" class="form-control">
         </div>
         <div class="form-group">
+            <label class="control-label" for="key">Sprache *</label>
+            <textarea name="config[launch_presentation_locale]" id="launch_presentation_locale" placeholder="de-DE" class="form-control required"></textarea>
+        </div>
+        <div class="form-group">
             <label class="control-label" for="privacy_permission">Privatsphäre *</label>
             <select name="config[privacy_permission]" id="privacy_permission" class="required">
                 {{#each privacies}}
