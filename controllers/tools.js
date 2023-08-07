@@ -304,7 +304,7 @@ const sanitizeCtlTool = (req, create=false) => {
 const getUpdateHandlerCtl = (req, res, next) => {
     // TODO validation/sanitization
 
-    api(req, { version: 'v3' }).patch(`/tools/${req.params.id}`, {
+    api(req, { version: 'v3' }).patch(`/tools/external-tools/${req.params.id}`, {
         json: req.body
     }).then(data => {
         if(data.config.type === 'oauth2') {
@@ -319,7 +319,7 @@ const getUpdateHandlerCtl = (req, res, next) => {
 };
 
 const getDetailHandlerCtl = (req, res, next) => {
-    api(req, { version: 'v3' }).get(`/tools/${req.params.id}`).then(data => {
+    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`).then(data => {
         if (data.config.type === 'oauth2') {
             api(req, { version: HYDRA_VERSION }).get(`/oauth2/clients/${data.config.clientId}`).then(client => {
                 data.config = { ...data.config, ...mapOauthClientToOauthConfig(client) };
@@ -332,7 +332,7 @@ const getDetailHandlerCtl = (req, res, next) => {
 };
 
 const getDeleteHandlerCtl = (req, res, next) => {
-    api(req, { version: 'v3' }).delete(`/tools/${req.params.id}`).then(data => {
+    api(req, { version: 'v3' }).delete(`/tools/external-tools/${req.params.id}`).then(data => {
         if (data.config.type === 'oauth2') {
             api(req, { version: HYDRA_VERSION }).delete(`/oauth2/clients/${data.config.clientId}`);
         }
@@ -343,7 +343,7 @@ const getDeleteHandlerCtl = (req, res, next) => {
 };
 
 const createCtlTool = (req, next) => {
-    api(req, { version: 'v3' }).post('/tools/', {
+    api(req, { version: 'v3' }).post('/tools/external-tools/', {
         json: req.body
     }).then(_ => {
         next();
@@ -396,7 +396,7 @@ const showToolsCtl = (req, res) => {
         }
     }
 
-    api(req, { version: 'v3' }).get('/tools', {
+    api(req, { version: 'v3' }).get('/tools/external-tools', {
         json: {
             name: req.query.q,
             limit: itemsPerPage,
