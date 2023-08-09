@@ -162,6 +162,17 @@ $(document).ready(function () {
             $(this).siblings('div').remove();
         });
 
+        newCustomParamContainer.find('.parameters-type').on('change', function (){
+            const selectedType = $(this).val();
+            const booleanTypeText = newCustomParamContainer.find('.boolean-type-text');
+
+            if (selectedType === 'boolean') {
+                $(booleanTypeText).show();
+            } else {
+                $(booleanTypeText).hide();
+            }
+        });
+
         // Bind labels to input fields
         newCustomParamContainer.find('.parameters-is-optional-label').attr('for', `parameters-is-optional-${customParameterId}`);
         newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
