@@ -1,5 +1,5 @@
 <p>Hinweis: Änderungen, die zur Erhöhung der Versionsnummer dieser Konfiguration führen, haben Auswirkungen auf die von dieser Konfiguration abhängigen Tools, die Kursen bereits zugeordnet wurden.<p>
-<p>Zur Erhöhung der Versionsnummer führen folgende Änderungen: Hinzufüge, Entfernen, Umbenennen von Pflicht-Custom Parametern; Änderung des Typs, Scopes oder des regulären Ausdrucks der Parameter</p>
+<p>Zur Erhöhung der Versionsnummer führen folgende Änderungen: Hinzufüge, Entfernen, Umbenennen von Pflicht-Custom Parametern; Änderung des Typs, Scopes oder des regulären Ausdrucks der Parameter.</p>
 <div class="form-group">
     <label class="control-label" for="name">Name *</label>
     <input type="text" name="name" id="name" class="form-control" placeholder="Learn App" required>
@@ -11,6 +11,9 @@
 <div class="form-group">
     <label class="control-label" for="logoUrl">Logo-URL</label>
     <input type="text" name="logoUrl" id="logoUrl" class="form-control" placeholder="">
+    <p class="text-danger" style="font-size:0.75rem;">
+        Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png
+    </p>
 </div>
 <div class="form-group">
     <label class="control-label">Direkt in neuem Tab öffnen?</label>
@@ -80,6 +83,9 @@
                 Ja, skippen
             </label>
         </div>
+        <p class="text-danger">
+           <b>Hinweis:</b> <br> Die OAuth tools unterstützen keine Parameter mit dem Scope "Kontext".
+        </p>
     </div>
     <div class="tab-pane" id="lti11-{{modalId}}" role="tabpanel" aria-labelledby="lti11-tab-{{modalId}}">
         <h4>LTI1.1</h4>
@@ -171,7 +177,7 @@
     <div class="form-group">
         <label class="control-label parameters-default-label">Default</label>
         <input type="text" class="form-control parameters-default" placeholder="Default">
-        <div class="boolean-type-text" style="display:none">Mögliche Werte: "true" oder "false"</div>
+        <p class="boolean-type-text text-danger" style="display:none; font-size:0.75rem;">Mögliche Werte: "true" oder "false"</p>
     </div>
     <div class="form-group">
         <label class="control-label parameters-regex-label">Regex (nur für Strings relevant)</label>
