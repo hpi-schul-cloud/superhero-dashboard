@@ -143,8 +143,10 @@ $(document).ready(function () {
             customParameter.find('.parameters-default').attr('value', param.defaultValue);
             customParameter.find('.parameters-regex').attr('value', param.regex);
             customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
-
             customParameter.find('.parameters-type').find(`option[value=${param.type}]`).prop('selected', true);
+            if (param.type === 'boolean') {
+                customParameter.find('.parameters-type').trigger('change');
+            }
             customParameter.find('.parameters-scope').find(`option[value=${param.scope}]`).prop('selected', true);
             customParameter.find('.parameters-location').find(`option[value=${param.location}]`).prop('selected', true);
         });
