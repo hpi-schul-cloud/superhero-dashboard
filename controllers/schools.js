@@ -110,6 +110,48 @@ const getMigrationBody = (item) => {
   ];
 };
 
+const customSort = (a, b, sortCriteria) => {
+  let direction = 1;
+  if (sortCriteria.startsWith('-')) {
+    direction = -1;
+    sortCriteria = sortCriteria.substring(1);
+  }
+
+  let valueA = _.get(a, sortCriteria) || '';
+  let valueB = _.get(b, sortCriteria) || '';
+
+  // Handle cases where the value is null
+  if (!valueA && !valueB) {
+    return 0;
+  }
+  if (!valueA) {
+    return 1;
+  }
+  if (!valueB) {
+    return -1;
+  }
+
+  return direction * valueA.localeCompare(valueB);
+}
+
+const sortSchools = (schools, sortCriteria) => {
+  return schools.sort((a, b) => {
+    switch (sortCriteria) {
+      case 'userLoginMigration.startedAt':
+      case '-userLoginMigration.startedAt':
+      case 'userLoginMigration.mandatorySince':
+      case '-userLoginMigration.mandatorySince':
+      case 'userLoginMigration.closedAt':
+      case '-userLoginMigration.closedAt':
+      case 'userLoginMigration.finishedAt':
+      case '-userLoginMigration.finishedAt':
+        return customSort(a, b, sortCriteria);
+      default:
+        return 0;
+    }
+  });
+};
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
     api(req)
@@ -194,6 +236,7 @@ const getDeleteHandler = (service) => {
 const getHandler = async (req, res) => {
   const itemsPerPage = req.query.limit || 10;
   const currentPage = parseInt(req.query.p) || 1;
+  const sortCriteria = req.query.sort || '';
 
   try {
     const [federalStates, schools, storageProvider] = await Promise.all([
@@ -208,7 +251,7 @@ const getHandler = async (req, res) => {
             : undefined,
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
-          $sort: req.query.sort,
+          $sort: sortCriteria,
           $populate: ['federalState', 'systems', 'userLoginMigration'],
         },
       }),
@@ -217,7 +260,9 @@ const getHandler = async (req, res) => {
 
     const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
-    const body = schools.data.map((item) => {
+    const sortedSchools = sortSchools(schools.data, sortCriteria);
+
+    const body = sortedSchools.map((item) => {
       return [
         item._id || '',
         item.name || '',

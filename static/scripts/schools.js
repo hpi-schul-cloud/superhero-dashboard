@@ -98,10 +98,10 @@ $(document).ready(function () {
         'Typ': 'type',
         'Url': 'url',
         'Alias': 'alias',
-        'Migration gestartet': 'oauthMigrationStart',
-        'Migration verpflichtend': 'oauthMigrationMandatory',
-        'Migration abgeschlossen': 'oauthMigrationFinished',
-        'Migration final beendet': 'oauthMigrationFinalFinish',
+        'Migration gestartet': 'userLoginMigration.startedAt',
+        'Migration verpflichtend': 'userLoginMigration.mandatorySince',
+        'Migration abgeschlossen': 'userLoginMigration.closedAt',
+        'Migration final beendet': 'userLoginMigration.finishedAt',
         'Login-System': 'systems',
 
         'subject': 'Titel',
@@ -127,10 +127,10 @@ $(document).ready(function () {
         'teacherIds': 'Lehrer',
         'classIds': 'Klasse(n)',
         'email': 'E-Mail-Adresse',
-        'oauthMigrationStart': 'Migration gestartet',
-        'oauthMigrationMandatory': 'Migration verpflichtend',
-        'oauthMigrationFinished': 'Migration abgeschlossen',
-        'oauthMigrationFinalFinish': 'Migration final beendet',
+        'userLoginMigration.startedAt': 'Migration gestartet',
+        'userLoginMigration.mandatorySince': 'Migration verpflichtend',
+        'userLoginMigration.closedAt': 'Migration abgeschlossen',
+        'userLoginMigration.finishedAt': 'Migration final beendet',
         'systems': 'Login-System'
     };
 
