@@ -111,27 +111,17 @@ const getMigrationBody = (item) => {
 };
 
 const customSort = (a, b, sortCriteria) => {
-  let direction = 1;
-  if (sortCriteria.startsWith('-')) {
-    direction = -1;
-    sortCriteria = sortCriteria.substring(1);
-  }
+  let direction = sortCriteria.startsWith('-') ? -1 : 1;
+  if (direction === -1) sortCriteria = sortCriteria.substring(1);
 
-  let valueA = _.get(a, sortCriteria) || '';
-  let valueB = _.get(b, sortCriteria) || '';
+  const valueA = _.get(a, sortCriteria);
+  const valueB = _.get(b, sortCriteria);
 
-  // Handle cases where the value is null
-  if (!valueA && !valueB) {
-    return 0;
-  }
-  if (!valueA) {
-    return 1;
-  }
-  if (!valueB) {
-    return -1;
-  }
+  if (valueA === undefined) return direction;
+  if (valueB === undefined) return -direction;
 
-  return direction * valueA.localeCompare(valueB);
+  // Compare values, localeCompare will handle null and strings correctly
+  return direction * String(valueA).localeCompare(String(valueB));
 }
 
 const sortSchools = (schools, sortCriteria) => {
