@@ -21,6 +21,7 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
   'showOutdatedUsers',
+  'enableLdapSyncDuringMigration'
 ];
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
