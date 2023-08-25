@@ -21,6 +21,7 @@ const SCHOOL_FEATURES = [
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
   'showOutdatedUsers',
+  'enableLdapSyncDuringMigration'
 ];
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
@@ -110,6 +111,38 @@ const getMigrationBody = (item) => {
   ];
 };
 
+const customSort = (a, b, sortCriteria) => {
+  let direction = sortCriteria.startsWith('-') ? -1 : 1;
+  if (direction === -1) sortCriteria = sortCriteria.substring(1);
+
+  const valueA = _.get(a, sortCriteria);
+  const valueB = _.get(b, sortCriteria);
+
+  if (valueA === undefined) return direction;
+  if (valueB === undefined) return -direction;
+
+  // Compare values, localeCompare will handle null and strings correctly
+  return direction * String(valueA).localeCompare(String(valueB));
+}
+
+const sortSchools = (schools, sortCriteria) => {
+  return schools.sort((a, b) => {
+    switch (sortCriteria) {
+      case 'userLoginMigration.startedAt':
+      case '-userLoginMigration.startedAt':
+      case 'userLoginMigration.mandatorySince':
+      case '-userLoginMigration.mandatorySince':
+      case 'userLoginMigration.closedAt':
+      case '-userLoginMigration.closedAt':
+      case 'userLoginMigration.finishedAt':
+      case '-userLoginMigration.finishedAt':
+        return customSort(a, b, sortCriteria);
+      default:
+        return 0;
+    }
+  });
+};
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
     api(req)
@@ -194,6 +227,7 @@ const getDeleteHandler = (service) => {
 const getHandler = async (req, res) => {
   const itemsPerPage = req.query.limit || 10;
   const currentPage = parseInt(req.query.p) || 1;
+  const sortCriteria = req.query.sort || '';
 
   try {
     const [federalStates, schools, storageProvider] = await Promise.all([
@@ -208,7 +242,7 @@ const getHandler = async (req, res) => {
             : undefined,
           $limit: itemsPerPage,
           $skip: itemsPerPage * (currentPage - 1),
-          $sort: req.query.sort,
+          $sort: sortCriteria,
           $populate: ['federalState', 'systems', 'userLoginMigration'],
         },
       }),
@@ -217,7 +251,9 @@ const getHandler = async (req, res) => {
 
     const head = ['ID', 'Name', 'Timezone', 'Bundesland', 'Filestorage', ...getMigrationHead(), ''];
 
-    const body = schools.data.map((item) => {
+    const sortedSchools = sortSchools(schools.data, sortCriteria);
+
+    const body = sortedSchools.map((item) => {
       return [
         item._id || '',
         item.name || '',
