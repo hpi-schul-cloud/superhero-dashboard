@@ -15,7 +15,7 @@
 ## Run
 
 1. Start the [schul-cloud server](https://github.com/schulcloud/schulcloud-server)
-   * maybe you need to pull the Redis Docker image, start the container and set the `REDIS_URI` environment variable in the schul-cloud server
+   * **Note:** maybe you need to pull the Redis Docker image, start the container and set the `REDIS_URI` environment variable in the schul-cloud server
 2. Go into superhero project folder
 3. run `gulp watch` to run gulp
 4. run `npm run watch` to boot the application OR use `npm run debug` to run with --inspect:9311 to debug the application on port 9311
