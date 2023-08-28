@@ -135,6 +135,7 @@ router.get('/search' , function (req, res, next) {
                 'Username',
                 'Aktiviert',
                 'UserId',
+                'updatedAt',
                 ''
             ];
 
@@ -144,6 +145,7 @@ router.get('/search' , function (req, res, next) {
                     item.username ||"",
                     item.activated ? '✔️' : '❌',
                     item.userId ||"",
+                    item.updatedAt || "",
                     getTableActions(item, '/accounts/')
                 ];
             });
