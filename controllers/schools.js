@@ -26,6 +26,7 @@ const SCHOOL_FEATURES = [
 
 const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 const SHOW_OUTDATED_USERS = isFeatureFlagTrue(process.env.FEATURE_SHOW_OUTDATED_USERS);
+const ENABLE_LDAP_SYNC_DURING_MIGRATION = isFeatureFlagTrue(process.env.FEATURE_ENABLE_LDAP_SYNC_DURING_MIGRATION);
 
 const getTableActions = (item, path) => [
   {
@@ -290,7 +291,8 @@ const getHandler = async (req, res) => {
       storageProvider,
       limit: true,
       themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-      SHOW_OUTDATED_USERS
+      SHOW_OUTDATED_USERS,
+      ENABLE_LDAP_SYNC_DURING_MIGRATION,
     });
   } catch (err) {
     res.render('schools/schools', {
