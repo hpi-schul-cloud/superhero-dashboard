@@ -138,3 +138,17 @@
     </div>
 {{/if}}
 
+{{#if ENABLE_LDAP_SYNC_DURING_MIGRATION}}
+    <div class="form-group">
+        <label>
+            <input
+                type="checkbox"
+                name="hasFeature_enableLdapSyncDuringMigration"
+                value="true"
+                disabled="disabled"
+            />
+            Synchronisation für Klassen und Accounts während Login-System-Migration erlauben
+        </label>
+    </div>
+{{/if}}
+
