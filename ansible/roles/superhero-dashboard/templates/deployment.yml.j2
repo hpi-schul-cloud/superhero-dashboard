@@ -7,6 +7,9 @@ metadata:
     app: shd
     app.kubernetes.io/part-of: schulcloud-verbund
     app.kubernetes.io/version: {{ SUPERHERO_DASHBOARD_IMAGE_TAG }}
+    app.kubernetes.io/name: shd
+    app.kubernetes.io/component: shd
+    app.kubernetes.io/managed-by: ansible
     git.branch: {{ SUPERHERO_DASHBOARD_BRANCH_NAME }}
     git.repo: {{ SUPERHERO_DASHBOARD_REPO_NAME }}
 spec:
@@ -27,6 +30,9 @@ spec:
         app: shd
         app.kubernetes.io/part-of: schulcloud-verbund
         app.kubernetes.io/version: {{ SUPERHERO_DASHBOARD_IMAGE_TAG }}
+        app.kubernetes.io/name: shd
+        app.kubernetes.io/component: shd
+        app.kubernetes.io/managed-by: ansible
         git.branch: {{ SUPERHERO_DASHBOARD_BRANCH_NAME }}
         git.repo: {{ SUPERHERO_DASHBOARD_REPO_NAME }}
       annotations:
