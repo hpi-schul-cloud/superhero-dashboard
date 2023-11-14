@@ -77,12 +77,27 @@ const getUpdateHandler = (req, res, next) => {
     });
 };
 
-const getDetailHandler = (req, res, next) => {
-    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`).then(data => {
-        if (data.config.type === 'oauth2') {
-            data.config.redirectUris = data.config.redirectUris.join(';');
+const convertZerosToString = (obj) => {
+    Object.keys(obj).forEach(key => {
+        if (typeof obj[key] === 'object') {
+            convertZerosToString(obj[key]);
+        } else if (obj[key] === 0) {
+            obj[key] = '0';
         }
-        res.json(data);
+    });
+}
+
+const getDetailHandler = (req, res, next) => {
+    Promise.all([
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`)
+    ]).then(([toolData, toolMetaData]) => {
+        if (toolData.config.type === 'oauth2') {
+            toolData.config.redirectUris = toolData.config.redirectUris.join(';');
+        }
+        toolMetaData.schoolExternalToolCount = 10000;
+        convertZerosToString(toolMetaData);
+        res.json({...toolData, ...toolMetaData});
     }).catch(err => {
         next(err);
     });
