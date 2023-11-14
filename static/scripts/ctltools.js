@@ -64,7 +64,7 @@ $(document).ready(function () {
         $.getJSON(entry, function (result) {
             populateModalForm($deleteModal, {
                 action: entry,
-                title: 'Löschen',
+                title: 'Tool wirklich löschen?',
                 closeLabel: 'Schließen',
                 submitLabel: 'Löschen',
                 fields: result
