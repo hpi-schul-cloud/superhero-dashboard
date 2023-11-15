@@ -95,7 +95,7 @@ const getDetailHandler = (req, res, next) => {
         if (toolData.config.type === 'oauth2') {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
         }
-        toolMetaData.schoolExternalToolCount = 10000;
+
         convertZerosToString(toolMetaData);
         res.json({...toolData, ...toolMetaData});
     }).catch(err => {
