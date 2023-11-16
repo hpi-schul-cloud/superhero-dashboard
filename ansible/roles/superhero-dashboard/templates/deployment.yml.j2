@@ -5,6 +5,13 @@ metadata:
   namespace: {{ NAMESPACE }}
   labels:
     app: shd
+    app.kubernetes.io/part-of: schulcloud-verbund
+    app.kubernetes.io/version: {{ SUPERHERO_DASHBOARD_IMAGE_TAG }}
+    app.kubernetes.io/name: shd
+    app.kubernetes.io/component: shd
+    app.kubernetes.io/managed-by: ansible
+    git.branch: {{ SUPERHERO_DASHBOARD_BRANCH_NAME }}
+    git.repo: {{ SUPERHERO_DASHBOARD_REPO_NAME }}
 spec:
   replicas: {{ SHD_REPLICAS|default("1", true) }}
   strategy:
@@ -21,9 +28,16 @@ spec:
     metadata:
       labels:
         app: shd
+        app.kubernetes.io/part-of: schulcloud-verbund
+        app.kubernetes.io/version: {{ SUPERHERO_DASHBOARD_IMAGE_TAG }}
+        app.kubernetes.io/name: shd
+        app.kubernetes.io/component: shd
+        app.kubernetes.io/managed-by: ansible
+        git.branch: {{ SUPERHERO_DASHBOARD_BRANCH_NAME }}
+        git.repo: {{ SUPERHERO_DASHBOARD_REPO_NAME }}
       annotations:
     spec:
-      securityContext:  
+      securityContext:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
