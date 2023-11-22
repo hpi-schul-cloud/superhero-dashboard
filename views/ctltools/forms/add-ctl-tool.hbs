@@ -29,6 +29,14 @@
         Ja, es soll es ausgeblendet werden
     </label>
 </div>
+<div class="form-group">
+    <label class="control-label" for="toolRestriction">Nutzung des Tools auf folgende Kontexte beschränken:</label>
+    <select id="toolRestriction" name="toolRestriction" multiple>
+        {{#each toolRestriction}}
+            <option value="{{this.value}}">{{this.label}}</option>
+        {{/each}}
+    </select>
+</div>
 <h3>Konfiguration</h3>
 <div class="form-group">
     <label class="control-label" for="baseUrl">BaseURL *</label>
