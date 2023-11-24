@@ -27,6 +27,7 @@ const sanitizeToolInputs = (id, body) => {
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
     body.config.baseUrl = body.config.baseUrl || undefined;
+    body.restrictToContexts = Array.isArray(body.restrictToContexts) ? body.restrictToContexts : [].concat(body.restrictToContexts || []);
 
     switch (body.config.type) {
         case 'oauth2':
@@ -217,6 +218,12 @@ const showTools = (req, res) => {
         }
     }
 
+    let toolContextTypes;
+
+    api(req, {version: 'v3'}).get('/tools/context-types').then((contextTypes) => {
+        toolContextTypes = contextTypes.data;
+    })
+
     api(req, { version: 'v3' }).get('/tools/external-tools', {
         qs: {
             name: req.query.q,
@@ -265,7 +272,8 @@ const showTools = (req, res) => {
             toolTypes,
             customParameterTypes,
             customParameterScopes,
-            customParameterLocations
+            customParameterLocations,
+            toolContextTypes
         });
     }).catch(() => {
         res.render('ctltools/ctltools', {
@@ -281,7 +289,8 @@ const showTools = (req, res) => {
             toolTypes,
             customParameterTypes,
             customParameterScopes,
-            customParameterLocations
+            customParameterLocations,
+            toolContextTypes
         });
     }).catch(() => {
         res.render('ctltools/ctltools', {
@@ -297,7 +306,8 @@ const showTools = (req, res) => {
             toolTypes,
             customParameterTypes,
             customParameterScopes,
-            customParameterLocations
+            customParameterLocations,
+            toolContextTypes
         });
     });
 };

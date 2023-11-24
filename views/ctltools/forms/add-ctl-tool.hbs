@@ -30,10 +30,10 @@
     </label>
 </div>
 <div class="form-group">
-    <label class="control-label" for="toolRestriction">Nutzung des Tools auf folgende Kontexte beschränken:</label>
-    <select id="toolRestriction" name="toolRestriction" multiple>
-        {{#each toolRestriction}}
-            <option value="{{this.value}}">{{this.label}}</option>
+    <label class="control-label" for="restrictToContexts">Nutzung des Tools auf folgende Kontexte beschränken:</label>
+    <select id="restrictToContexts" name="restrictToContexts" multiple>
+        {{#each toolContextTypes}}
+            <option value="{{this}}">{{this}}</option>
         {{/each}}
     </select>
 </div>
