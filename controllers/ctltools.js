@@ -196,7 +196,7 @@ const customParameterScopes = [
     { label: 'Context', value: 'context' },
 ];
 
-const showTools = async (req, res) => {
+const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
@@ -230,7 +230,7 @@ const showTools = async (req, res) => {
             },
         })
     ]).then(([contextTypes, tools]) => {
-        const toolContextTypes = contextTypes.data
+        const toolContextTypes = contextTypes.data;
 
         const body = tools.data.map(item => {
             return [
