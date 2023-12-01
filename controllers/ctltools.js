@@ -27,6 +27,7 @@ const sanitizeToolInputs = (id, body) => {
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
     body.config.baseUrl = body.config.baseUrl || undefined;
+    body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
     switch (body.config.type) {
         case 'oauth2':
@@ -217,15 +218,20 @@ const showTools = (req, res) => {
         }
     }
 
-    api(req, { version: 'v3' }).get('/tools/external-tools', {
-        qs: {
-            name: req.query.q,
-            limit: itemsPerPage,
-            skip: itemsPerPage * (currentPage - 1),
-            sortOrder,
-            sortBy,
-        },
-    }).then((tools) => {
+    Promise.all([
+        api(req, {version: 'v3'}).get('/tools/context-types'),
+        api(req, {version: 'v3'}).get('/tools/external-tools', {
+            qs: {
+                name: req.query.q,
+                limit: itemsPerPage,
+                skip: itemsPerPage * (currentPage - 1),
+                sortOrder,
+                sortBy,
+            },
+        })
+    ]).then(([contextTypes, tools]) => {
+        const toolContextTypes = contextTypes.data;
+
         const body = tools.data.map(item => {
             return [
                 item.id || "",
@@ -265,40 +271,11 @@ const showTools = (req, res) => {
             toolTypes,
             customParameterTypes,
             customParameterScopes,
-            customParameterLocations
+            customParameterLocations,
+            toolContextTypes
         });
-    }).catch(() => {
-        res.render('ctltools/ctltools', {
-            title: 'Tools',
-            head,
-            body: [],
-            user: res.locals.currentUser,
-            limit: true,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-            messageTypes,
-            privacies,
-            authMethods,
-            toolTypes,
-            customParameterTypes,
-            customParameterScopes,
-            customParameterLocations
-        });
-    }).catch(() => {
-        res.render('ctltools/ctltools', {
-            title: 'Tools',
-            head,
-            body: [],
-            user: res.locals.currentUser,
-            limit: true,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-            messageTypes,
-            privacies,
-            authMethods,
-            toolTypes,
-            customParameterTypes,
-            customParameterScopes,
-            customParameterLocations
-        });
+    }).catch(err => {
+        next(err);
     });
 };
 
