@@ -15,7 +15,7 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Docker meta Service Name
         id: docker_meta_img
         uses: crazy-max/ghaction-docker-meta@v4
@@ -42,12 +42,13 @@ jobs:
 
       - name: Build and push ${{ github.repository }}
         if: ${{ env.IMAGE_EXISTS == 0 }}
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
+          pull: true
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
           labels: ${{ steps.docker_meta_img.outputs.labels }}
 
@@ -78,7 +79,6 @@ jobs:
       DEV_KUBE_CONFIG_NBC: ${{ secrets.DEV_KUBE_CONFIG_NBC }}
       DEV_KUBE_CONFIG_THR: ${{ secrets.DEV_KUBE_CONFIG_THR }}
       DEV_KUBE_CONFIG_DBC: ${{ secrets.DEV_KUBE_CONFIG_DBC }}
-      BINGO_REPO_TOKEN: ${{ secrets.BINGO_REPO_TOKEN }}
 
   deploy-successful:
     needs:
