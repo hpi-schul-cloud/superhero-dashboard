@@ -70,8 +70,6 @@ const sanitizeToolInputs = (id, body) => {
 const getUpdateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.params.id, req.body);
 
-    console.log(req.body);
-
     api(req, { version: 'v3' }).post(`/tools/external-tools/${req.params.id}`, {
         json: req.body
     }).then(() => {
@@ -117,8 +115,6 @@ const getDeleteHandler = (req, res, next) => {
 
 const getCreateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(undefined, req.body);
-
-    console.log(req.body);
 
     api(req, { version: 'v3' }).post('/tools/external-tools/', {
         json: req.body
