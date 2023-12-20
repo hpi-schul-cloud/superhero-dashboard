@@ -120,6 +120,7 @@ $(document).ready(function () {
 
         $(this).find('.custom-parameter-container').each(function (index) {
             $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
+            $(this).find('.parameters-is-protected').attr('name', `parameters[${index}][isProtected]`);
             $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
             $(this).find('.parameters-displayName').attr('name', `parameters[${index}][displayName]`);
             $(this).find('.parameters-description').attr('name', `parameters[${index}][description]`);
@@ -137,6 +138,7 @@ $(document).ready(function () {
             const customParameter = addCustomParameter($modal);
 
             customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
+            customParameter.find('.parameters-is-protected').attr('checked', param.isProtected);
             customParameter.find('.parameters-name').attr('value', param.name);
             customParameter.find('.parameters-displayName').attr('value', param.displayName);
             customParameter.find('.parameters-description').attr('value', param.description);
@@ -178,6 +180,8 @@ $(document).ready(function () {
         // Bind labels to input fields
         newCustomParamContainer.find('.parameters-is-optional-label').attr('for', `parameters-is-optional-${customParameterId}`);
         newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-is-protected-label').attr('for', `parameters-is-protected-${customParameterId}`);
+        newCustomParamContainer.find('.parameters-is-protected').attr('for', `parameters-is-protected-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
         newCustomParamContainer.find('.parameters-displayName-label').attr('for', `parameters-displayName-${customParameterId}`);
