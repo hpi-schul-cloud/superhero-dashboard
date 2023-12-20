@@ -147,6 +147,13 @@
         </label>
     </div>
     <div class="form-group">
+        <label class="control-label parameters-is-protected-label">Geschützter Parameter?</label>
+        <label  style="width: 100%">
+            <input type="checkbox" name="isProtected" value="1" class="form-control parameters-is-protected" style="width:10%;display:inline-block;">
+            Ja, geschützt.
+        </label>
+    </div>
+    <div class="form-group">
         <label class="control-label parameters-name-label">Name *</label>
         <input type="text" class="form-control parameters-name" placeholder="custom-parameter">
     </div>
@@ -168,7 +175,7 @@
     </div>
     <div class="form-group">
         <label class="control-label parameters-scope-label">Scope *</label>
-        <select class="parameters-scope">
+        <select style="width: 100%" class="parameters-scope">
             {{#each customParameterScopes}}
                 <option value="{{this.value}}">{{this.label}}</option>
             {{/each}}
