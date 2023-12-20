@@ -53,6 +53,7 @@ const sanitizeToolInputs = (id, body) => {
     if(body.parameters && Array.isArray(body.parameters)) {
         body.parameters.forEach((param) => {
             param.isOptional = !!param.isOptional;
+            param.isProtected = !!param.isProtected;
             param.defaultValue = param.defaultValue || undefined;
             param.regex = param.regex || undefined;
             if (!param.regex) {
@@ -68,6 +69,8 @@ const sanitizeToolInputs = (id, body) => {
 
 const getUpdateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(req.params.id, req.body);
+
+    console.log(req.body);
 
     api(req, { version: 'v3' }).post(`/tools/external-tools/${req.params.id}`, {
         json: req.body
@@ -114,6 +117,8 @@ const getDeleteHandler = (req, res, next) => {
 
 const getCreateHandler = (req, res, next) => {
     req.body = sanitizeToolInputs(undefined, req.body);
+
+    console.log(req.body);
 
     api(req, { version: 'v3' }).post('/tools/external-tools/', {
         json: req.body
