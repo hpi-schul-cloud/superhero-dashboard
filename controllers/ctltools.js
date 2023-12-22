@@ -26,6 +26,7 @@ const sanitizeToolInputs = (id, body) => {
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
+    body.isDeactivated = !!body.isDeactivated;
     body.config.baseUrl = body.config.baseUrl || undefined;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
