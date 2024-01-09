@@ -200,7 +200,7 @@ const authMethods = [
 const showTools = (req, res) => {
   const itemsPerPage = (req.query.limit || 10);
   const currentPage = parseInt(req.query.p) || 1;
-  api(req).get('/ltitools', {
+  api(req).get('/ltiTools', {
     qs: {
       name: (req.query.q ? {
         $regex: _.escapeRegExp(req.query.q),
@@ -475,7 +475,7 @@ if(LTI_VERSION === 'v3') {
     router.all('/', showTools);
 
     router.get('/', function (req, res, next) {
-        api(req).get('/ltitools/').then(ltitools => {
+        api(req).get('/ltiTools/').then(ltitools => {
             res.render('tools/tools', {
                 title: 'Tools',
                 user: res.locals.currentUser,
