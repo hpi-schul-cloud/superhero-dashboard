@@ -518,7 +518,7 @@ router.get('/', function (req, res, next) {
 			});
 	} else {
 		api(req)
-			.get('/schools/', { qs: { $limit: 100 } })
+			.get('/schools/', { qs: { $limit: false } })
 			.then((schools) => {
 				res.render('users/preselect', {
 					title: 'Users',
