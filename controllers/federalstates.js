@@ -78,16 +78,16 @@ const getDeleteHandler = (service) => {
 
 router.use(authHelper.authChecker);
 
-router.patch('/:id', getUpdateHandler('federalstates'));
-router.get('/:id', getDetailHandler('federalstates'));
-router.delete('/:id', getDeleteHandler('federalstates'));
-router.post('/', getCreateHandler('federalstates'));
+router.patch('/:id', getUpdateHandler('federalStates'));
+router.get('/:id', getDetailHandler('federalStates'));
+router.delete('/:id', getDeleteHandler('federalStates'));
+router.post('/', getCreateHandler('federalStates'));
 router.get('/', function (req, res, next) {
 
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req).get('/federalstates', {
+    api(req).get('/federalStates', {
         qs: {
             $limit: itemsPerPage,
             $skip: itemsPerPage * (currentPage - 1),
