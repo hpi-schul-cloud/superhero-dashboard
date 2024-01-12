@@ -468,18 +468,18 @@ if(LTI_VERSION === 'v3') {
 } else {
     router.get('/search', showTools);
 
-    router.patch('/:id', getUpdateHandler('ltitools'));
-    router.get('/:id', getDetailHandler('ltitools'));
-    router.delete('/:id', getDeleteHandler('ltitools'));
-    router.post('/', getCreateHandler('ltitools'));
+    router.patch('/:id', getUpdateHandler('ltiTools'));
+    router.get('/:id', getDetailHandler('ltiTools'));
+    router.delete('/:id', getDeleteHandler('ltiTools'));
+    router.post('/', getCreateHandler('ltiTools'));
     router.all('/', showTools);
 
     router.get('/', function (req, res, next) {
-        api(req).get('/ltiTools/').then(ltitools => {
+        api(req).get('/ltiTools/').then(ltiTools => {
             res.render('tools/tools', {
                 title: 'Tools',
                 user: res.locals.currentUser,
-                tools: ltitools.data,
+                tools: ltiTools.data,
                 themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
             });
         });
