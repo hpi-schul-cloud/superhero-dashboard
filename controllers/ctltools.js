@@ -135,6 +135,12 @@ const getTableActions = (item, path) => {
             title: 'bearbeiten'
         },
         {
+            link: '/tools/external-tools/' + item.id + '/datasheet',
+            class: 'btn-data-sheet',
+            icon: 'file-text-o',
+            title: 'Datenblatt'
+        },
+        {
             link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
