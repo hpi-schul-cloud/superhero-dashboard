@@ -126,6 +126,15 @@ const getCreateHandler = (req, res, next) => {
     });
 };
 
+const getDataSheetHandler =  (req, res) => {
+
+    api(req, {version: 'v3'}).get(`/tools/external-tools/${req.params.id}/datasheet`)
+        .then(apiRes => {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.send(apiRes);
+        })
+}
+
 const getTableActions = (item, path) => {
     return [
         {
@@ -135,10 +144,11 @@ const getTableActions = (item, path) => {
             title: 'bearbeiten'
         },
         {
-            link: '/tools/external-tools/' + item.id + '/datasheet',
+            link: item.id + '/datasheet',
             class: 'btn-data-sheet',
             icon: 'file-text-o',
-            title: 'Datenblatt'
+            title: 'Datenblatt',
+            blank: '_blank'
         },
         {
             link: path + item.id,
@@ -292,6 +302,7 @@ router.use(authHelper.authChecker);
 router.get('/search', showTools);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
+router.get('/:id/datasheet', getDataSheetHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
 
