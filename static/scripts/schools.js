@@ -69,6 +69,10 @@ $(document).ready(function () {
         });
     });
 
+    $editModal.find('.enableLdapSyncDuringMigration').on('click', function(e) {
+        e.preventDefault();
+    });
+
     const dictionary = {
         'Vorname': 'firstName',
         'Nachname': 'lastName',
