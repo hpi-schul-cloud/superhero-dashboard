@@ -357,6 +357,12 @@ router.get('/search', function (req, res, next) {
 							$options: 'i',
 						},
 					},
+					{
+						externalId: {
+							$regex: _.escapeRegExp(req.query.q),
+								$options: 'i',
+						},
+					},
 				],
 				schoolId: req.query.schoolId ? req.query.schoolId : undefined,
 				$populate: ['roles', 'schoolId'],
