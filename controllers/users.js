@@ -365,17 +365,17 @@ router.get('/search', function (req, res, next) {
 					},
 				],
 				schoolId: req.query.schoolId ? req.query.schoolId : undefined,
-				$populate: ['roles', 'schoolId'],
 				$limit: itemsPerPage,
 				$skip: itemsPerPage * (currentPage - 1),
 				$sort: req.query.sort,
+				$populate: ['roles', 'schoolId'],
 			},
 		})
 		.then((data) => {
 			api(req)
 				.get('/roles')
 				.then((role) => {
-					const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'External Id', ''];
+					const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'Schule', 'External Id', ''];
 
 					const body = data.data.map((item) => {
 						let roles = item.roles
@@ -384,6 +384,7 @@ router.get('/search', function (req, res, next) {
 							})
 							.join(', ');
 						return [
+							item._id || '',
 							item.firstName || '',
 							item.lastName || '',
 							item.email || '',
