@@ -128,7 +128,6 @@ const getCreateHandler = (req, res, next) => {
 };
 
 const getTableActions = (item, path) => {
-    const baseUrl = process.env.HOST || 'http://localhost:3030';
     return [
         {
             link: path + item.id,
@@ -137,7 +136,6 @@ const getTableActions = (item, path) => {
             title: 'bearbeiten'
         },
         {
-            //link: baseUrl + '/api/v3/tools/external-tools/' + item.id + '/datasheet',
             link: path + item.id + '/datasheet',
             class: 'btn-data-sheet',
             icon: 'file-text-o',
