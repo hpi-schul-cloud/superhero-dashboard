@@ -291,17 +291,6 @@ const showTools = (req, res) => {
     });
 };
 
-const getDatasheet = (req, res) => {
-    const myFilename = 'test.pdf'
-
-    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`)
-        .then((file) => {
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `inline; filename=${myFilename}`);
-            res.send(Buffer.from(file));
-        })
-}
-
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
@@ -309,7 +298,14 @@ router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
-router.get('/:id/datasheet', getDatasheet);
+
+router.get('/:id/datasheet', (req, res, next) => {
+    try {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
+    } catch (e) {
+        next(e);
+    }
+});
 
 router.all('/', showTools);
 
