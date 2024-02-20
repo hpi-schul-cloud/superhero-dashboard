@@ -369,7 +369,7 @@ router.get('/search', function (req, res, next) {
 			api(req)
 				.get('/roles')
 				.then((role) => {
-					const head = ['Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'Schule', ''];
+					const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'External Id', ''];
 
 					const body = data.data.map((item) => {
 						let roles = item.roles
@@ -383,6 +383,7 @@ router.get('/search', function (req, res, next) {
 							item.email || '',
 							roles || '',
 							(item.schoolId || {}).name || '',
+							item.externalId || '',
 							getTableActions(item, '/users/'),
 						];
 					});
@@ -462,9 +463,10 @@ router.get('/', function (req, res, next) {
 						},
 					})
 					.then((data) => {
-						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', ''];
+						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'External Id', ''];
 
 						const body = data.data.map((item) => {
+							console.log(item);
 							if (!item.deletedAt) {
 								let roles = item.roles
 									.map((role) => {
@@ -477,6 +479,7 @@ router.get('/', function (req, res, next) {
 									item.lastName || '',
 									item.email || '',
 									roles || '',
+									item.externalId || '',
 									getTableActions(item, '/users/'),
 								];
 							}
