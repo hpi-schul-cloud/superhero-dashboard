@@ -7,6 +7,7 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
+const {data} = require("express-session/session/cookie");
 moment.locale('de');
 
 const trimWhitespaces = (object) => {
@@ -136,7 +137,8 @@ const getTableActions = (item, path) => {
             title: 'bearbeiten'
         },
         {
-            link: baseUrl + '/api/v3/tools/external-tools/' + item.id + '/datasheet',
+            //link: baseUrl + '/api/v3/tools/external-tools/' + item.id + '/datasheet',
+            link: path + item.id + '/datasheet',
             class: 'btn-data-sheet',
             icon: 'file-text-o',
             title: 'Datenblatt anzeigen',
@@ -289,6 +291,17 @@ const showTools = (req, res) => {
     });
 };
 
+const getDatasheet = (req, res) => {
+    const myFilename = 'test.pdf'
+
+    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`)
+        .then((file) => {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `inline; filename=${myFilename}`);
+            res.send(Buffer.from(file));
+        })
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
@@ -296,6 +309,7 @@ router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
+router.get('/:id/datasheet', getDatasheet);
 
 router.all('/', showTools);
 
