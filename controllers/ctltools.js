@@ -127,7 +127,6 @@ const getCreateHandler = (req, res, next) => {
 };
 
 const getTableActions = (item, path) => {
-    const baseUrl = process.env.HOST || 'http://localhost:3030';
     return [
         {
             link: path + item.id,
@@ -136,7 +135,7 @@ const getTableActions = (item, path) => {
             title: 'bearbeiten'
         },
         {
-            link: baseUrl + '/api/v3/tools/external-tools/' + item.id + '/datasheet',
+            link: path + item.id + '/datasheet',
             class: 'btn-data-sheet',
             icon: 'file-text-o',
             title: 'Datenblatt anzeigen',
@@ -289,6 +288,14 @@ const showTools = (req, res) => {
     });
 };
 
+const getDatasheet = (req,res,next) => {
+    try {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
+    } catch (e) {
+        next(e);
+    }
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
@@ -296,6 +303,7 @@ router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
+router.get('/:id/datasheet', getDatasheet);
 
 router.all('/', showTools);
 
