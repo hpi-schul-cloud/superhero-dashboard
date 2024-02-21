@@ -473,7 +473,6 @@ router.get('/', function (req, res, next) {
 						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'External Id', ''];
 
 						const body = data.data.map((item) => {
-							console.log(item);
 							if (!item.deletedAt) {
 								let roles = item.roles
 									.map((role) => {
