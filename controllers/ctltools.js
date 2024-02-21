@@ -7,7 +7,6 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
-const {data} = require("express-session/session/cookie");
 moment.locale('de');
 
 const trimWhitespaces = (object) => {
@@ -289,6 +288,14 @@ const showTools = (req, res) => {
     });
 };
 
+const getDatasheet = (req,res,next) => {
+    try {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
+    } catch (e) {
+        next(e);
+    }
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
@@ -296,14 +303,7 @@ router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
-
-router.get('/:id/datasheet', (req, res, next) => {
-    try {
-        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
-    } catch (e) {
-        next(e);
-    }
-});
+router.get('/:id/datasheet', getDatasheet);
 
 router.all('/', showTools);
 
