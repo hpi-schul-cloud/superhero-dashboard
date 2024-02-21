@@ -41,7 +41,6 @@ const sanitizeToolInputs = (id, body) => {
             break;
         case 'lti11':
             body.config.secret = body.config.secret || undefined;
-            body.config.resource_link_id = body.config.resource_link_id || undefined;
             break;
         case 'basic':
             break;
