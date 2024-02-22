@@ -107,7 +107,7 @@ $(document).ready(function () {
         'Migration abgeschlossen': 'userLoginMigration.closedAt',
         'Migration final beendet': 'userLoginMigration.finishedAt',
         'Login-System': 'systems',
-        'External Id': 'externalId',
+        'External Id': 'ldapId',
 
         'subject': 'Titel',
         'firstName': 'Vorname',
@@ -137,7 +137,7 @@ $(document).ready(function () {
         'userLoginMigration.closedAt': 'Migration abgeschlossen',
         'userLoginMigration.finishedAt': 'Migration final beendet',
         'systems': 'Login-System',
-        'externalId': 'External Id'
+        'ldapId': 'External Id'
     };
 
     $('tr th').each(function(i,j) {

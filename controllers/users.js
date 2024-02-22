@@ -358,7 +358,7 @@ router.get('/search', function (req, res, next) {
 						},
 					},
 					{
-						externalId: {
+						ldapId: {
 							$regex: _.escapeRegExp(req.query.q),
 								$options: 'i',
 						},
@@ -390,7 +390,7 @@ router.get('/search', function (req, res, next) {
 							item.email || '',
 							roles || '',
 							(item.schoolId || {}).name || '',
-							item.externalId || '',
+							item.ldapId || '',
 							getTableActions(item, '/users/'),
 						];
 					});
@@ -485,7 +485,7 @@ router.get('/', function (req, res, next) {
 									item.lastName || '',
 									item.email || '',
 									roles || '',
-									item.externalId || '',
+									item.ldapId || '',
 									getTableActions(item, '/users/'),
 								];
 							}
