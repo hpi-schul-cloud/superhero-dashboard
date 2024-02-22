@@ -5,7 +5,7 @@ metadata:
   name: {{ NAMESPACE }}-shd-ingress
   namespace: {{ NAMESPACE }}
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "{{ TLS_ENABELD|default("false") }}"
+    nginx.ingress.kubernetes.io/ssl-redirect: "{{ TLS_ENABLED|default("false") }}"
     # type of authentication
     nginx.ingress.kubernetes.io/auth-type: basic
     # name of the secret that contains the user/password definitions
@@ -18,7 +18,7 @@ metadata:
 
 spec:
   ingressClassName: {{ INGRESS_CLASS }}
-{% if CLUSTER_ISSUER is defined or (TLS_ENABELD is defined and TLS_ENABELD|bool) %}
+{% if CLUSTER_ISSUER is defined or (TLS_ENABLED is defined and TLS_ENABLED|bool) %}
   tls:
   - hosts:
       - {{ SHD_PREFIX }}{{ DOMAIN }}
