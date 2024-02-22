@@ -357,19 +357,25 @@ router.get('/search', function (req, res, next) {
 							$options: 'i',
 						},
 					},
+					{
+						ldapId: {
+							$regex: _.escapeRegExp(req.query.q),
+								$options: 'i',
+						},
+					},
 				],
 				schoolId: req.query.schoolId ? req.query.schoolId : undefined,
-				$populate: ['roles', 'schoolId'],
 				$limit: itemsPerPage,
 				$skip: itemsPerPage * (currentPage - 1),
 				$sort: req.query.sort,
+				$populate: ['roles', 'schoolId'],
 			},
 		})
 		.then((data) => {
 			api(req)
 				.get('/roles')
 				.then((role) => {
-					const head = ['Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'Schule', ''];
+					const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'Schule', 'External Id', ''];
 
 					const body = data.data.map((item) => {
 						let roles = item.roles
@@ -378,11 +384,13 @@ router.get('/search', function (req, res, next) {
 							})
 							.join(', ');
 						return [
+							item._id || '',
 							item.firstName || '',
 							item.lastName || '',
 							item.email || '',
 							roles || '',
 							(item.schoolId || {}).name || '',
+							item.ldapId || '',
 							getTableActions(item, '/users/'),
 						];
 					});
@@ -462,7 +470,7 @@ router.get('/', function (req, res, next) {
 						},
 					})
 					.then((data) => {
-						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', ''];
+						const head = ['ID', 'Vorname', 'Nachname', 'E-Mail-Adresse', 'Rollen', 'External Id', ''];
 
 						const body = data.data.map((item) => {
 							if (!item.deletedAt) {
@@ -477,6 +485,7 @@ router.get('/', function (req, res, next) {
 									item.lastName || '',
 									item.email || '',
 									roles || '',
+									item.ldapId || '',
 									getTableActions(item, '/users/'),
 								];
 							}
