@@ -22,7 +22,9 @@ const trimWhitespaces = (object) => {
 
 const sanitizeToolInputs = (id, body) => {
     body.id = id;
+    body.description = body.description || undefined;
     body.url = body.url || undefined;
+    body.medium = body.medium || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
@@ -190,6 +192,7 @@ const customParameterTypes = [
     { label: 'Context Name', value: 'auto_contextname' },
     { label: 'Schul Id', value: 'auto_schoolid' },
     { label: 'Offizielle Schulnummer', value: 'auto_schoolnumber' },
+    { label: 'Medium Id', value: 'auto_mediumid' },
 ];
 
 const customParameterLocations = [
