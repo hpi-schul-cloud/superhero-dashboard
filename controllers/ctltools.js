@@ -24,8 +24,7 @@ const sanitizeToolInputs = (id, body) => {
     body.id = id;
     body.description = body.description || undefined;
     body.url = body.url || undefined;
-    body.medium.mediumId = body.medium.mediumId || undefined;
-    body.medium.publisher = body.medium.publisher || undefined;
+    body.medium = body.medium || undefined;
     body.logoUrl = body.logoUrl || undefined;
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
