@@ -9,17 +9,6 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const trimWhitespaces = (object) => {
-    Object.keys(object).forEach((key) => {
-        const type = typeof object[key];
-        if (type === 'object') {
-            trimWhitespaces(object[key]);
-        } else if (type === 'string') {
-            object[key] = object[key].trim();
-        }
-    });
-};
-
 const clearEmptyInputs = (object) => {
     Object.keys(object).forEach((key) => {
         const type = typeof object[key];
