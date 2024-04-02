@@ -13,6 +13,16 @@
     <input type="text" name="url" id="url" class="form-control" placeholder="https://app.com">
 </div>
 <div class="form-group">
+    <label class="control-label" for="logoUrl">Logo-URL</label>
+    <input type="text" name="logoUrl" id="logoUrl" class="form-control">
+    <p class="text-danger" style="font-size:0.75rem;">
+        Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png
+    </p>
+</div>
+
+<h3>Medium</h3>
+<hr/>
+<div class="form-group">
     <label class="control-label" for="mediumId">Medium-Id</label>
     <input type="text" name="medium[mediumId]" id="mediumId" class="form-control" placeholder="urn:bilo:medium:123456789">
 </div>
@@ -20,13 +30,9 @@
     <label class="control-label" for="publisher">Anbieter</label>
     <input type="text" name="medium[publisher]" id="publisher" class="form-control">
 </div>
-<div class="form-group">
-    <label class="control-label" for="logoUrl">Logo-URL</label>
-    <input type="text" name="logoUrl" id="logoUrl" class="form-control">
-    <p class="text-danger" style="font-size:0.75rem;">
-        Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png
-    </p>
-</div>
+
+<h3>Verfügbarkeit</h3>
+<hr/>
 <div class="form-group">
     <label class="control-label">Direkt in neuem Tab öffnen?</label>
     <label  style="width: 100%">
@@ -56,7 +62,9 @@
         {{/each}}
     </select>
 </div>
+
 <h3>Konfiguration</h3>
+<hr/>
 <div class="form-group">
     <label class="control-label" for="baseUrl">BaseURL *</label>
     <input type="text" name="config[baseUrl]" id="baseUrl" class="form-control" placeholder="http://base.url" required>
@@ -149,9 +157,8 @@
     </div>
 </div>
 
+<h3 class="mt-1">Custom Parameters</h3>
 <hr/>
-
-<h3>Custom Parameters</h3>
 <div class="custom-parameter-list"></div>
 <button type="button" class="btn btn-primary btn-add-custom-parameter mt-1">+</button>
 <div id="custom-parameter-template" style="display:none;">

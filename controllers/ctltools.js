@@ -20,57 +20,62 @@ const trimWhitespaces = (object) => {
     });
 };
 
-const sanitizeToolInputs = (id, body) => {
+const clearEmptyInputs = (object) => {
+    Object.keys(object).forEach((key) => {
+        const type = typeof object[key];
+
+        switch (type) {
+            case 'object':
+                clearEmptyInputs(object[key]);
+
+                if(JSON.stringify(object[key]) === JSON.stringify({})) {
+                    object[key] = undefined;
+                }
+                break;
+            case 'string':
+                object[key] = object[key].trim();
+
+                if(object[key] === "") {
+                    object[key] = undefined;
+                }
+                break;
+            case 'boolean':
+            case 'number':
+                break;
+            default:
+                console.log('Unsupported type for sanitization');
+                break;
+        }
+    });
+}
+
+const transformToolInputs = (id, body) => {
     body.id = id;
-    body.description = body.description || undefined;
-    body.url = body.url || undefined;
-    body.medium = body.medium || undefined;
-    body.logoUrl = body.logoUrl || undefined;
+
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
     body.isDeactivated = !!body.isDeactivated;
-    body.config.baseUrl = body.config.baseUrl || undefined;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
-    switch (body.config.type) {
-        case 'oauth2':
-            body.config.clientId = body.config.clientId || undefined;
-            body.config.clientSecret = body.config.clientSecret || undefined;
-            body.config.skipConsent = !!body.config.skipConsent;
-            body.config.redirectUris = body.config.redirectUris.split(';');
-            body.config.scope = body.config.scope || undefined;
-            body.config.frontchannelLogoutUri = body.config.frontchannelLogoutUri || undefined;
-            break;
-        case 'lti11':
-            body.config.secret = body.config.secret || undefined;
-            break;
-        case 'basic':
-            break;
-        default:
-            // eslint-disable-next-line no-console
-            console.log('Config type was not set! Server will crash');
-            throw new Error('Unknown tool config type');
+    if (body.config.type === 'oauth2') {
+        body.config.skipConsent = !!body.config.skipConsent;
+        body.config.redirectUris = body.config.redirectUris.split(';');
     }
 
     if(body.parameters && Array.isArray(body.parameters)) {
         body.parameters.forEach((param) => {
             param.isOptional = !!param.isOptional;
             param.isProtected = !!param.isProtected;
-            param.defaultValue = param.defaultValue || undefined;
-            param.regex = param.regex || undefined;
-            if (!param.regex) {
-                param.regexComment = param.regexComment || undefined;
-            }
         });
     }
 
-    trimWhitespaces(body);
+    clearEmptyInputs(body);
 
     return body;
 };
 
 const getUpdateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(req.params.id, req.body);
+    req.body = transformToolInputs(req.params.id, req.body);
 
     api(req, { version: 'v3' }).post(`/tools/external-tools/${req.params.id}`, {
         json: req.body
@@ -116,7 +121,7 @@ const getDeleteHandler = (req, res, next) => {
 };
 
 const getCreateHandler = (req, res, next) => {
-    req.body = sanitizeToolInputs(undefined, req.body);
+    req.body = transformToolInputs(undefined, req.body);
 
     api(req, { version: 'v3' }).post('/tools/external-tools/', {
         json: req.body
