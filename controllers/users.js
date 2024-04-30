@@ -51,7 +51,7 @@ const getTableActions = (item, path) => {
 			title: 'Registrierungslink generieren',
 		});
 	}
-	if (USER_MIGRATION_ENABLED || true) { // TODO
+	if (USER_MIGRATION_ENABLED) {
 		tableActions.push({
 			link: path + item._id,
 			class: 'btn-migration-rollback',
