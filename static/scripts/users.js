@@ -1,5 +1,29 @@
 "use strict";
 
+$(document).ready(function () {
+    const $rollbackModal = $('.migration-rollback-modal');
+
+    $('.btn-migration-rollback').on('click', function (e) {
+        e.preventDefault();
+
+        const entry = $(this).attr('href');
+        $.getJSON(entry, function (result) {
+            populateModalForm($rollbackModal, {
+                action: entry + '/rollback-migration',
+                title: 'Migration rückgängig machen',
+                closeLabel: 'Schließen',
+                submitLabel: 'Zurücksetzen',
+                fields: result
+            });
+
+            const $btnSubmit = $rollbackModal.find('.btn-submit');
+            $btnSubmit.prop('disabled', !result.lastLoginSystemChange);
+
+            $rollbackModal.modal('show');
+        });
+    });
+});
+
 function toggleSilentArea(status){
     const area = document.querySelector('.silent-area');
     const inputs = area.querySelectorAll('input, select');
