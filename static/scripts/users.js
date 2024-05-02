@@ -3,21 +3,37 @@
 $(document).ready(function () {
     const $rollbackModal = $('.migration-rollback-modal');
 
-    $('.btn-migration-rollback').on('click', function (e) {
-        e.preventDefault();
+    $('.btn-migration-rollback').on('click', function (rollbackBtnClickEvent) {
+        rollbackBtnClickEvent.preventDefault();
 
-        const entry = $(this).attr('href');
-        $.getJSON(entry, function (result) {
+        const url = $(this).attr('href');
+        $.getJSON(url, function (user) {
             populateModalForm($rollbackModal, {
-                action: entry + '/rollback-migration',
+                action: url + '/rollback-migration',
                 title: 'Migration rückgängig machen',
                 closeLabel: 'Schließen',
                 submitLabel: 'Zurücksetzen',
-                fields: result
+                fields: user
             });
 
             const $btnSubmit = $rollbackModal.find('.btn-submit');
-            $btnSubmit.prop('disabled', !result.lastLoginSystemChange);
+            $btnSubmit.prop('disabled', !user.lastLoginSystemChange);
+            $btnSubmit.on('click', function (submitBtnClickEvent) {
+                submitBtnClickEvent.preventDefault();
+
+                $.ajax({
+                    url: url + '/rollback-migration',
+                    type: 'POST',
+                    error: function (req, textStatus, errorThrown) {
+                        $.showNotification(`Das Zurücksetzten der Migration ist fehlgeschlagen (${errorThrown})`, "danger");
+                    },
+                    success: function() {
+                        $.showNotification(`Die Migration für den Nutzer "${user.firstName} ${user.lastName}" wurde erfolgreich zurückgesetzt`, "success", 30000);
+
+                        $rollbackModal.modal('hide');
+                    },
+                });
+            });
 
             $rollbackModal.modal('show');
         });

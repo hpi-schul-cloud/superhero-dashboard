@@ -593,9 +593,7 @@ router.post('/:id/rollback-migration', (req, res, next) => {
 
 	api(req, { version: 'v3' }).post(`/user-login-migrations/users/${userId}/rollback-migration`)
 		.then(async () => {
-			const { referer } = req.headers;
-
-			res.redirect(referer || '/');
+			res.sendStatus(200);
 		})
 		.catch((err) => {
 			next(err);
