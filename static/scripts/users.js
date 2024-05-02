@@ -18,22 +18,6 @@ $(document).ready(function () {
 
             const $btnSubmit = $rollbackModal.find('.btn-submit');
             $btnSubmit.prop('disabled', !user.lastLoginSystemChange);
-            $btnSubmit.on('click', function (submitBtnClickEvent) {
-                submitBtnClickEvent.preventDefault();
-
-                $.ajax({
-                    url: url + '/rollback-migration',
-                    type: 'POST',
-                    error: function (req, textStatus, errorThrown) {
-                        $.showNotification(`Das Zurücksetzten der Migration ist fehlgeschlagen (${errorThrown})`, "danger");
-                    },
-                    success: function() {
-                        $.showNotification(`Die Migration für den Nutzer "${user.firstName} ${user.lastName}" wurde erfolgreich zurückgesetzt`, "success", 30000);
-
-                        $rollbackModal.modal('hide');
-                    },
-                });
-            });
 
             $rollbackModal.modal('show');
         });

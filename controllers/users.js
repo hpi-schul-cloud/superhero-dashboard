@@ -593,7 +593,12 @@ router.post('/:id/rollback-migration', (req, res, next) => {
 
 	api(req, { version: 'v3' }).post(`/user-login-migrations/users/${userId}/rollback-migration`)
 		.then(async () => {
-			res.sendStatus(200);
+			req.session.notification = {
+				type: 'success',
+				message: `Die Migration für den Nutzer wurde erfolgreich zurückgesetzt`,
+			};
+
+			res.redirect(req.header('Referer'));
 		})
 		.catch((err) => {
 			next(err);
