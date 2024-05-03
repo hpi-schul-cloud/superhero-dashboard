@@ -64,5 +64,10 @@
                     {{> "users/forms/form-invitation"}}
                 {{/content}}
             {{/embed}}
+            {{#embed "lib/components/modal-form" method="post" class="migration-rollback-modal"}}
+                {{#content "fields"}}
+                    {{> "users/forms/rollback-user-migration"}}
+                {{/content}}
+            {{/embed}}
     {{/content}}
 {{/extend}}

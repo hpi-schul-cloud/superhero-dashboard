@@ -8,7 +8,10 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
+const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
+
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => {
 	let tableActions = [
@@ -46,6 +49,14 @@ const getTableActions = (item, path) => {
 			class: 'btn-reglink',
 			icon: 'share-alt',
 			title: 'Registrierungslink generieren',
+		});
+	}
+	if (USER_MIGRATION_ENABLED) {
+		tableActions.push({
+			link: path + item._id,
+			class: 'btn-migration-rollback',
+			icon: 'rotate-left',
+			title: 'Migration rückgängig machen',
 		});
 	}
 	return tableActions;
@@ -576,5 +587,22 @@ const generateRegistrationLink = () => {
 };
 
 router.get('/registrationlink/:id', generateRegistrationLink());
+
+router.post('/:id/rollback-migration', (req, res, next) => {
+	const userId = req.params.id;
+
+	api(req, { version: 'v3' }).post(`/user-login-migrations/users/${userId}/rollback-migration`)
+		.then(async () => {
+			req.session.notification = {
+				type: 'success',
+				message: `Die Migration für den Nutzer wurde erfolgreich zurückgesetzt`,
+			};
+
+			res.redirect(req.header('Referer'));
+		})
+		.catch((err) => {
+			next(err);
+		});
+});
 
 module.exports = router;
