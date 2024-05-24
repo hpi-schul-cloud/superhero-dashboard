@@ -155,6 +155,7 @@ const head = [
 
 const messageTypes = [
   { label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
+  { label: 'ContentItemSelectionRequest', value: 'ContentItemSelectionRequest' },
 ];
 
 const privacies = [
