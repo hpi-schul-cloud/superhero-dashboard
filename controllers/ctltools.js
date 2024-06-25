@@ -7,7 +7,10 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
+const {isFeatureFlagTrue} = require("../helpers/featureFlagHelper");
 moment.locale('de');
+
+const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
 
 const clearEmptyInputs = (object) => {
     Object.keys(object).forEach((key) => {
@@ -94,8 +97,14 @@ const getDetailHandler = (req, res, next) => {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
         }
 
+        const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
+        if (showMediaShelfCount) {
+            delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
+        }
+
         convertZerosToString(toolMetaData);
         res.json({...toolData, ...toolMetaData});
+
     }).catch(err => {
         next(err);
     });
