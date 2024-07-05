@@ -62,6 +62,12 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
+            if (!result.contextExternalToolCountPerContext.mediaBoard) {
+                $('#media-board-label').hide();
+            } else {
+                $('#media-board-label').show();
+            }
+
             populateModalForm($deleteModal, {
                 action: entry,
                 title: 'Tool wirklich löschen?',
