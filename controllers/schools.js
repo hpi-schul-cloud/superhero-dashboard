@@ -17,7 +17,7 @@ const SCHOOL_FEATURES = [
   'rocketChat',
   'videoconference',
   'messenger',
-  'studentVisibility',
+  // 'studentVisibility',
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
   'showOutdatedUsers',
@@ -162,6 +162,7 @@ const getCreateHandler = (service) => {
 
 const getUpdateHandler = (service) => {
   return function (req, res, next) {
+
     // parse school features
     req.body.features = [];
     for (let feature of SCHOOL_FEATURES) {
@@ -171,12 +172,21 @@ const getUpdateHandler = (service) => {
       }
     }
 
-    api(req)
+    Promise.all([
+      api(req, { version: 'v3' }).patch(`/school/${req.params.id}`, {
+        json:  {
+          permissions: {
+            teacher: {
+              STUDENT_LIST: !!req.body.hasFeature_studentVisibility
+            }
+          }},
+      }),
+      api(req)
       .patch('/' + service + '/' + req.params.id, {
         // TODO: sanitize
         json: req.body,
       })
-      .then((data) => {
+    ]).then((data) => {
         res.redirect(req.header('Referer'));
       })
       .catch((err) => {
@@ -198,6 +208,11 @@ const getDetailHandler = (service) => {
           } else {
             data[key] = false;
           }
+        }
+
+        data.hasFeature_studentVisibility = false;
+        if (data.permissions && data.permissions.teacher && data.permissions.teacher.STUDENT_LIST) {
+          data.hasFeature_studentVisibility = true;
         }
 
         if (data.county && data.county.name && data.county._id) {
