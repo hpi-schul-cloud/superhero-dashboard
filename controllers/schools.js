@@ -163,7 +163,7 @@ const getCreateHandler = (service) => {
 const getUpdateHandler = (service) => {
   return async function (req, res, next) {
     try {
-      const configuration = await api(req, {version: 'v3'}).get(`/config/publicx`);
+      const configuration = await api(req, {version: 'v3'}).get(`/config/public`);
 
       if (configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
         await api(req, {version: 'v3'}).patch(`/school/${req.params.id}`, {
