@@ -194,6 +194,7 @@ const customParameterTypes = [
     { label: 'Schul Id', value: 'auto_schoolid' },
     { label: 'Offizielle Schulnummer', value: 'auto_schoolnumber' },
     { label: 'Medium Id', value: 'auto_mediumid' },
+    { label: 'moin.schule Gruppen UUID', value: 'auto_moinschule_groupuuid' },
 ];
 
 const customParameterLocations = [
