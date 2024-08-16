@@ -3,6 +3,8 @@
       kubeconfig: ~/.kube/config 
       namespace: "{{ NAMESPACE }}"
       template: svc.yml.j2
+    tags:
+      - service
       
   - name: Configmap
     kubernetes.core.k8s:
@@ -10,6 +12,8 @@
       namespace: "{{ NAMESPACE }}"
       template: configmap.yml.j2
       apply: yes
+    tags:
+      - configmap
       
   - name: Secret by 1Password
     kubernetes.core.k8s:
@@ -17,6 +21,8 @@
       namespace: "{{ NAMESPACE }}"
       template: onepassword.yml.j2
     when: ONEPASSWORD_OPERATOR is defined and ONEPASSWORD_OPERATOR|bool
+    tags:
+      - 1password
       
   - name: Secret basic auth by 1Password
     kubernetes.core.k8s:
@@ -24,16 +30,22 @@
       namespace: "{{ NAMESPACE }}"
       template: onepassword_basic_auth.yml.j2
     when: ONEPASSWORD_OPERATOR is defined and ONEPASSWORD_OPERATOR|bool
+    tags:
+      - 1password
       
   - name: Deployment
     kubernetes.core.k8s:
       kubeconfig: ~/.kube/config 
       namespace: "{{ NAMESPACE }}"
       template: deployment.yml.j2
+    tags:
+      - deployment
       
   - name: Ingress
     kubernetes.core.k8s:
       kubeconfig: ~/.kube/config 
       namespace: "{{ NAMESPACE }}"
       template: ingress.yml.j2
+    tags:
+      - ingress
       
