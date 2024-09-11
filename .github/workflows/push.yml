@@ -68,8 +68,8 @@ jobs:
           cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${images}
         env:
           TAGS: ${{ steps.docker_meta_img.outputs.tags }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.BC_3751_COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.BC_3751_COSIGN_PRIVATE_KEY_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PRIVATE_KEY_PASSWORD }}
           DIGEST: ${{ steps.build_and_push.outputs.digest }}
 
       - name: Sign the images with GitHub OIDC Token
