@@ -65,6 +65,17 @@
     </label>
 </div>
 <div class="form-group">
+    <label class="control-label">Als "bevorzugtes Tool" markieren?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isPreferred" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, es soll markiert werden
+    </label>
+    <label  style="width: 100%; display: flex; padding-left: 10.5%;">
+        <span style="flex-basis: 25%; align-content: center">Icon-Name:</span>
+        <input type="text" name="iconName" class="form-control" style="flex-basis: auto">
+    </label>
+</div>
+<div class="form-group">
     <label class="control-label" for="restrictToContexts">Nutzung des Tools auf folgende Kontexte beschränken:</label>
     <select id="restrictToContexts" name="restrictToContexts" multiple>
         {{#each toolContextTypes}}
