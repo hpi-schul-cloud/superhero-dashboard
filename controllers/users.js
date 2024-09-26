@@ -438,7 +438,7 @@ router.get('/search', function (req, res, next) {
 
 router.get('/jwt/:id', async (req, res, next) => {
 	try {
-		const getJWT = api(req).post('/accounts/supportJWT', {
+		const getJWT = api(req, {version: 'v3'}).post('/shd/supportJwt', {
 			json: {
 				userId: req.params.id,
 			},
@@ -449,7 +449,7 @@ router.get('/jwt/:id', async (req, res, next) => {
 
 		res.render('users/jwt', {
 			title: `JWT für ${user.displayName}`,
-			jwt: jwt || '',
+			jwt: jwt.accessToken || '',
 			user: user,
 			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 		});
