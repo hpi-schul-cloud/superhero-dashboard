@@ -47,6 +47,7 @@ const transformToolInputs = (id, body) => {
     body.openNewTab = !!body.openNewTab;
     body.isHidden = !!body.isHidden;
     body.isDeactivated = !!body.isDeactivated;
+    body.isPreferred = !!body.isPreferred;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
     if (body.config.type === 'oauth2') {
