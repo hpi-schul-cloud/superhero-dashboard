@@ -182,6 +182,7 @@ const messageTypes = [
   {label: 'basic-lti-launch-request', value: 'basic-lti-launch-request'},
   {label: 'LtiResourceLinkRequest', value: 'LtiResourceLinkRequest'},
   {label: 'LtiDeepLinkingRequest', value: 'LtiDeepLinkingRequest'},
+  {label: 'ContentItemSelectionRequest', value: 'ContentItemSelectionRequest'},
 ];
 
 const privacies = [
