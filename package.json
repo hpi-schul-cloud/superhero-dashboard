@@ -11,7 +11,7 @@
     "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
   },
   "engines": {
-    "node": "20",
+    "node": "22",
     "npm": ">=9"
   },
   "dependencies": {
