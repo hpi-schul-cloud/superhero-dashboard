@@ -32,7 +32,6 @@
     "moment-timezone": "^0.5.41",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
-    "node-sass": "^8.0.0",
     "path.join": "^1.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
