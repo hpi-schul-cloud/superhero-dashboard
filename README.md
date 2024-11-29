@@ -10,7 +10,7 @@
 
 1. Clone directory into local folder
 2. Go into the cloned folder and enter `npm install`
-3. Install nodemon and gulp globally by entering `npm install -g nodemon gulp`
+3. Install gulp globally by entering `npm install -g gulp`
 
 ## Run
 
