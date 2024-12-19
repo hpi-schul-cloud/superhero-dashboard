@@ -144,8 +144,33 @@ const sortSchools = (schools, sortCriteria) => {
   });
 };
 
+const collectSchoolFeatures = (data) => {
+  const features = [];
+  for (let feature of SCHOOL_FEATURES) {
+    let key = "hasFeature_" + feature;
+    if (data[key]) {
+      features.push(feature);
+    }
+  }
+  return features;
+}
+
+const separateSchoolFeatures = (data) => {
+  for (let feature of SCHOOL_FEATURES) {
+    let key = 'hasFeature_' + feature;
+    if (data.features) {
+      data[key] = data.features.indexOf(feature) !== -1;
+    } else {
+      data[key] = false;
+    }
+  }
+  return data;
+}
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
+    req.body.features = collectSchoolFeatures(req.body);
+
     api(req)
       .post('/' + service + '/', {
         // TODO: sanitize
@@ -165,6 +190,8 @@ const getUpdateHandler = (service) => {
     try {
       const configuration = await api(req, {version: 'v3'}).get(`/config/public`);
 
+      
+
       if (configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
         await api(req, {version: 'v3'}).patch(`/school/${req.params.id}`, {
           json: {
@@ -176,15 +203,8 @@ const getUpdateHandler = (service) => {
           },
         })
       }
-
-      // parse school features
-      req.body.features = [];
-      for (let feature of SCHOOL_FEATURES) {
-        let key = 'hasFeature_' + feature;
-        if (req.body[key]) {
-          req.body.features.push(feature);
-        }
-      }
+      
+      req.body.features = collectSchoolFeatures(req.body);
 
       await api(req).patch('/' + service + '/' + req.params.id, {
         // TODO: sanitize
@@ -205,14 +225,7 @@ const getDetailHandler = (service) => {
       const data = await api(req).get('/' + service + '/' + req.params.id)
 
       // parse school features
-      for (let feature of SCHOOL_FEATURES) {
-        let key = 'hasFeature_' + feature;
-        if (data.features) {
-          data[key] = data.features.indexOf(feature) !== -1;
-        } else {
-          data[key] = false;
-        }
-      }
+      separateSchoolFeatures(data);
 
       if (!configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
         data.hasFeature_studentVisibility_disabled = true;
