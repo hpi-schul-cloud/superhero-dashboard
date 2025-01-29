@@ -38,16 +38,37 @@
 					</section>
 				</div>
 			{{/ifEnvNot}}
+				<div class="row">
+					<section class="section-school section-default">
+						<h2 class="h4">Löschvorbereitung</h2>
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-sm-12 no-padding">
+									{{> "lib/components/table" head=../deletionContainerHead}}
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 no-padding">
+									<button type="submit" class="btn btn-primary btn-add-modal--policy">
+										Hinzufügen
+									</button>
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
 			<div class="row">
 				<section class="section-school section-default">
 					<h2 class="h4">Sammellöschung von Schülern</h2>
 						<div class="container-fluid">
 							<div class="row">
 								<div class="col-sm-12 no-padding">
-									<input type="file" id="fileInput" accept=".csv">
-									<textarea id="csvContent" rows="10" cols="50" placeholder="CSV content will appear here..."></textarea>
+									<input type="file" id="batchDeletionFileInput" accept=".csv">
 									<pre id="output"></pre>
 								</div>
+							</div>
+							<div class="row">
+								<textarea id="csvContent" rows="10" cols="50" placeholder="CSV content will appear here..."></textarea>
 							</div>
 						</div>
 				</section>

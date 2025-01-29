@@ -35,10 +35,11 @@ const loadPolicyFile = () => {
 		if (file) {
 			reader.readAsDataURL(file);
 		}
-	})
-}
+	});
+};
 
 $(document).ready(() => {
+	console.log("Management.js geladen");
 	const $addConsentModal = $('.add-modal--policy');
 
 	$('.btn-add-modal--policy').on('click', (e) => {
@@ -49,20 +50,22 @@ $(document).ready(() => {
 			submitLabel: "Hinzufügen",
 		});
 		$addConsentModal.appendTo('body').modal('show');
-	})
+	});
 
 	document.querySelector('#policy-input').addEventListener('change', loadPolicyFile, false);
-})
+	document.querySelector('#batchDeletionFileInput').addEventListener('change', addFile);
+});
 
-document.getElementById('batchDeletionFileInput').addEventListener('change', function(event) {
+
+
+const addFile = (event) => {
 	const file = event.target.files[0];
 	if (!file) return;
 
 	const reader = new FileReader();
 	reader.onload = function(e) {
 		const content = e.target.result;
-		console.log("CSV Inhalt:", content);
-		document.getElementById('output').textContent = content;
+		document.getElementById('csvContent').textContent = content;
 	};
 	reader.readAsText(file);
-});
+};
