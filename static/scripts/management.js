@@ -53,3 +53,16 @@ $(document).ready(() => {
 
 	document.querySelector('#policy-input').addEventListener('change', loadPolicyFile, false);
 })
+
+document.getElementById('batchDeletionFileInput').addEventListener('change', function(event) {
+	const file = event.target.files[0];
+	if (!file) return;
+
+	const reader = new FileReader();
+	reader.onload = function(e) {
+		const content = e.target.result;
+		console.log("CSV Inhalt:", content);
+		document.getElementById('output').textContent = content;
+	};
+	reader.readAsText(file);
+});

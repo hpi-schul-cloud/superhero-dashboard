@@ -38,6 +38,20 @@
 					</section>
 				</div>
 			{{/ifEnvNot}}
+			<div class="row">
+				<section class="section-school section-default">
+					<h2 class="h4">Sammellöschung von Schülern</h2>
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-sm-12 no-padding">
+									<input type="file" id="fileInput" accept=".csv">
+									<textarea id="csvContent" rows="10" cols="50" placeholder="CSV content will appear here..."></textarea>
+									<pre id="output"></pre>
+								</div>
+							</div>
+						</div>
+				</section>
+			</div>
         </div>
 		{{#embed "lib/components/modal-form" action="/management/uploadConsent" method="post" class="add-modal--policy"}}
 			{{#content "fields"}}
