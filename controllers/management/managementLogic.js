@@ -54,7 +54,6 @@ const mainRoute = async function (req, res, next) {
 			'Link',
 		];
 		const policiesBody = createPoliciesBody(consentVersions.data);
-
 		res.render('management/management', {
 			title: 'Allgemeine Verwaltung',
 			user: res.locals.currentUser,

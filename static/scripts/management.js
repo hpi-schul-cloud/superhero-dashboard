@@ -49,7 +49,7 @@ $(document).ready(() => {
 			submitLabel: "Hinzufügen",
 		});
 		$addConsentModal.appendTo('body').modal('show');
-	});
+	})
 
 	document.querySelector('#policy-input').addEventListener('change', loadPolicyFile, false);
-});
+})
