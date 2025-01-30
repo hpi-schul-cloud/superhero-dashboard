@@ -135,7 +135,7 @@ const restrictSidebar = (req, res) => {
         {
             name: 'Löschung',
             icon: 'trash',
-            link: '/foo/'
+            link: '/batch-deletion/'
         },
     ];
 

@@ -94,7 +94,6 @@ router.get('/', function (req, res, next) {
             $sort: req.query.sort
         }
     }).then(data => {
-        console.log(data);
         const head = [
             'ID',
             'Name',

@@ -55,17 +55,12 @@ const mainRoute = async function (req, res, next) {
 		];
 		const policiesBody = createPoliciesBody(consentVersions.data);
 
-		const deletionContainerHead = [
-			'Schüler-IDs',
-			'Lehrer-IDs',
-		];
 		res.render('management/management', {
 			title: 'Allgemeine Verwaltung',
 			user: res.locals.currentUser,
 			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 			policiesHead,
 			policiesBody,
-			deletionContainerHead,
 		});
 	} catch (err) {
 		next(err);

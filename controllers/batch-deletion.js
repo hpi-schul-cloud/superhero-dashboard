@@ -13,11 +13,17 @@ const { api } = require('../api');
 // secure routes
 router.use(authHelper.authChecker);
 
+const deletionContainerHead = [
+    'Schüler-IDs',
+    'Lehrer-IDs',
+];
+
 router.get('/', function (req, res, next) {
     res.render('batch-deletion/batch-deletion', {
         title: 'Löschung',
         user: res.locals.currentUser,
         themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
+        deletionContainerHead,
     });
     
 });

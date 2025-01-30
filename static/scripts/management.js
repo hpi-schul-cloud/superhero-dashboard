@@ -35,11 +35,10 @@ const loadPolicyFile = () => {
 		if (file) {
 			reader.readAsDataURL(file);
 		}
-	});
-};
+	})
+}
 
 $(document).ready(() => {
-	console.log("Management.js geladen");
 	const $addConsentModal = $('.add-modal--policy');
 
 	$('.btn-add-modal--policy').on('click', (e) => {
@@ -54,6 +53,3 @@ $(document).ready(() => {
 
 	document.querySelector('#policy-input').addEventListener('change', loadPolicyFile, false);
 });
-
-
-
