@@ -1,19 +1,18 @@
 $(document).ready(() => {
-  console.log("batch-deletion.js geladen");
-
-  document
-    .querySelector("#batchDeletionFileInput")
-    .addEventListener("change", addFile);
+  document.querySelector('#batchDeletionFileUploadForm').addEventListener('submit', function(e) {
+    const fileInput = document.getElementById('file');
+    if (!fileInput.files.length) {
+      e.preventDefault();
+    }
+    sendFile(fileInput.files);
+  });
 });
 
-const addFile = (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const content = e.target.result;
-    document.getElementById("csvContent").textContent = content;
-  };
-  reader.readAsText(file);
+const sendFile = (files) => {
+    const formData = new FormData();
+    formData.append('file', files[0]);
+    fetch('/batch-deletion/create-batch-deletion-file', {
+      method: 'POST',
+      body: formData,
+    });
 };
