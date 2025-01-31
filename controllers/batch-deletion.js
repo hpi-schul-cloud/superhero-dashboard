@@ -28,11 +28,9 @@ router.get("/", function (req, res, next) {
 router.post('/create-batch-deletion-file', upload.single('file'), (req, res, next) => {
   if (req.file) {
     console.log('Datei empfangen:', req.file.originalname);
-    // Datei direkt weiterverarbeiten
     const fileBuffer = req.file.buffer;
-    // Beispiel: Datei als Antwort senden
-    res.set('Content-Type', req.file.mimetype);
-    res.send(fileBuffer);
+    // Send the file to the API "schulcloud-server"
+    res.redirect('/batch-deletion/');
   } else {
     res.status(400).send('Keine Datei hochgeladen');
   }
