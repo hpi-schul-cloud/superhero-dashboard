@@ -15,10 +15,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-12 file-input-container">
-          <label for="batchDeletionFileInput">Lade hier die Datei mit Nutzern
-            hoch, die gelöscht werden sollen</label>
-          <input type="file" id="batchDeletionFileInput" accept=".csv" />
-          <pre id="output"></pre>
+          <form action="/management/uploadConsent" method="post" enctype="multipart/form-data">
+            <label for="file">Lade hier die Datei mit Nutzern
+            hoch, die gelöscht werden sollen:</label>
+            <input type="file" name="file" id="file" accept=".csv" />
+            <input type="submit" value="File senden" />
+          </form>
         </div>
       </div>
       <div class="row">
