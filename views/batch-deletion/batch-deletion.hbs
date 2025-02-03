@@ -14,17 +14,64 @@
   {{#content "page"}}
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-12 file-input-container">
-          <form id="batchDeletionFileUploadForm">
-            <label for="file">Lade hier die Datei mit Nutzern
-            hoch, die gelöscht werden sollen:</label>
-            <input type="file" name="file" id="file" accept=".csv" />
-            <input type="submit" value="File senden" />
+        <div class="col-sm-12">
+          <form id="batchDeletionFileUploadForm" class="file-input-container">
+            <label for="file">Lade hier die Datei mit Nutzern hoch, die gelöscht
+              werden sollen:</label>
+            <div class="file-input">
+              <input
+                type="file"
+                name="file"
+                id="file"
+                accept=".csv"
+                class="btn btn-secondary"
+                required
+              />
+              <input
+                type="submit"
+                value="Datei hochladen"
+                class="btn btn-primary"
+              />
+            </div>
           </form>
         </div>
       </div>
       <div class="row">
-
+        <div class="col-sm-12">
+          <ul class="batch-list">
+            {{#each batches}}
+              <li class="batch-list-item">
+                <div class="batch-header">
+                  <div>
+                    <h5>Löschung vom {{this.createdAt}} Uhr</h5>
+                    <span>
+                      {{this.overallCount}}
+                      insgesamt -
+                      {{this.studentCount}}
+                      Schüler,
+                      {{this.teacherCount}}
+                      Lehrer,
+                      {{this.adminCount}}
+                      Admins
+                    </span>
+                  </div>
+                  <div class="actions">
+                    {{#ifneq this.status "created"}}
+                      <span>status</span>
+                    {{else}}
+                      <button class="btn btn-primary btn-thin">
+                        Löschen
+                      </button>
+                    {{/ifneq}}
+                    <button class="btn-icon">
+                      <i class="fa fa-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
+              </li>
+            {{/each}}
+          </ul>
+        </div>
       </div>
     </div>
   {{/content}}

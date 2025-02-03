@@ -5,5 +5,30 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 20px;
+  margin: 20px 0px;
+
+  .file-input {
+    margin: 10px 0px;
+  }
+}
+
+.batch-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.batch-list-item {
+  margin: 14px 0px;
+}
+
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: $gray-lightest;
+
+  .btn-thin {
+    max-height: 40px;
+  }
 }
