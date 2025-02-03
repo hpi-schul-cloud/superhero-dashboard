@@ -32,3 +32,24 @@
     max-height: 40px;
   }
 }
+
+.details-section {
+  padding: 20px;
+  background-color: $gray-lightest;
+  border-top: 1px solid #ddd;
+}
+
+.hidden {
+  display: none;
+}
+
+.id-list {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    cursor: text;
+    user-select: all;
+}
+
+button {
+    cursor: pointer;
+}

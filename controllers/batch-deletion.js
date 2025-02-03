@@ -38,7 +38,7 @@ router.get("/", function (req, res, next) {
       ],
     },
     {
-      id: "0000d231816abba584714c9c", // batch id
+      id: "0000d231816abba584714c9d", // batch id
       status: "pending",
       createdAt: "2024-07-12T11:58:46.601Z",
       usersByRole: [
@@ -57,7 +57,7 @@ router.get("/", function (req, res, next) {
       ],
     },
     {
-      id: "0000d231816abba584714c9c", // batch id
+      id: "0000d231816abba584714c9e", // batch id
       status: "finished",
       createdAt: "2024-04-28T11:58:46.601Z",
       usersByRole: [
@@ -90,6 +90,13 @@ router.get("/", function (req, res, next) {
 
     const overallCount = studentCount + teacherCount + adminCount;
 
+    const pending = 10;
+    const pendingIds = ["pending-id-1", "pending-id-2"];
+    const deleted = 5;
+    const deletedIds = ["deleted-id-1", "deleted-id-2"];
+    const failed = 2;
+    const failedIds = ["failed-id-1", "failed-id-2"];
+
     return {
       id: batch.id,
       status: batch.status,
@@ -98,6 +105,12 @@ router.get("/", function (req, res, next) {
       teacherCount,
       adminCount,
       overallCount,
+      pending,
+      pendingIds,
+      deleted,
+      deletedIds,
+      failed,
+      failedIds,
     };
   });
   //   api

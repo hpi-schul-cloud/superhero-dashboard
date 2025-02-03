@@ -63,10 +63,26 @@
                         Löschen
                       </button>
                     {{/ifneq}}
-                    <button class="btn-icon">
+                    <button class="btn-icon" onclick="toggleDetails('details-section-{{this.id}}')">
                       <i class="fa fa-chevron-down"></i>
                     </button>
                   </div>
+                </div>
+                <div id="details-section-{{this.id}}" class="details-section hidden">
+                  <h3>Details</h3>
+
+                  <p><span class="pending">{{this.pending}}</span> Pending</p>
+                  <pre id="pending-ids" class="id-list">{{#each this.pendingIds}}{{this}},{{/each}}</pre>
+
+                  <p><span class="deleted">{{this.deleted}}</span> Deleted</p>
+                  <pre id="deleted-ids" class="id-list">{{#each this.deletedIds}}{{this}},{{/each}}</pre>
+
+                  <p><span class="failed">{{this.failed}}</span> Failed</p>
+                  <pre id="failed-ids" class="id-list">{{#each this.failedIds}}{{this}},{{/each}}</pre>
+
+                  <button onclick="copyToClipboard('pending-ids')">Copy Pending IDs</button>
+                  <button onclick="copyToClipboard('deleted-ids')">Copy Deleted IDs</button>
+                  <button onclick="copyToClipboard('failed-ids')">Copy Failed IDs</button>
                 </div>
               </li>
             {{/each}}
