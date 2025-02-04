@@ -1,5 +1,4 @@
 {{#extend "lib/loggedin"}}
-
   {{#content "styles" mode="append"}}
     <link rel="stylesheet" href="/styles/batch-deletion/batch-deletion.css" />
   {{/content}}
@@ -43,7 +42,12 @@
               <li class="batch-list-item">
                 <div class="batch-header">
                   <div>
-                    <h5>Löschung vom {{this.createdAt}} Uhr</h5>
+                    <div class="batch-title">
+                      <h5>{{batchTitle}}</h5>
+                      <span class="status-chip status-{{this.status}}">
+                        {{this.status}}
+                      </span>
+                    </div>
                     <span>
                       {{this.overallCount}}
                       insgesamt -
@@ -56,34 +60,70 @@
                     </span>
                   </div>
                   <div class="actions">
-                    {{#ifneq this.status "created"}}
-                      <span>status</span>
-                    {{else}}
-                      <button class="btn btn-primary btn-thin">
-                        Löschen
-                      </button>
-                    {{/ifneq}}
-                    <button class="btn-icon" onclick="toggleDetails('details-section-{{this.id}}')">
-                      <i class="fa fa-chevron-down"></i>
+                    <button class="btn btn-primary btn-thin">
+                      Löschen
+                    </button>
+                    <button
+                      class="details-toggle btn btn-secondary btn-thin"
+                      data-toggle="modal"
+                      data-target=".details-modal"
+                      data-title="{{this.batchTitle}}"
+                    >
+                      Details anzeigen
                     </button>
                   </div>
                 </div>
-                <div id="details-section-{{this.id}}" class="details-section hidden">
-                  <h3>Details</h3>
-
-                  <p><span class="pending">{{this.pending}}</span> Pending</p>
-                  <pre id="pending-ids" class="id-list">{{#each this.pendingIds}}{{this}},{{/each}}</pre>
-
-                  <p><span class="deleted">{{this.deleted}}</span> Deleted</p>
-                  <pre id="deleted-ids" class="id-list">{{#each this.deletedIds}}{{this}},{{/each}}</pre>
-
-                  <p><span class="failed">{{this.failed}}</span> Failed</p>
-                  <pre id="failed-ids" class="id-list">{{#each this.failedIds}}{{this}},{{/each}}</pre>
-
-                  <button onclick="copyToClipboard('pending-ids')">Copy Pending IDs</button>
-                  <button onclick="copyToClipboard('deleted-ids')">Copy Deleted IDs</button>
-                  <button onclick="copyToClipboard('failed-ids')">Copy Failed IDs</button>
-                </div>
+                {{#embed "lib/components/modal" class="details-modal" title=""}}
+                  {{#content "body"}}
+                    <div class="modal-body">
+                      <p>
+                        <span class="pending">{{this.pending}}</span>
+                        Pending
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('pending-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="pending-ids" class="id-list">
+                        {{#each this.pendingIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                      <p>
+                        <span class="deleted">{{this.deleted}}</span>
+                        Deleted
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('deleted-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="deleted-ids" class="id-list">
+                        {{#each this.deletedIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                      <p>
+                        <span class="failed">{{this.failed}}</span>
+                        Failed
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('failed-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="failed-ids" class="id-list">
+                        {{#each this.failedIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                    </div>
+                  {{/content}}
+                {{/embed}}
               </li>
             {{/each}}
           </ul>
@@ -91,5 +131,4 @@
       </div>
     </div>
   {{/content}}
-
 {{/extend}}

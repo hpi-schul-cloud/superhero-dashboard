@@ -28,28 +28,60 @@
   padding: 20px;
   background-color: $gray-lightest;
 
+  .batch-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .btn-thin {
     max-height: 40px;
   }
-}
 
-.details-section {
-  padding: 20px;
-  background-color: $gray-lightest;
-  border-top: 1px solid #ddd;
-}
+  .details-toggle {
+    margin-left: 20px;
+  }
 
-.hidden {
-  display: none;
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    border-radius: 9999px;
+    padding: 0 10px;
+    height: 26px;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+
+    &.status-created {
+      background-color: $brand-info;
+    }
+
+    &.status-pending {
+      background-color: $brand-warning;
+    }
+
+    &.status-finished {
+      background-color: $brand-success;
+    }
+  }
 }
 
 .id-list {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    cursor: text;
-    user-select: all;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  cursor: text;
+  user-select: all;
+  background-color: $gray-lightest;
+  padding: 10px;
 }
 
-button {
-    cursor: pointer;
+.copy-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
 }
+
+// button {
+//   cursor: pointer;
+// }

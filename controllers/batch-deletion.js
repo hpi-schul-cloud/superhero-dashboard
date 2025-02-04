@@ -16,6 +16,11 @@ const upload = multer({ storage: storage });
 
 router.use(authHelper.authChecker);
 
+const getFormattedDate = (date) => {
+  const formattedDate = moment(date).format("DD.MM.YYYY HH:mm");
+  return formattedDate;
+};
+
 router.get("/", function (req, res, next) {
   const batches = [
     {
@@ -90,6 +95,9 @@ router.get("/", function (req, res, next) {
 
     const overallCount = studentCount + teacherCount + adminCount;
 
+    const formattedDate = getFormattedDate(batch.createdAt);
+    const batchTitle = `Sammellöschung vom ${formattedDate} Uhr`;
+
     const pending = 10;
     const pendingIds = ["pending-id-1", "pending-id-2"];
     const deleted = 5;
@@ -100,7 +108,8 @@ router.get("/", function (req, res, next) {
     return {
       id: batch.id,
       status: batch.status,
-      createdAt: moment(batch.createdAt).format("DD.MM.YYYY, HH:MM"),
+      createdAt: formattedDate,
+      batchTitle,
       studentCount,
       teacherCount,
       adminCount,
