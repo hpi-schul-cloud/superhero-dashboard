@@ -36,6 +36,7 @@ then clear build files and gulp cache with `gulp clear`
 - PORT
 - SC_THEME
 - BACKEND_URL
+- ADMIN_API_URL
 - API_KEY
 - REDIS_URI
 
