@@ -6,7 +6,12 @@ $(document).ready(() => {
       if (!fileInput.files.length) {
         e.preventDefault();
       }
-      sendFile(fileInput.files);
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const fileContent = event.target.result;
+      sendFileContent(fileContent);
+    };
+    reader.readAsText(fileInput.files[0]);
     });
 
   document.querySelectorAll(".details-toggle").forEach((button) => {
@@ -18,12 +23,13 @@ $(document).ready(() => {
   });
 });
 
-const sendFile = (files) => {
-  const formData = new FormData();
-  formData.append("file", files[0]);
+const sendFileContent = (fileContent) => {
   fetch("/batch-deletion/create-batch-deletion-file", {
     method: "POST",
-    body: formData,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ fileContent }),
   });
 };
 

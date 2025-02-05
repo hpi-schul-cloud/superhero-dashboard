@@ -4,15 +4,12 @@
 
 // const _ = require('lodash');
 const express = require("express");
-const multer = require("multer");
 const router = express.Router();
 const authHelper = require("../helpers/authentication");
 const { api } = require("../api");
 const moment = require("moment");
 moment.locale("de");
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 router.use(authHelper.authChecker);
 
@@ -139,16 +136,10 @@ router.get("/", function (req, res, next) {
 
 router.post(
   "/create-batch-deletion-file",
-  upload.single("file"),
   (req, res, next) => {
-    if (req.file) {
-      console.log("Datei empfangen:", req.file.originalname);
-      const fileBuffer = req.file.buffer;
-      // TODO: Send the file to the API "schulcloud-server"
+      console.log("Post-Router triggered");
+      console.log("body:", req.body);
       res.redirect(303, "/batch-deletion/");
-    } else {
-      res.status(400).send("Keine Datei hochgeladen");
-    }
   }
 );
 
