@@ -137,10 +137,29 @@ router.get("/", function (req, res, next) {
     });
 });
 
-router.post("/create-batch-deletion-file", (req, res, next) => {
-  console.log("Post-Router triggered");
-  console.log("body:", req.body);
-  res.redirect(303, "/batch-deletion/");
-});
+router.post(
+  "/create-batch-deletion-file",
+  async (req, res, next) => {
+    const { fileContent } = req.body;
+    const targetRefIds = fileContent.split(',').map(item => item.trim());
+    try {
+        // const response = await api(req).post('/deletion-batches/', {
+        //     json: {
+        //       name: 'to-do',
+        //       targetRefDomain: 'domain',
+        //       targetRefIds,
+        //     }
+        //   });
+        // const response = await api(req).get('/users/');   
+        const response = await api(req, { version: 'v3' }).get('/deletion-batches/');    
+        // const response = await api(req, { version: 'v3' }).get('/rooms/');    
+        console.log("response:", response); 
+      } catch (error) {
+        console.log("error: ", error.statusCode);
+      }
+
+      res.redirect(303, "/batch-deletion/");
+  }
+);
 
 module.exports = router;
