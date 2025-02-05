@@ -1,9 +1,5 @@
 const jwt = require('jsonwebtoken');
 const { api } = require('../api');
-const { isFeatureFlagTrue } = require('./featureFlagHelper');
-
-const CTL_ENABLED = isFeatureFlagTrue(process.env.FEATURE_CTL_TOOLS_ENABLED);
-const LTI_ENABLED = isFeatureFlagTrue(process.env.FEATURE_LTI_TOOLS_ENABLED);
 
 const isJWT = (req) => {
     return (req && req.cookies && req.cookies.jwt);
@@ -116,16 +112,9 @@ const restrictSidebar = (req, res) => {
             link: '/management/'
         },
         {
-            name: 'Tools',
-            icon: 'window-maximize',
-            link: '/tools/',
-            enabled: LTI_ENABLED,
-        },
-        {
             name: 'CTL Tools',
             icon: 'window-maximize',
             link: '/ctltools/',
-            enabled: CTL_ENABLED,
         },
         {
             name: 'Datenspeicher',
