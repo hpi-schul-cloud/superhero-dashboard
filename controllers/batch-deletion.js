@@ -140,12 +140,13 @@ router.get("/", function (req, res, next) {
 router.post(
   "/create-batch-deletion-file",
   async (req, res, next) => {
-    const { fileContent } = req.body;
+    const { fileContent, batchTitle } = req.body;
+    console.log("batchTitle: ", batchTitle);
     const targetRefIds = fileContent.split(',').map(item => item.trim());
     try {
         const response = await api(req, { adminApi: true }).post('/deletion-batches/', {
             json: {
-              name: 'to-do',
+              name: batchTitle,
               targetRefDomain: 'domain',
               targetRefIds,
             }
