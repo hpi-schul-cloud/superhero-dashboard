@@ -143,17 +143,14 @@ router.post(
     const { fileContent } = req.body;
     const targetRefIds = fileContent.split(',').map(item => item.trim());
     try {
-        // const response = await api(req).post('/deletion-batches/', {
-        //     json: {
-        //       name: 'to-do',
-        //       targetRefDomain: 'domain',
-        //       targetRefIds,
-        //     }
-        //   });
-        // const response = await api(req).get('/users/');   
-        const response = await api(req, { version: 'v3' }).get('/deletion-batches/');    
-        // const response = await api(req, { version: 'v3' }).get('/rooms/');    
-        console.log("response:", response); 
+        const response = await api(req, { adminApi: true }).post('/deletion-batches/', {
+            json: {
+              name: 'to-do',
+              targetRefDomain: 'domain',
+              targetRefIds,
+            }
+          });
+  
       } catch (error) {
         console.log("error: ", error.statusCode);
       }
