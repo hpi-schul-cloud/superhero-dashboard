@@ -7,12 +7,12 @@ $(document).ready(() => {
       if (!fileInput.files.length) {
         e.preventDefault();
       }
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const fileContent = event.target.result;
-      sendFileContent(fileContent, batchTitle);
-    };
-    reader.readAsText(fileInput.files[0]);
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const fileContent = event.target.result;
+        sendFileContent(fileContent, batchTitle);
+      };
+      reader.readAsText(fileInput.files[0]);
     });
 
   document.querySelectorAll(".details-toggle").forEach((button) => {
@@ -33,15 +33,6 @@ const sendFileContent = (fileContent, batchTitle) => {
     body: JSON.stringify({ fileContent, batchTitle }),
   });
 };
-
-// const toggleDetails = (sectionId) => {
-//     var section = document.getElementById(sectionId);
-//     if (section.classList.contains('hidden')) {
-//         section.classList.remove('hidden');
-//     } else {
-//         section.classList.add('hidden');
-//     }
-// };
 
 const copyToClipboard = (elementId) => {
   var text = document.getElementById(elementId).innerText;

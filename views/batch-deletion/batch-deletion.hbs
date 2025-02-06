@@ -26,14 +26,14 @@
                 class="btn btn-secondary"
                 required
               />
-                <input
-                  type="text"
-                  name="batchTitle"
-                  id="batchTitle"
-                  placeholder="Namen der Batch"
-                  class="input-group input-group-sm"
-                  required
-                />
+              <input
+                type="text"
+                name="batchTitle"
+                id="batchTitle"
+                placeholder="Namen der Batch"
+                class="input-group input-group-sm"
+                required
+              />
 
               <input
                 type="submit"
@@ -60,12 +60,14 @@
                     <span>
                       {{this.overallCount}}
                       insgesamt -
-                      {{this.studentCount}}
-                      Schüler,
-                      {{this.teacherCount}}
-                      Lehrer,
-                      {{this.adminCount}}
-                      Admins
+
+                      {{#each this.usersByRole}}
+                        {{this.userCount}}
+                        {{this.roleName}}
+                        {{#unless @last}}
+                          ,
+                        {{/unless}}
+                      {{/each}}
                     </span>
                   </div>
                   <div class="actions">
