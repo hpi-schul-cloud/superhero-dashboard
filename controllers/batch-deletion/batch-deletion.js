@@ -32,7 +32,7 @@ router.get("/", function (req, res, next) {
     .then((data) => {
       const formattedBatches = data.data.map((batch) => {
         const formattedDate = getFormattedDate(batch.createdAt);
-        const batchTitle = `Sammellöschung vom ${formattedDate} Uhr`;
+        const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
         const sortedUserRolesByCount = batch.usersByRole
           .sort((a, b) => b.userCount - a.userCount)
           .map((role) => {
