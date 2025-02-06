@@ -2,12 +2,9 @@
   {{#content "styles" mode="append"}}
     <link rel="stylesheet" href="/styles/batch-deletion/batch-deletion.css" />
   {{/content}}
+
   {{#content "scripts" mode="append"}}
-    <script
-      src="/scripts/batch-deletion.js"
-      type="text/javascript"
-      defer
-    ></script>
+      <script src="/scripts/batch-deletion.js" type="text/javascript" defer></script>
   {{/content}}
 
   {{#content "page"}}
@@ -15,26 +12,28 @@
       <div class="row">
         <div class="col-sm-12">
           <form id="batchDeletionFileUploadForm" class="file-input-container">
-            <label for="file">Lade hier die Datei mit Nutzern hoch, die gelöscht
-              werden sollen:</label>
-            <div class="file-input">
-              <input
-                type="file"
-                name="file"
-                id="file"
-                accept=".csv"
-                class="btn btn-secondary"
-                required
-              />
+            <label>Bitte CSV-Datei mit Nutzenden, die gelöscht werden sollen,
+              hochladen</label>
+            <div class="form-group">
+              <label for="file" class="btn btn-secondary">Datei auswählen</label>
+              <input type="file" name="file" id="file" accept=".csv" required />
+            </div>
+            <div class="form-group">
+              <div class="file-upload">
+                <span id="file-name">Keine Datei ausgewählt</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="batchTitle">Namen der Batch</label>
               <input
                 type="text"
                 name="batchTitle"
                 id="batchTitle"
-                placeholder="Namen der Batch"
-                class="input-group input-group-sm"
+                class="input-group input-group-sm form-control"
                 required
               />
-
+            </div>
+            <div class="form-group">
               <input
                 type="submit"
                 value="Daten senden"

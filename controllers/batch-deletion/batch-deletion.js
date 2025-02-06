@@ -14,7 +14,7 @@ router.use(authHelper.authChecker);
 router.get("/", apiRequests.getDeletionBatches);
 
 router.post("/create-batch-deletion-file", async (req, res, next) => {
-  sendFile(req, res, next, api);
+  await sendFile(req, res, next, api);
 });
 
 module.exports = router;
