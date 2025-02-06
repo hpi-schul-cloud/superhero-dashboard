@@ -7,6 +7,7 @@ metadata:
     app: shd
 data:
   BACKEND_URL: "http://api-svc:{{ PORT_SERVER }}/api/"
+  ADMIN_API_URL: "http://api-svc:4030/admin/api/"
   SC_NAV_TITLE: "{{ SC_NAV_TITLE }}"
   HOST: "https://{{ DOMAIN }}"
   FEATURE_LEGACY_HYDRA_ENABLED: "{{ FEATURE_LEGACY_HYDRA_ENABLED|default(false, true) }}"

@@ -1,0 +1,144 @@
+{{#extend "lib/loggedin"}}
+  {{#content "styles" mode="append"}}
+    <link rel="stylesheet" href="/styles/batch-deletion/batch-deletion.css" />
+  {{/content}}
+
+  {{#content "scripts" mode="append"}}
+      <script src="/scripts/batch-deletion/batch-deletion.js" type="text/javascript" defer></script>
+  {{/content}}
+
+  {{#content "page"}}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <form id="batchDeletionFileUploadForm" class="file-input-container">
+            <label>Bitte CSV-Datei mit Nutzenden, die gelöscht werden sollen,
+              hochladen</label>
+            <div class="form-group">
+              <label for="file" class="btn btn-secondary">Datei auswählen</label>
+              <input type="file" name="file" id="file" accept=".csv" required />
+            </div>
+            <div class="form-group">
+              <div class="file-upload">
+                <span id="file-name">Keine Datei ausgewählt</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="batchTitle">Namen der Batch</label>
+              <input
+                type="text"
+                name="batchTitle"
+                id="batchTitle"
+                class="input-group input-group-sm form-control"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="submit"
+                value="Daten senden"
+                class="btn btn-primary"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <ul class="batch-list">
+            {{#each batches}}
+              <li class="batch-list-item">
+                <div class="batch-header">
+                  <div>
+                    <div class="batch-title">
+                      <h5>{{batchTitle}}</h5>
+                      <span class="status-chip status-{{this.status}}">
+                        {{this.status}}
+                      </span>
+                    </div>
+                    <span>
+                      {{this.overallCount}}
+                      insgesamt -
+
+                      {{#each this.usersByRole}}
+                        {{this.userCount}}
+                        {{this.roleName}}
+                        {{#unless @last}}
+                          ,
+                        {{/unless}}
+                      {{/each}}
+                    </span>
+                  </div>
+                  <div class="actions">
+                    <button class="btn btn-primary btn-thin">
+                      Löschen
+                    </button>
+                    <button
+                      class="details-toggle btn btn-secondary btn-thin"
+                      data-toggle="modal"
+                      data-target=".details-modal"
+                      data-title="{{this.batchTitle}}"
+                    >
+                      Details anzeigen
+                    </button>
+                  </div>
+                </div>
+                {{#embed "lib/components/modal" class="details-modal" title=""}}
+                  {{#content "body"}}
+                    <div class="modal-body">
+                      <p>
+                        <span class="pending">{{this.pending}}</span>
+                        Pending
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('pending-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="pending-ids" class="id-list">
+                        {{#each this.pendingIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                      <p>
+                        <span class="deleted">{{this.deleted}}</span>
+                        Deleted
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('deleted-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="deleted-ids" class="id-list">
+                        {{#each this.deletedIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                      <p>
+                        <span class="failed">{{this.failed}}</span>
+                        Failed
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('failed-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="failed-ids" class="id-list">
+                        {{#each this.failedIds}}
+                          {{this}},
+                        {{/each}}
+                      </pre>
+                    </div>
+                  {{/content}}
+                {{/embed}}
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {{/content}}
+{{/extend}}

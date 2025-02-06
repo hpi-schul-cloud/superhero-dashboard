@@ -132,6 +132,11 @@ const restrictSidebar = (req, res) => {
             icon: 'server',
             link: '/storageproviders/'
         },
+        {
+            name: 'Löschung',
+            icon: 'trash',
+            link: '/batch-deletion/'
+        },
     ];
 
     res.locals.sidebarItems = res.locals.sidebarItems.filter((item) => item.enabled == null || item.enabled);
