@@ -1,7 +1,8 @@
 const sendFile = async (req, res, next, api) => {
     const { fileContent, batchTitle } = req.body;
     console.log("batchTitle: ", batchTitle);
-    const targetRefIds = fileContent.split(",").map((item) => item.trim());
+    const targetRefIds = fileContent.split("\n").map((item) => item.trim());
+    console.log("targetRefIds: ", targetRefIds);
     try {
       const response = await api(req, { adminApi: true }).post(
         "/deletion-batches/",
