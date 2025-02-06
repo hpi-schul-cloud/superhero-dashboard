@@ -19,6 +19,11 @@ const api = (
   }
 
   const handler = useCallback ? request : rp;
+  // TODO remove this before merging
+  if (adminApi) {
+    console.log("baseUrl: ", baseUrl);
+    console.log('headers', headers);
+  }
   return handler.defaults({
     baseUrl: new URL(version, baseUrl).href,
     json,
