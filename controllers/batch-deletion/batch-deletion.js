@@ -5,9 +5,10 @@
 // const _ = require('lodash');
 const express = require("express");
 const router = express.Router();
-const authHelper = require("../helpers/authentication");
-const { api } = require("../api");
+const authHelper = require("../../helpers/authentication");
+const { api } = require("../../api");
 const moment = require("moment");
+const sendFile = require("./send-file");
 moment.locale("de");
 
 router.use(authHelper.authChecker);
@@ -81,26 +82,7 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/create-batch-deletion-file", async (req, res, next) => {
-  const { fileContent, batchTitle } = req.body;
-  console.log("batchTitle: ", batchTitle);
-  const targetRefIds = fileContent.split(",").map((item) => item.trim());
-  try {
-    const response = await api(req, { adminApi: true }).post(
-      "/deletion-batches/",
-      {
-        json: {
-          name: batchTitle,
-          targetRefDomain: "domain",
-          targetRefIds,
-        },
-      }
-    );
-  } catch (error) {
-    console.log("error: ", error.statusCode);
-    next(error);
-  }
-
-  res.redirect(303, "/batch-deletion/");
+  sendFile(req, res, next, api);
 });
 
 module.exports = router;
