@@ -6,10 +6,10 @@
   flex-direction: column;
   justify-content: center;
   margin: 20px 0px;
+}
 
-  .file-input {
-    margin: 10px 0px;
-  }
+#file {
+  display: none;
 }
 
 .batch-list {
