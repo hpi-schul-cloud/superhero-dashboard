@@ -14,7 +14,7 @@ const api = (
   // TODO - temporary solution, adjust this before merging,
   //   if (process.env.API_KEY) {
   headers["x-api-key"] =
-    process.env.API_KEY || "thisisasupersecureapikeythatisabsolutelysave";
+    process.env.ADMIN_API_KEY || "thisisasupersecureapikeythatisabsolutelysave";
   //   }
 
   const backendUrl = process.env.BACKEND_URL || "http://localhost:3030/api/";
