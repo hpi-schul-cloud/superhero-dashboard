@@ -82,7 +82,7 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/create-batch-deletion-file", async (req, res, next) => {
-  sendFile(req, res, next, api);
+  await sendFile(req, res, next, api);
 });
 
 module.exports = router;
