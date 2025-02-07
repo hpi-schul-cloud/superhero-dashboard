@@ -1,4 +1,6 @@
-const sendFile = async (req, res, next, api) => {
+const { api } = require("../../api");
+
+const sendFile = async (req, res, next) => {
   const { fileContent, batchTitle } = req.body;
   const targetRefIds = fileContent.split("\n").map((item) => item.trim());
   try {

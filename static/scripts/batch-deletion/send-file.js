@@ -27,6 +27,7 @@ const sendFileContent = (fileContent, batchTitle) => {
         },
         body: JSON.stringify({ fileContent, batchTitle }),
     };
+    // console.log("send fileContent");
     fetch("/batch-deletion/create-batch-deletion-file", configOptions)
     .then((res) => {
         if (res.ok) {
