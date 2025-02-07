@@ -27,7 +27,6 @@ const sendFileContent = (fileContent, batchTitle) => {
       body: JSON.stringify({ fileContent, batchTitle }),
     }).then((res) => {
         if (res.ok) {
-            console.log("File sent successfully");
             location.reload();
         } else {
             console.error('Error:', res.statusText);
