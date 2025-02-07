@@ -1,31 +1,34 @@
 $(document).ready(() => {
-    fileInput();
+  document
+  .querySelector("#batchDeletionFileUploadForm")
+  .addEventListener("submit", fileHandler);
 });
 
-function fileInput() {
-    document
-    .querySelector("#batchDeletionFileUploadForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
-    const fileInput = document.getElementById("file");
-    const batchTitle = document.getElementById("batchTitle").value;
-    const reader = new FileReader();
+const fileHandler = (
+    event, 
+    sendFile = sendFileContent, 
+    reader = new FileReader(),
+    fileInput = document.getElementById("file"),
+    batchTitle = document.getElementById("batchTitle")
+  ) => {
+    event.preventDefault();
     reader.onload = function (event) {
         const fileContent = event.target.result;
-        sendFileContent(fileContent, batchTitle);
+        sendFile(fileContent, batchTitle.value);
     };
     reader.readAsText(fileInput.files[0]);
-    });
-}
+};
 
 const sendFileContent = (fileContent, batchTitle) => {
-    fetch("/batch-deletion/create-batch-deletion-file", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ fileContent, batchTitle }),
-    }).then((res) => {
+    const configOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fileContent, batchTitle }),
+    };
+    fetch("/batch-deletion/create-batch-deletion-file", configOptions)
+    .then((res) => {
         if (res.ok) {
             location.reload();
         } else {

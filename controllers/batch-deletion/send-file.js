@@ -1,5 +1,4 @@
-const { api } = require("../../api");
-const sendFile = async (req, res, next) => {
+const sendFile = async (req, res, next, api) => {
   const { fileContent, batchTitle } = req.body;
   const targetRefIds = fileContent.split("\n").map((item) => item.trim());
   try {
@@ -13,10 +12,12 @@ const sendFile = async (req, res, next) => {
         },
       }
     );
+    // todo: React to certain responses
+    console.log(response);
+
     res.status(200).send({ message: "File sent successfully" });
   } catch (error) {
-    console.error("error was thrown", error);
-    res.status(error.statusCode).send({ message: "Error sending file" });
+    console.log("error: ", error.statusCode);
     next(error);
   }
 };
