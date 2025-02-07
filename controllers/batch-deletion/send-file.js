@@ -12,9 +12,12 @@ const sendFile = async (req, res, next, api) => {
         },
       }
     );
+    // todo: React to certain responses
+    console.log(response);
+
     res.status(200).send({ message: "File sent successfully" });
   } catch (error) {
-    res.status(error.statusCode).send({ message: "Error sending file" });
+    console.log("error: ", error.statusCode);
     next(error);
   }
 };
