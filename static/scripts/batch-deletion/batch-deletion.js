@@ -10,7 +10,6 @@ $(document).ready(() => {
 });
 
 function fileInput() {
-  console.log("send-file.js");
     document
     .querySelector("#batchDeletionFileUploadForm")
     .addEventListener("submit", function (e) {
