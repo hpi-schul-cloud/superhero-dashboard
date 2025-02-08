@@ -19,8 +19,8 @@ const germanRoleNames = {
 const getDeletionBatches = (req, res, next) => {
   api(req, { adminApi: true })
     .get(`/deletion-batches`)
-    .then((data) => {
-      const formattedBatches = data.data.map((batch) => {
+    .then((response) => {
+      const formattedBatches = response.data.map((batch) => {
         const formattedDate = getFormattedDate(batch.createdAt);
         const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
         const sortedUserRolesByCount = batch.usersByRole
@@ -36,26 +36,12 @@ const getDeletionBatches = (req, res, next) => {
           return acc + role.userCount;
         }, 0);
 
-        const pending = 10;
-        const pendingIds = ["pending-id-1", "pending-id-2"];
-        const deleted = 5;
-        const deletedIds = ["deleted-id-1", "deleted-id-2"];
-        const failed = 2;
-        const failedIds = ["failed-id-1", "failed-id-2"];
-
         return {
           id: batch.id,
           status: batch.status,
           usersByRole: sortedUserRolesByCount,
           createdAt: formattedDate,
           batchTitle,
-          overallCount,
-          pending,
-          pendingIds,
-          deleted,
-          deletedIds,
-          failed,
-          failedIds,
         };
       });
 
@@ -68,6 +54,21 @@ const getDeletionBatches = (req, res, next) => {
     })
     .catch((err) => {
       next(err);
+    });
+};
+
+const getDeletionBatchDetails = (req, res, next) => {
+  const { id } = req.params;
+  console.log("id", id);
+
+  api(req, { adminApi: true })
+    .get(`/deletion-batches/${id}`)
+    .then((response) => {
+      console.log("response", response);
+      res.status(200).json(response);
+    })
+    .catch((error) => {
+      console.error("error", error);
     });
 };
 
@@ -95,4 +96,4 @@ const sendFile = async (req, res, next) => {
   }
 };
 
-module.exports = { getDeletionBatches, sendFile };
+module.exports = { getDeletionBatches, getDeletionBatchDetails, sendFile };

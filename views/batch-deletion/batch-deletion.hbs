@@ -80,8 +80,9 @@
                       data-toggle="modal"
                       data-target=".details-modal"
                       data-title="{{this.batchTitle}}"
+                      data-batch-id="{{this.id}}"
                     >
-                      Details anzeigen
+                      Details
                     </button>
                   </div>
                 </div>
@@ -98,13 +99,9 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="pending-ids" class="id-list">
-                        {{#each this.pendingIds}}
-                          {{this}},
-                        {{/each}}
+                      <pre id="pending-ids" class="id-list">   
                       </pre>
                       <p>
-                        <span class="deleted">{{this.deleted}}</span>
                         Deleted
                         <button
                           class="btn btn-sm copy-btn"
@@ -113,13 +110,9 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="deleted-ids" class="id-list">
-                        {{#each this.deletedIds}}
-                          {{this}},
-                        {{/each}}
+                      <pre id="deleted-ids" class="id-list">            
                       </pre>
                       <p>
-                        <span class="failed">{{this.failed}}</span>
                         Failed
                         <button
                           class="btn btn-sm copy-btn"
@@ -129,9 +122,28 @@
                         </button>
                       </p>
                       <pre id="failed-ids" class="id-list">
-                        {{#each this.failedIds}}
-                          {{this}},
-                        {{/each}}
+                      </pre>
+                      <p>
+                        Skipped
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('skipped-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="skipped-ids" class="id-list">
+                      </pre>
+                      <p>
+                        Invalid IDs
+                        <button
+                          class="btn btn-sm copy-btn"
+                          onclick="copyToClipboard('invalid-ids')"
+                        >
+                          <i class="fa fa-copy"></i>
+                        </button>
+                      </p>
+                      <pre id="invalid-ids" class="id-list">
                       </pre>
                     </div>
                   {{/content}}
