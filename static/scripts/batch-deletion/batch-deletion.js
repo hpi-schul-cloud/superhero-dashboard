@@ -26,6 +26,20 @@ $(document).ready(() => {
       });
   }
 
+  function deleteBatch(batchId) {
+    fetch(`/batch-deletion/${batchId}`, { method: "DELETE" })
+      .then((res) => {
+        if (res.ok) {
+          location.reload();
+        } else {
+          console.error("Error:", res.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("error", error);
+      });
+  }
+
   function copyToClipboard(event) {
     const id = this.getAttribute("data-text-id");
     var text = document.getElementById(id).innerText;
@@ -45,9 +59,17 @@ $(document).ready(() => {
       const title = this.getAttribute("data-title");
       const batchId = this.getAttribute("data-batch-id");
 
-      fetchDeletionBatchDetails(batchId);
-
       document.querySelector(".modal-title").innerText = title;
+
+      fetchDeletionBatchDetails(batchId);
+    });
+  });
+
+  document.querySelectorAll(".delete-batch-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const batchId = this.getAttribute("data-batch-id");
+
+      deleteBatch(batchId);
     });
   });
 

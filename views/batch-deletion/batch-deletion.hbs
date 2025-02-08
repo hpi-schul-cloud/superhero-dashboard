@@ -51,7 +51,7 @@
             {{#each batches}}
               <li class="batch-list-item">
                 <div class="batch-header">
-                  <div>
+                  <div class="batch-info">
                     <div class="batch-title">
                       <h5>{{batchTitle}}</h5>
                       <span class="status-chip status-{{this.status}}">
@@ -63,18 +63,19 @@
                       insgesamt -
 
                       {{#each this.usersByRole}}
-                        {{this.userCount}}
-                        {{this.roleName}}
-                        {{#unless @last}}
-                          ,
-                        {{/unless}}
+                        <span>{{this.userCount}} {{this.roleName}}{{#unless @last}}<span>, </span>{{/unless}}</span>
                       {{/each}}
                     </span>
                   </div>
                   <div class="actions">
-                    <button class="btn btn-primary btn-thin">
-                      Löschen
-                    </button>
+                    {{#ifeq this.status "created"}}
+                      <button class="btn btn-primary btn-thin delete-batch-btn" data-batch-id="{{../id}}">
+                        Löschen
+                      </button>
+                      <button class="btn btn-primary btn-thin">
+                        Starten
+                      </button>
+                    {{/ifeq}}
                     <button
                       class="details-toggle btn btn-secondary btn-thin"
                       data-toggle="modal"
@@ -90,8 +91,7 @@
                   {{#content "body"}}
                     <div class="modal-body">
                       <p>
-                        <span class="running">{{this.running}}</span>
-                        running
+                        Pending
                         <button
                           class="btn btn-sm copy-btn"
                           data-text-id="running-ids"

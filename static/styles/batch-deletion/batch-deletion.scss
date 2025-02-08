@@ -28,6 +28,10 @@
   padding: 20px;
   background-color: $gray-lightest;
 
+  .batch-info {
+    width: 64%;
+  }
+
   .batch-title {
     display: flex;
     align-items: center;

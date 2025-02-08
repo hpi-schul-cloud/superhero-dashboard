@@ -15,4 +15,6 @@ router.post("/", apiRequests.sendFile);
 
 router.get("/:id", apiRequests.getDeletionBatchDetails);
 
+router.delete("/:id", apiRequests.deleteBatch);
+
 module.exports = router;

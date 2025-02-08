@@ -83,6 +83,19 @@ const getDeletionBatchDetails = (req, res, next) => {
     });
 };
 
+const deleteBatch = (req, res, next) => {
+  const { id } = req.params;
+
+  api(req, { adminApi: true })
+    .delete(`/deletion-batches/${id}`)
+    .then((response) => {
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      console.error("error", error);
+    });
+};
+
 const sendFile = async (req, res, next) => {
   const { fileContent, batchTitle } = req.body;
   const targetRefIds = fileContent.split("\n").map((item) => item.trim());
@@ -107,4 +120,9 @@ const sendFile = async (req, res, next) => {
   }
 };
 
-module.exports = { getDeletionBatches, getDeletionBatchDetails, sendFile };
+module.exports = {
+  getDeletionBatches,
+  getDeletionBatchDetails,
+  deleteBatch,
+  sendFile,
+};
