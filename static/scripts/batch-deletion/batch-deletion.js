@@ -1,4 +1,22 @@
 $(document).ready(() => {
+  document.querySelectorAll(".copy-btn").forEach((button) => {
+    button.addEventListener("click", copyToClipboard);
+  });
+
+  function copyToClipboard(event) {
+    const id = this.getAttribute("data-text-id");
+
+    var text = document.getElementById(id).innerText;
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("IDs copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  }
+
   document.querySelectorAll(".details-toggle").forEach((button) => {
     button.addEventListener("click", function () {
       const title = this.getAttribute("data-title");

@@ -59,12 +59,10 @@ const getDeletionBatches = (req, res, next) => {
 
 const getDeletionBatchDetails = (req, res, next) => {
   const { id } = req.params;
-  console.log("id", id);
 
   api(req, { adminApi: true })
     .get(`/deletion-batches/${id}`)
     .then((response) => {
-      console.log("response", response);
       res.status(200).json(response);
     })
     .catch((error) => {
