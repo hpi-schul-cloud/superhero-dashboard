@@ -29,15 +29,14 @@ const sendFileContent = (fileContent, batchTitle) => {
     body: JSON.stringify({ fileContent, batchTitle }),
   };
 
-  fetch("/batch-deletion/create-batch-deletion-file", configOptions).then(
-    (res) => {
-      if (res.ok) {
-        location.reload();
-      } else {
-        console.error("Error:", res.statusText);
-      }
+  fetch("/batch-deletion/", configOptions).then((res) => {
+    console.log("file creation");
+    if (res.ok) {
+      location.reload();
+    } else {
+      console.error("Error:", res.statusText);
     }
-  );
+  });
 };
 
 const fileInputHandler = () => {
