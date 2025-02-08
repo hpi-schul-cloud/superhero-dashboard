@@ -90,17 +90,16 @@
                   {{#content "body"}}
                     <div class="modal-body">
                       <p>
-                        <span class="pending">{{this.pending}}</span>
-                        Pending
+                        <span class="running">{{this.running}}</span>
+                        running
                         <button
                           class="btn btn-sm copy-btn"
-                          data-text-id="pending-ids"
+                          data-text-id="running-ids"
                         >
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="pending-ids" class="id-list">   
-                      </pre>
+                      <textarea id="pending-ids" class="id-list" rows="3" readonly></textarea>  
                       <p>
                         Deleted
                         <button
@@ -110,8 +109,7 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="deleted-ids" class="id-list">            
-                      </pre>
+                      <textarea id="deleted-ids" class="id-list" rows="3" readonly></textarea>  
                       <p>
                         Failed
                         <button
@@ -121,8 +119,7 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="failed-ids" class="id-list">
-                      </pre>
+                      <textarea id="failed-ids" class="id-list" rows="3" readonly></textarea>  
                       <p>
                         Skipped
                         <button
@@ -132,8 +129,7 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="skipped-ids" class="id-list">
-                      </pre>
+                      <textarea id="skipped-ids" class="id-list" rows="3" readonly></textarea>  
                       <p>
                         Invalid IDs
                         <button
@@ -143,8 +139,7 @@
                           <i class="fa fa-copy"></i>
                         </button>
                       </p>
-                      <pre id="invalid-ids" class="id-list">
-                      </pre>
+                      <textarea id="invalid-ids" class="id-list" rows="3" readonly></textarea>  
                     </div>
                   {{/content}}
                 {{/embed}}
