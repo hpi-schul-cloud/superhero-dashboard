@@ -61,21 +61,22 @@
                     <span>
                       {{this.overallCount}}
                       insgesamt -
-
                       {{#each this.usersByRole}}
                         <span>{{this.userCount}} {{this.roleName}}{{#unless @last}}<span>, </span>{{/unless}}</span>
                       {{/each}}
                     </span>
                   </div>
                   <div class="actions">
-                    {{#ifeq this.status "created"}}
+                    {{#if this.canDelete}}
                       <button class="btn btn-primary btn-thin delete-batch-btn" data-batch-id="{{../id}}">
                         Löschen
                       </button>
-                      <button class="btn btn-primary btn-thin">
-                        Starten
-                      </button>
-                    {{/ifeq}}
+                      {{#if this.isValidBatch}}
+                        <button class="btn btn-primary btn-thin">
+                          Starten
+                        </button>
+                      {{/if}}
+                    {{/if}}
                     <button
                       class="details-toggle btn btn-secondary btn-thin"
                       data-toggle="modal"

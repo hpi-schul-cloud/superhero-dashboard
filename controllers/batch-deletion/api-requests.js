@@ -44,6 +44,10 @@ const mapBatches = (batches) => {
     const formattedDate = getFormattedDate(batch.createdAt);
     const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
 
+    const isValidBatch = batch.usersByRole.length > 0;
+    const status = isValidBatch ? batch.status : "invalid";
+    const canDelete = status === "created" || status === "invalid";
+
     const ids = mapUserIds(batch);
     const overallCount = ids.reduce((acc, role) => {
       return acc + role.userCount;
@@ -51,11 +55,13 @@ const mapBatches = (batches) => {
 
     return {
       id: batch.id,
-      status: batch.status,
+      status,
       usersByRole: ids,
       createdAt: formattedDate,
       batchTitle,
       overallCount,
+      isValidBatch,
+      canDelete,
     };
   });
 };

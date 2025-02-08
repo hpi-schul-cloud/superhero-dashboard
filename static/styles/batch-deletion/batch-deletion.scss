@@ -53,15 +53,19 @@
     margin-left: 0.5rem;
 
     &.status-created {
-      background-color: $brand-info;
+      background-color: rgba($brand-info, 0.8);
     }
 
     &.status-pending {
-      background-color: $brand-warning;
+      background-color: rgba($brand-warning, 0.8);
     }
 
     &.status-finished {
-      background-color: $brand-success;
+      background-color: rgba($brand-success, 0.8);
+    }
+
+    &.status-invalid {
+      background-color: rgba($brand-danger, 0.8);
     }
   }
 }
