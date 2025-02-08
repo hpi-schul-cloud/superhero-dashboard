@@ -1,3 +1,4 @@
+const { invalid } = require("moment/moment");
 const { api } = require("../../api");
 const moment = require("moment");
 
@@ -23,7 +24,10 @@ const getDeletionBatches = (req, res, next) => {
       const formattedBatches = response.data.map((batch) => {
         const formattedDate = getFormattedDate(batch.createdAt);
         const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
-        const sortedUserRolesByCount = batch.usersByRole
+
+        const usersByRole = batch.usersByRole.concat(batch.skippedUsersByRole);
+
+        const sortedUserRolesByCount = usersByRole
           .sort((a, b) => b.userCount - a.userCount)
           .map((role) => {
             return {
@@ -32,16 +36,25 @@ const getDeletionBatches = (req, res, next) => {
             };
           });
 
-        const overallCount = sortedUserRolesByCount.reduce((acc, role) => {
-          return acc + role.userCount;
-        }, 0);
+        const invalidUsersCount = batch.invalidUsers.length;
+        const invalidUsers = {
+          roleName: "Ungültig",
+          userCount: invalidUsersCount,
+        };
+
+        const overallCount =
+          invalidUsersCount +
+          sortedUserRolesByCount.reduce((acc, role) => {
+            return acc + role.userCount;
+          }, 0);
 
         return {
           id: batch.id,
           status: batch.status,
-          usersByRole: sortedUserRolesByCount,
+          usersByRole: sortedUserRolesByCount.concat(invalidUsers),
           createdAt: formattedDate,
           batchTitle,
+          overallCount,
         };
       });
 
