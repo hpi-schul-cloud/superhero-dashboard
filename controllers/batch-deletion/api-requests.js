@@ -1,4 +1,3 @@
-const { invalid } = require("moment/moment");
 const { api } = require("../../api");
 const moment = require("moment");
 
@@ -15,48 +14,57 @@ const germanRoleNames = {
   administrator: "Admin",
   expert: "Experte",
   superhero: "Superhero",
+  invalid: "Ungültig",
+};
+
+const mapUserIds = (batch) => {
+  const invalidUsersCount = batch.invalidUsers.length;
+  const invalidUsers = {
+    roleName: "invalid",
+    userCount: invalidUsersCount,
+  };
+
+  const usersByRole = batch.usersByRole.concat(
+    batch.skippedUsersByRole,
+    invalidUsers
+  );
+
+  return usersByRole
+    .sort((a, b) => b.userCount - a.userCount)
+    .map((role) => {
+      return {
+        roleName: germanRoleNames[role.roleName],
+        userCount: role.userCount,
+      };
+    });
+};
+
+const mapBatches = (batches) => {
+  return batches.map((batch) => {
+    const formattedDate = getFormattedDate(batch.createdAt);
+    const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
+
+    const ids = mapUserIds(batch);
+    const overallCount = ids.reduce((acc, role) => {
+      return acc + role.userCount;
+    }, 0);
+
+    return {
+      id: batch.id,
+      status: batch.status,
+      usersByRole: ids,
+      createdAt: formattedDate,
+      batchTitle,
+      overallCount,
+    };
+  });
 };
 
 const getDeletionBatches = (req, res, next) => {
   api(req, { adminApi: true })
     .get(`/deletion-batches`)
     .then((response) => {
-      const formattedBatches = response.data.map((batch) => {
-        const formattedDate = getFormattedDate(batch.createdAt);
-        const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
-
-        const usersByRole = batch.usersByRole.concat(batch.skippedUsersByRole);
-
-        const sortedUserRolesByCount = usersByRole
-          .sort((a, b) => b.userCount - a.userCount)
-          .map((role) => {
-            return {
-              roleName: germanRoleNames[role.roleName],
-              userCount: role.userCount,
-            };
-          });
-
-        const invalidUsersCount = batch.invalidUsers.length;
-        const invalidUsers = {
-          roleName: "Ungültig",
-          userCount: invalidUsersCount,
-        };
-
-        const overallCount =
-          invalidUsersCount +
-          sortedUserRolesByCount.reduce((acc, role) => {
-            return acc + role.userCount;
-          }, 0);
-
-        return {
-          id: batch.id,
-          status: batch.status,
-          usersByRole: sortedUserRolesByCount.concat(invalidUsers),
-          createdAt: formattedDate,
-          batchTitle,
-          overallCount,
-        };
-      });
+      const formattedBatches = mapBatches(response.data);
 
       res.render("batch-deletion/batch-deletion", {
         title: "Sammellöschung von Schülern",
