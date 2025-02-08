@@ -90,6 +90,7 @@ $(document).ready(() => {
   document.querySelectorAll(".start-deletion-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const batchId = this.getAttribute("data-batch-id");
+      this.setAttribute("disabled", true);
 
       sendDeletionRequest(batchId);
     });
