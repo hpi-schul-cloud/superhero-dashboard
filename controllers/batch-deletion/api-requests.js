@@ -110,8 +110,28 @@ const deleteBatch = (req, res, next) => {
     });
 };
 
+const sendDeletionRequest = (req, res, next) => {
+  const { id } = req.params;
+
+  api(req, { adminApi: true })
+    .post(`/deletion-batches/${id}/execute`)
+    .then((response) => {
+      res.sendStatus(200);
+    })
+    .catch((error) => {
+      console.error("error", error);
+    });
+};
+
 const sendFile = async (req, res, next) => {
   const { fileContent, batchTitle } = req.body;
+
+  if (!fileContent || !batchTitle) {
+    return res
+      .status(400)
+      .send({ message: "No file content or batch title provided" });
+  }
+
   const targetRefIds = fileContent.split("\n").map((item) => item.trim());
   try {
     const response = await api(req, { adminApi: true }).post(
@@ -138,5 +158,6 @@ module.exports = {
   getDeletionBatches,
   getDeletionBatchDetails,
   deleteBatch,
+  sendDeletionRequest,
   sendFile,
 };

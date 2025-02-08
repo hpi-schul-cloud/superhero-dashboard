@@ -40,6 +40,20 @@ $(document).ready(() => {
       });
   }
 
+  function sendDeletionRequest(batchId) {
+    fetch(`/batch-deletion/${batchId}/execute`, { method: "POST" })
+      .then((res) => {
+        if (res.ok) {
+          location.reload();
+        } else {
+          console.error("Error:", res.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("error", error);
+      });
+  }
+
   function copyToClipboard(event) {
     const id = this.getAttribute("data-text-id");
     var text = document.getElementById(id).innerText;
@@ -70,6 +84,14 @@ $(document).ready(() => {
       const batchId = this.getAttribute("data-batch-id");
 
       deleteBatch(batchId);
+    });
+  });
+
+  document.querySelectorAll(".start-deletion-btn").forEach((button) => {
+    button.addEventListener("click", function () {
+      const batchId = this.getAttribute("data-batch-id");
+
+      sendDeletionRequest(batchId);
     });
   });
 

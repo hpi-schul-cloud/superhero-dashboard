@@ -55,7 +55,11 @@
                     <div class="batch-title">
                       <h5>{{batchTitle}}</h5>
                       <span class="status-chip status-{{this.status}}">
-                        {{this.status}}
+                        {{#ifeq this.status "deletion-requested"}}
+                          in progress
+                        {{else}}
+                          {{../status}}
+                        {{/ifeq}}
                       </span>
                     </div>
                     <span>
@@ -68,11 +72,11 @@
                   </div>
                   <div class="actions">
                     {{#if this.canDelete}}
-                      <button class="btn btn-primary btn-thin delete-batch-btn" data-batch-id="{{../id}}">
+                      <button class="btn btn-primary btn-thin delete-batch-btn" data-batch-id="{{this.id}}">
                         Löschen
                       </button>
                       {{#if this.isValidBatch}}
-                        <button class="btn btn-primary btn-thin">
+                        <button class="btn btn-primary btn-thin start-deletion-btn" data-batch-id="{{this.id}}">
                           Starten
                         </button>
                       {{/if}}

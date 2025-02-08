@@ -51,12 +51,13 @@
     font-size: 14px;
     margin-bottom: 0.5rem;
     margin-left: 0.5rem;
+    color: #000;
 
     &.status-created {
       background-color: rgba($brand-info, 0.8);
     }
 
-    &.status-pending {
+    &.status-deletion-requested {
       background-color: rgba($brand-warning, 0.8);
     }
 

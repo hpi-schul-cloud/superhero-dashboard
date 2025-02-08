@@ -17,4 +17,6 @@ router.get("/:id", apiRequests.getDeletionBatchDetails);
 
 router.delete("/:id", apiRequests.deleteBatch);
 
+router.post("/:id/execute", apiRequests.sendDeletionRequest);
+
 module.exports = router;
