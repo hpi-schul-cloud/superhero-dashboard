@@ -1,4 +1,31 @@
 $(document).ready(() => {
+  const setHTMLForIds = (ids, idType) => {
+    const section = document.querySelector(`#${idType}-ids-section`);
+
+    if (ids.length === 0) {
+      section.innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
+      return;
+    }
+    const idsString = ids.join("\n");
+    const textAreaString = `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${idsString}</textarea>`;
+
+    section.innerHTML = textAreaString;
+  };
+
+  function copyToClipboard(event) {
+    const id = this.getAttribute("data-text-id");
+    const text = document.getElementById(id).innerHTML;
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        alert("IDs copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy text: ", err);
+      });
+  }
+
   function fetchDeletionBatchDetails(batchId) {
     fetch(`/batch-deletion/${batchId}`)
       .then((res) => {
@@ -8,27 +35,17 @@ $(document).ready(() => {
         return res.json();
       })
       .then((data) => {
-        const setHTMLForIds = (ids, idType) => {
-          const section = document.querySelector(`#${idType}-ids-section`);
-
-          if (ids.length === 0) {
-            section.innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
-            return;
-          }
-          const idsString = ids.join("\n");
-          const textAreaString = `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${idsString}</textarea>`;
-
-          section.innerHTML = textAreaString;
-        };
-
         setHTMLForIds(data.pendingDeletions, "pending");
         setHTMLForIds(data.successfulDeletions, "deleted");
         setHTMLForIds(data.failedDeletions, "failed");
-        setHTMLForIds(
-          data.skippedDeletions.flatMap((item) => item.ids),
-          "skipped"
-        );
         setHTMLForIds(data.invalidIds, "invalid");
+
+        const mappedSkippedIds = data.skippedDeletions
+          .map((listItem) => {
+            return [listItem.roleName, ...listItem.ids];
+          })
+          .flat();
+        setHTMLForIds(mappedSkippedIds.flat(), "skipped");
 
         document.querySelectorAll(".copy-btn").forEach((button) => {
           button.addEventListener("click", copyToClipboard);
@@ -64,20 +81,6 @@ $(document).ready(() => {
       })
       .catch((error) => {
         console.error("error", error);
-      });
-  }
-
-  function copyToClipboard(event) {
-    const id = this.getAttribute("data-text-id");
-    const text = document.getElementById(id).innerHTML;
-
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        alert("IDs copied to clipboard!");
-      })
-      .catch((err) => {
-        console.error("Failed to copy text: ", err);
       });
   }
 
