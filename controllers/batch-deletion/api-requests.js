@@ -46,7 +46,8 @@ const mapBatches = (batches) => {
 
     const isValidBatch = batch.usersByRole.length > 0;
     const status = isValidBatch ? batch.status : "invalid";
-    const canDelete = status === "created" || status === "invalid";
+    const canDeleteBatch = status === "created" || status === "invalid";
+    const canStartDeletion = canDeleteBatch && isValidBatch;
 
     const ids = mapUserIds(batch);
     const overallCount = ids.reduce((acc, role) => {
@@ -60,8 +61,8 @@ const mapBatches = (batches) => {
       createdAt: formattedDate,
       batchTitle,
       overallCount,
-      isValidBatch,
-      canDelete,
+      canDeleteBatch,
+      canStartDeletion,
     };
   });
 };

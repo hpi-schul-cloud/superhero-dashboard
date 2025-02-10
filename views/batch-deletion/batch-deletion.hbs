@@ -71,15 +71,10 @@
                     </span>
                   </div>
                   <div class="actions">
-                    {{#if this.canDelete}}
-                      <button class="btn btn-primary btn-thin delete-batch-btn" data-batch-id="{{this.id}}">
-                        Löschen
+                    {{#if this.canStartDeletion}}
+                      <button class="btn btn-primary btn-thin start-deletion-btn" data-batch-id="{{this.id}}">
+                        Starten
                       </button>
-                      {{#if this.isValidBatch}}
-                        <button class="btn btn-primary btn-thin start-deletion-btn" data-batch-id="{{this.id}}">
-                          Starten
-                        </button>
-                      {{/if}}
                     {{/if}}
                     <button
                       class="details-toggle btn btn-secondary btn-thin"
@@ -90,6 +85,11 @@
                     >
                       Details
                     </button>
+                    {{#if this.canDeleteBatch}}
+                      <button class="btn btn-secondary btn-thin delete-batch-btn" data-batch-id="{{this.id}}">
+                        Entfernen
+                      </button>
+                    {{/if}}
                   </div>
                 </div>
                 {{#embed "lib/components/modal" class="details-modal" title=""}}
