@@ -42,4 +42,5 @@ function fileInputHandler() {
   const fileName =
     this.files.length > 0 ? this.files[0].name : "Keine Datei ausgewählt";
   document.getElementById("file-name").textContent = fileName;
+  document.getElementById("batchTitle").value = fileName;
 }
