@@ -25,9 +25,6 @@ const api = (
     json,
     headers,
   };
-
-  // TODO remove before merge
-  console.log(apiRequest);
   
   return handler.defaults(apiRequest);
 };
