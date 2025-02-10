@@ -9,15 +9,16 @@ $(document).ready(() => {
       })
       .then((data) => {
         const setHTMLForIds = (ids, idType) => {
-          if (ids.length !== 0) {
-            document.querySelector(
-              `#${idType}-ids-section`
-            ).innerHTML = `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${ids}</textarea>`;
-          } else {
-            document.querySelector(
-              `#${idType}-ids-section`
-            ).innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
+          const section = document.querySelector(`#${idType}-ids-section`);
+
+          if (ids.length === 0) {
+            section.innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
+            return;
           }
+          const idsString = ids.join("\n");
+          const textAreaString = `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${idsString}</textarea>`;
+
+          section.innerHTML = textAreaString;
         };
 
         setHTMLForIds(data.pendingDeletions, "pending");
