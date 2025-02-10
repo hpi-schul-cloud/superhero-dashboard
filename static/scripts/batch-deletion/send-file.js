@@ -30,7 +30,6 @@ const sendFileContent = (fileContent, batchTitle) => {
   };
 
   fetch("/batch-deletion/", configOptions).then((res) => {
-    console.log("file creation");
     if (res.ok) {
       location.reload();
     } else {

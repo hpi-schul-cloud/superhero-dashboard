@@ -1,5 +1,6 @@
 $(document).ready(() => {
   function fetchDeletionBatchDetails(batchId) {
+    console.log("hi	");
     fetch(`/batch-deletion/${batchId}`)
       .then((res) => {
         if (!res.ok) {

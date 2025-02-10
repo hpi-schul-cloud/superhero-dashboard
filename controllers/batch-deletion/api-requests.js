@@ -66,61 +66,59 @@ const mapBatches = (batches) => {
   });
 };
 
-const getDeletionBatches = (req, res, next) => {
-  api(req, { adminApi: true })
-    .get(`/deletion-batches`)
-    .then((response) => {
-      const formattedBatches = mapBatches(response.data);
+const getDeletionBatches = async (req, res, next) => {
+  try {
+    const response = await api(req, { adminApi: true }).get(
+      `/deletion-batches`
+    );
 
-      res.render("batch-deletion/batch-deletion", {
-        title: "Sammellöschung von Schülern",
-        user: res.locals.currentUser,
-        themeTitle: process.env.SC_NAV_TITLE || "Schul-Cloud",
-        batches: formattedBatches,
-      });
-    })
-    .catch((err) => {
-      next(err);
+    const formattedBatches = mapBatches(response.data);
+
+    res.render("batch-deletion/batch-deletion", {
+      title: "Sammellöschung von Schülern",
+      user: res.locals.currentUser,
+      themeTitle: process.env.SC_NAV_TITLE || "Schul-Cloud",
+      batches: formattedBatches,
     });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const getDeletionBatchDetails = (req, res, next) => {
-  const { id } = req.params;
+const getDeletionBatchDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
 
-  api(req, { adminApi: true })
-    .get(`/deletion-batches/${id}`)
-    .then((response) => {
-      res.status(200).json(response);
-    })
-    .catch((error) => {
-      next(error);
-    });
+    const response = await api(req, { adminApi: true }).get(
+      `/deletion-batches/${id}`
+    );
+
+    res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const deleteBatch = (req, res, next) => {
-  const { id } = req.params;
+const deleteBatch = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await api(req, { adminApi: true }).delete(`/deletion-batches/${id}`);
 
-  api(req, { adminApi: true })
-    .delete(`/deletion-batches/${id}`)
-    .then((response) => {
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      next(error);
-    });
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 };
 
-const sendDeletionRequest = (req, res, next) => {
-  const { id } = req.params;
+const sendDeletionRequest = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await api(req, { adminApi: true }).post(`/deletion-batches/${id}/execute`);
 
-  api(req, { adminApi: true })
-    .post(`/deletion-batches/${id}/execute`)
-    .then((response) => {
-      res.sendStatus(200);
-    })
-    .catch((error) => {
-      next(error);
-    });
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
 };
 
 const sendFile = async (req, res, next) => {
