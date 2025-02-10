@@ -94,7 +94,7 @@
                 {{#embed "lib/components/modal" class="details-modal" title=""}}
                   {{#content "body"}}
                     <div class="modal-body">
-                      <div id="pending-ids-section" class="id-container">
+                      <div class="id-container">
                         <div>
                           Pending
                           <button
@@ -104,8 +104,9 @@
                             <i class="fa fa-copy"></i>
                           </button>
                         </div>
+                        <div id="pending-ids-section"></div>
                       </div>
-                      <div id="deleted-ids-section" class="id-container">
+                      <div class="id-container">
                         <div>
                           Successful
                           <button
@@ -115,8 +116,9 @@
                             <i class="fa fa-copy"></i>
                           </button>
                         </div>
+                        <div id="deleted-ids-section"></div>
                       </div>
-                      <div id="failed-ids-section" class="id-container">
+                      <div class="id-container">
                         <div>
                           Failed
                           <button
@@ -126,8 +128,9 @@
                             <i class="fa fa-copy"></i>
                           </button>
                         </div>
+                        <div id="failed-ids-section"></div>
                       </div>
-                      <div id="skipped-ids-section" class="id-container">
+                      <div class="id-container">
                         <div>
                           Skipped
                           <button
@@ -137,8 +140,9 @@
                             <i class="fa fa-copy"></i>
                           </button>
                         </div>
+                        <div id="skipped-ids-section"></div>
                       </div>
-                      <div id="invalid-ids-section" class="id-container">
+                      <div class="id-container">
                         <div>
                           Invalid IDs
                           <button
@@ -148,6 +152,7 @@
                             <i class="fa fa-copy"></i>
                           </button>
                         </div>
+                        <div id="invalid-ids-section"></div>
                       </div> 
                     </div>
                   {{/content}}

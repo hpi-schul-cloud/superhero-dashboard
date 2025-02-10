@@ -12,11 +12,11 @@ $(document).ready(() => {
           if (ids.length !== 0) {
             document.querySelector(
               `#${idType}-ids-section`
-            ).innerHTML += `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${ids}</textarea>`;
+            ).innerHTML = `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${ids}</textarea>`;
           } else {
             document.querySelector(
               `#${idType}-ids-section`
-            ).innerHTML += `<span class='no-ids-text'>Nothing ${idType}</span>`;
+            ).innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
           }
         };
 
