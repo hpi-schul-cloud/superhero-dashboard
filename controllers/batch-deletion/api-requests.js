@@ -93,7 +93,7 @@ const getDeletionBatchDetails = (req, res, next) => {
       res.status(200).json(response);
     })
     .catch((error) => {
-      console.error("error", error);
+      next(error);
     });
 };
 
@@ -106,7 +106,7 @@ const deleteBatch = (req, res, next) => {
       res.sendStatus(200);
     })
     .catch((error) => {
-      console.error("error", error);
+      next(error);
     });
 };
 
@@ -119,7 +119,7 @@ const sendDeletionRequest = (req, res, next) => {
       res.sendStatus(200);
     })
     .catch((error) => {
-      console.error("error", error);
+      next(error);
     });
 };
 
@@ -144,12 +144,9 @@ const sendFile = async (req, res, next) => {
         },
       }
     );
-    // todo: React to certain responses
-    console.log(response);
 
     res.status(200).send({ message: "File sent successfully" });
   } catch (error) {
-    console.log("error: ", error.statusCode);
     next(error);
   }
 };
