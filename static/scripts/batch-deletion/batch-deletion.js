@@ -1,6 +1,5 @@
 $(document).ready(() => {
   function fetchDeletionBatchDetails(batchId) {
-    console.log("hi	");
     fetch(`/batch-deletion/${batchId}`)
       .then((res) => {
         if (!res.ok) {
@@ -9,18 +8,30 @@ $(document).ready(() => {
         return res.json();
       })
       .then((data) => {
-        document.querySelector("#pending-ids").innerText =
-          data.pendingDeletions.join(",");
-        document.querySelector("#deleted-ids").innerText =
-          data.successfulDeletions.join(",");
-        document.querySelector("#failed-ids").innerText =
-          data.failedDeletions.join(",");
-        document.querySelector("#invalid-ids").innerText =
-          data.invalidIds.join(",");
+        const setHTMLForIds = (ids, idType) => {
+          if (ids.length !== 0) {
+            document.querySelector(
+              `#${idType}-ids-section`
+            ).innerHTML += `<textarea id="${idType}-ids" class="id-list" rows="3" readonly>${ids}</textarea>`;
+          } else {
+            document.querySelector(
+              `#${idType}-ids-section`
+            ).innerHTML += `<span class='no-ids-text'>Nothing ${idType}</span>`;
+          }
+        };
 
-        document.querySelector("#skipped-ids").innerText = data.skippedDeletions
-          .flatMap((item) => item.ids)
-          .join(",");
+        setHTMLForIds(data.pendingDeletions, "pending");
+        setHTMLForIds(data.successfulDeletions, "deleted");
+        setHTMLForIds(data.failedDeletions, "failed");
+        setHTMLForIds(
+          data.skippedDeletions.flatMap((item) => item.ids),
+          "skipped"
+        );
+        setHTMLForIds(data.invalidIds, "invalid");
+
+        document.querySelectorAll(".copy-btn").forEach((button) => {
+          button.addEventListener("click", copyToClipboard);
+        });
       })
       .catch((error) => {
         console.error("error", error);
@@ -57,7 +68,7 @@ $(document).ready(() => {
 
   function copyToClipboard(event) {
     const id = this.getAttribute("data-text-id");
-    var text = document.getElementById(id).innerText;
+    const text = document.getElementById(id).innerHTML;
 
     navigator.clipboard
       .writeText(text)
@@ -95,9 +106,5 @@ $(document).ready(() => {
 
       sendDeletionRequest(batchId);
     });
-  });
-
-  document.querySelectorAll(".copy-btn").forEach((button) => {
-    button.addEventListener("click", copyToClipboard);
   });
 });

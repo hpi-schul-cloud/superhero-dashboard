@@ -71,6 +71,10 @@
   }
 }
 
+.id-container {
+  margin-bottom: 20px;
+}
+
 .id-list {
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -81,6 +85,13 @@
   border: none;
   width: 100%;
   resize: none;
+  margin-top: 4px;
+}
+
+.no-ids-text {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 14px;
 }
 
 .copy-btn {
@@ -88,7 +99,3 @@
   background-color: transparent;
   font-size: 16px;
 }
-
-// button {
-//   cursor: pointer;
-// }

@@ -42,8 +42,7 @@
               />
             </div>
           </form>
-        </div id="error-message">
-        </div>
+        </div id="error-message"></div>
       </div>
       <div class="row">
         <div class="col-sm-12">
@@ -95,56 +94,61 @@
                 {{#embed "lib/components/modal" class="details-modal" title=""}}
                   {{#content "body"}}
                     <div class="modal-body">
-                      <p>
-                        Pending
-                        <button
-                          class="btn btn-sm copy-btn"
-                          data-text-id="running-ids"
-                        >
-                          <i class="fa fa-copy"></i>
-                        </button>
-                      </p>
-                      <textarea id="pending-ids" class="id-list" rows="3" readonly></textarea>  
-                      <p>
-                        Deleted
-                        <button
-                          class="btn btn-sm copy-btn"
-                          data-text-id="deleted-ids"
-                        >
-                          <i class="fa fa-copy"></i>
-                        </button>
-                      </p>
-                      <textarea id="deleted-ids" class="id-list" rows="3" readonly></textarea>  
-                      <p>
-                        Failed
-                        <button
-                          class="btn btn-sm copy-btn"
-                          data-text-id="failed-ids"
-                        >
-                          <i class="fa fa-copy"></i>
-                        </button>
-                      </p>
-                      <textarea id="failed-ids" class="id-list" rows="3" readonly></textarea>  
-                      <p>
-                        Skipped
-                        <button
-                          class="btn btn-sm copy-btn"
-                          data-text-id="skipped-ids"
-                        >
-                          <i class="fa fa-copy"></i>
-                        </button>
-                      </p>
-                      <textarea id="skipped-ids" class="id-list" rows="3" readonly></textarea>  
-                      <p>
-                        Invalid IDs
-                        <button
-                          class="btn btn-sm copy-btn"
-                          data-text-id="invalid-ids"
-                        >
-                          <i class="fa fa-copy"></i>
-                        </button>
-                      </p>
-                      <textarea id="invalid-ids" class="id-list" rows="3" readonly></textarea>  
+                      <div id="pending-ids-section" class="id-container">
+                        <div>
+                          Pending
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="pending-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="deleted-ids-section" class="id-container">
+                        <div>
+                          Successful
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="deleted-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="failed-ids-section" class="id-container">
+                        <div>
+                          Failed
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="failed-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="skipped-ids-section" class="id-container">
+                        <div>
+                          Skipped
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="skipped-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="invalid-ids-section" class="id-container">
+                        <div>
+                          Invalid IDs
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="invalid-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                      </div> 
                     </div>
                   {{/content}}
                 {{/embed}}
