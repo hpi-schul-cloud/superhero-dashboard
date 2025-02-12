@@ -25,7 +25,6 @@ COPY api.js /app/api.js
 COPY app.js /app/app.js
 COPY gulpfile.js /app/gulpfile.js
 
-#RUN export NODE_OPTIONS=--openssl-legacy-provider && node node_modules/gulp/bin/gulp.js
-RUN npx gulp
+RUN npm run build
 
 CMD ["npm", "run", "start"]
