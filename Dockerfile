@@ -3,11 +3,17 @@ FROM docker.io/node:22-alpine
 ENV TZ=Europe/Berlin
 EXPOSE 3033
 
-RUN apk add --no-cache autoconf automake build-base make nasm zlib-dev python3 py3-setuptools
+RUN apk add --no-cache \
+    autoconf \
+    automake \
+    build-base \
+    make \
+    nasm \
+    python3
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci && npm cache clean --force
+RUN npm ci --ignore-scripts && npm cache clean --force
 
 COPY bin /app/bin
 COPY controllers /app/controllers
@@ -19,7 +25,6 @@ COPY api.js /app/api.js
 COPY app.js /app/app.js
 COPY gulpfile.js /app/gulpfile.js
 
-#RUN node node_modules/gulp/bin/gulp.js
-RUN npx gulp
+RUN export NODE_OPTIONS=--openssl-legacy-provider && node node_modules/gulp/bin/gulp.js
 
 CMD ["npm", "run", "start"]
