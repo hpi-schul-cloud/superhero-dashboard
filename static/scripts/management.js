@@ -35,8 +35,8 @@ const loadPolicyFile = () => {
 		if (file) {
 			reader.readAsDataURL(file);
 		}
-	})
-}
+	});
+};
 
 $(document).ready(() => {
 	const $addConsentModal = $('.add-modal--policy');

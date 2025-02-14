@@ -19,5 +19,6 @@ router.use('/statistics', require('./statistics'));
 router.use('/ctltools', require('./ctltools'));
 router.use('/storageproviders', require('./storageproviders'));
 router.use('/base64files/', require('./base64files'));
+router.use('/batch-deletion/', require('./batch-deletion/batch-deletion'));
 
 module.exports = router;
