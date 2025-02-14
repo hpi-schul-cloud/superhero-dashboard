@@ -42,7 +42,7 @@ $(document).ready(() => {
 
         const mappedSkippedIds = data.skippedDeletions
           .map((listItem) => {
-            return [listItem.roleName, ...listItem.ids];
+            return ["\n" + listItem.roleName, ...listItem.ids];
           })
           .flat();
         setHTMLForIds(mappedSkippedIds.flat(), "skipped");
