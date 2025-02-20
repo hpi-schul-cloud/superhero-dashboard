@@ -138,7 +138,7 @@ const sendFile = async (req, res, next) => {
       {
         json: {
           name: batchTitle,
-          targetRefDomain: "domain",
+          targetRefDomain: "user",
           targetRefIds,
         },
       }
