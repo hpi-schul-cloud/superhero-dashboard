@@ -34,7 +34,7 @@
     "path.join": "^1.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "sanitize-html": "^2.10.0",
+    "sanitize-html": "^2.12.1",
     "sass": "^1.58.3",
     "serve-favicon": "^2.5.0",
     "showdown": "^2.1.0",
