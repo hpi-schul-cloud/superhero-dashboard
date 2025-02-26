@@ -11,7 +11,7 @@ const moment = require('moment');
 const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
-const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_USER_LOGIN_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => {
 	let tableActions = [
