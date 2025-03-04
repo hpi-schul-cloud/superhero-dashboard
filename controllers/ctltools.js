@@ -50,6 +50,26 @@ const transformToolInputs = (id, body) => {
     body.isPreferred = !!body.isPreferred;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
+    if(body.mediaSource){
+        const mediaSource = JSON.parse(body.mediaSource);
+        const format = mediaSource.format || '';
+
+        switch (format) {
+            case 'ANONYMOUS':
+                body.medium.mediaSourceId = '';
+                break;
+            case 'BILDUNGSLOGIN':
+            case 'VIDIS':
+                body.medium.mediaSourceId = mediaSource.sourceId;
+                break;
+            default:
+                body.medium.mediaSourceId = '';
+                body.medium.mediumId = '';
+                break;
+        }
+        delete body.mediaSource;
+    }
+
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
         body.config.redirectUris = body.config.redirectUris.split(';');
@@ -92,8 +112,9 @@ const convertZerosToString = (obj) => {
 const getDetailHandler = (req, res, next) => {
     Promise.all([
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
-        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`)
-    ]).then(([toolData, toolMetaData]) => {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`),
+        api(req, {version: 'v3'}).get('/media-sources'),
+    ]).then(([toolData, toolMetaData, mediaSourceList]) => {
         if (toolData.config.type === 'oauth2') {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
         }
@@ -101,6 +122,10 @@ const getDetailHandler = (req, res, next) => {
         const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
         if (showMediaShelfCount) {
             delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
+        }
+
+        if(toolData.medium) {
+            toolData.mediaSource = getMediaSource(mediaSourceList.responses, toolData.medium);
         }
 
         convertZerosToString(toolMetaData);
@@ -211,6 +236,33 @@ const customParameterScopes = [
     { label: 'Context', value: 'context' },
 ];
 
+const mediaSources = [
+    { label: 'Nicht zutreffend', value: { format: '', sourceId: '' }},
+    { label: 'Ohne Medien-Katalog', value: { format: 'ANONYMOUS', sourceId: '' }},
+];
+
+const getMediaSources = (data) => {
+    const mediaSourceList = data.map(source => ({
+        label: source.name,
+        value: {
+            format: source.format,
+            sourceId: source.sourceId
+        }
+    }));
+
+    return [...mediaSources, ...mediaSourceList];
+};
+
+const getMediaSource = (data, medium) => {
+    const mediaSourceList = getMediaSources(data);
+    
+    if(medium.mediaSourceId){
+        return mediaSourceList.find(source => source.value.sourceId === medium.mediaSourceId);
+    } else {
+        return mediaSourceList.find(source => source.value.format === 'ANONYMOUS');
+    }
+}
+
 const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
@@ -235,6 +287,7 @@ const showTools = (req, res) => {
 
     Promise.all([
         api(req, {version: 'v3'}).get('/tools/context-types'),
+        api(req, {version: 'v3'}).get('/media-sources'),
         api(req, {version: 'v3'}).get('/tools/external-tools', {
             qs: {
                 name: req.query.q,
@@ -244,7 +297,7 @@ const showTools = (req, res) => {
                 sortBy,
             },
         })
-    ]).then(([contextTypes, tools]) => {
+    ]).then(([contextTypes, mediaSourceList, tools]) => {
         const toolContextTypes = contextTypes.data;
 
         const body = tools.data.map(item => {
@@ -287,7 +340,8 @@ const showTools = (req, res) => {
             customParameterTypes,
             customParameterScopes,
             customParameterLocations,
-            toolContextTypes
+            toolContextTypes,
+            mediaSources: getMediaSources(mediaSourceList.responses)
         });
     }).catch(err => {
         next(err);
@@ -302,9 +356,24 @@ const getDatasheet = (req,res,next) => {
     }
 }
 
+const getMediaMedataHandler = (req,res,next) => {
+    const format = req.query.format;
+    const mediaSourceId = encodeURIComponent(req.query.mediaSourceId);
+    const mediumId = encodeURIComponent(req.query.mediumId);
+
+    try {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/medium/${mediumId}/media-source/${format}/${mediaSourceId}/metadata`).then((reponse) => {
+            res.json(reponse);
+        })
+    } catch (e) {
+        next(e);
+    };
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
+router.get('/medium/metadata', getMediaMedataHandler)
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);

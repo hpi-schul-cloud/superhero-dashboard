@@ -12,6 +12,8 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
+        $addModal.find('#mediumId').prop('disabled', true);
+        $addModal.find('.btn-load-media-metadata').prop('disabled', true);
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -328,4 +330,58 @@ $(document).ready(function () {
         }
     });
 
+    function setMediaMetadataFormat(format) {
+        switch (format) {
+            case 'ANONYMOUS':
+                $('#mediumId').prop('disabled', false).prop('required', true);
+                $('.btn-load-media-metadata').prop('disabled', true);
+                break;
+            case 'VIDIS':
+                $('#mediumId').prop('disabled', false).prop('required', true);
+                $('.btn-load-media-metadata').prop('disabled', true);
+                break;
+            case 'BILDUNGSLOGIN':
+                $('#mediumId').prop('disabled', false).prop('required', true);
+                $('.btn-load-media-metadata').prop('disabled', false);
+                break;
+            default:
+                $('#mediumId').prop('disabled', true).val('').prop('required', false);
+                $('.btn-load-media-metadata').prop('disabled', true);
+                break;
+        }
+    }
+
+    $('.drop-down-media-catalog').on('change', function () {
+        let selectedValue = $(this).val();
+        let format = '';
+        if(selectedValue) {
+            format = JSON.parse(selectedValue).format || '';
+        }
+
+        setMediaMetadataFormat(format);
+    });
+
+    $('.btn-load-media-metadata').on('click', function () {
+        let selectedValue = $('.drop-down-media-catalog').val();
+        let mediumId = $('#mediumId').val();
+
+        if(selectedValue) {
+            selectedValue = JSON.parse(selectedValue);
+        }
+
+        const format = selectedValue.format;
+        const mediaSourceId = encodeURIComponent(selectedValue.sourceId);
+        mediumId = encodeURIComponent(mediumId);
+
+        const route = `/ctltools/medium/metadata?mediumId=${mediumId}&format=${format}&mediaSourceId=${mediaSourceId}`;
+
+        $.getJSON(route, function(response) {
+            $('#name').val(response.name);
+            $('#description').val(response.description);
+            $('#publisher').val(response.publisher);
+            $('#logoUrl').val(response.logoUrl);
+            $('#thumbnailUrl').val(response.thumbnailUrl);
+            $('#modifiedAt').val(response.modifiedAt);   
+        });
+    });
 });

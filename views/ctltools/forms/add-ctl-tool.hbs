@@ -29,16 +29,30 @@
 
 <h3>Medium</h3>
 <hr/>
+
+<div class="form-group" style="display: flex; flex-direction: column;">
+    <label class="control-label media-catalog-title">Medien-Katalog</label>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <select class="drop-down-media-catalog" name="mediaSource" id="mediaSource" style="flex: 70%; max-width: 70%;">
+            {{#each mediaSources}}
+                <option value="{{json this.value}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+        <button type="button" class="btn btn-secondary ml-1 btn-load-media-metadata" style="flex: 30%; max-width: 30%;">
+            Metadaten laden
+        </button>
+    </div>
+</div>
 <div class="form-group">
     <label class="control-label" for="mediumId">Medium-Id</label>
     <input type="text" name="medium[mediumId]" id="mediumId" class="form-control" placeholder="urn:bilo:medium:123456789">
 </div>
 <div class="form-group">
-    <label class="control-label" for="mediaSourceId">Medienkatalog-Id</label>
-    <input type="text" name="medium[mediaSourceId]" id="mediaSourceId" class="form-control">
-</div><div class="form-group">
     <label class="control-label" for="publisher">Anbieter</label>
     <input type="text" name="medium[publisher]" id="publisher" class="form-control">
+</div>
+<div class="form-group">
+    <input type="hidden" name="medium[modifiedAt]" id="modifiedAt" class="form-control">
 </div>
 
 <h3>Verfügbarkeit</h3>
