@@ -1,0 +1,167 @@
+{{#extend "lib/loggedin"}}
+  {{#content "styles" mode="append"}}
+    <link rel="stylesheet" href="/styles/batch-deletion/batch-deletion.css" />
+  {{/content}}
+
+  {{#content "scripts" mode="append"}}
+      <script src="/scripts/batch-deletion/batch-deletion.js" type="module" defer></script>
+      <script src="/scripts/batch-deletion/send-file.js" type="module" defer></script>
+  {{/content}}
+
+  {{#content "page"}}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12">
+          <form id="batchDeletionFileUploadForm" class="file-input-container">
+            <label>Bitte CSV-Datei mit Nutzenden, die gelöscht werden sollen,
+              hochladen</label>
+            <div class="form-group">
+              <label for="file" class="btn btn-secondary">Datei auswählen</label>
+              <input type="file" name="file" id="file" accept=".csv" required />
+            </div>
+            <div class="form-group">
+              <div class="file-upload">
+                <span id="file-name">Keine Datei ausgewählt</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="batchTitle">Name des Batches</label>
+              <input
+                type="text"
+                name="batchTitle"
+                id="batchTitle"
+                class="input-group input-group-sm form-control"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <input
+                type="submit"
+                value="Daten senden"
+                class="btn btn-primary"
+              />
+            </div>
+          </form>
+        </div id="error-message"></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <ul class="batch-list">
+            {{#each batches}}
+              <li class="batch-list-item">
+                <div class="batch-header">
+                  <div class="batch-info">
+                    <div class="batch-title">
+                      <h5>{{batchTitle}}</h5>
+                      <span class="status-chip status-{{this.status}}">
+                        {{#ifeq this.status "deletion-requested"}}
+                           gesendet
+                        {{else}}
+                          {{../status}}
+                        {{/ifeq}}
+                      </span>
+                    </div>
+                    <span>
+                      {{this.overallCount}}
+                      insgesamt -
+                      {{#each this.usersByRole}}
+                        <span>{{this.userCount}} {{this.roleName}}{{#unless @last}}<span>, </span>{{/unless}}</span>
+                      {{/each}}
+                    </span>
+                  </div>
+                  <div class="actions">
+                    {{#if this.canStartDeletion}}
+                      <button class="btn btn-primary btn-thin start-deletion-btn" data-batch-id="{{this.id}}">
+                        Starten
+                      </button>
+                    {{/if}}
+                    <button
+                      class="details-toggle btn btn-secondary btn-thin"
+                      data-toggle="modal"
+                      data-target=".details-modal"
+                      data-title="{{this.batchTitle}}"
+                      data-batch-id="{{this.id}}"
+                    >
+                      Details
+                    </button>
+                    {{#if this.canDeleteBatch}}
+                      <button class="btn btn-secondary btn-thin delete-batch-btn" data-batch-id="{{this.id}}">
+                        Entfernen
+                      </button>
+                    {{/if}}
+                  </div>
+                </div>
+                {{#embed "lib/components/modal" class="details-modal" title=""}}
+                  {{#content "body"}}
+                    <div class="modal-body">
+                      <div class="id-container">
+                        <div>
+                          Pending
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="pending-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                        <div id="pending-ids-section"></div>
+                      </div>
+                      <div class="id-container">
+                        <div>
+                          Successful
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="deleted-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                        <div id="deleted-ids-section"></div>
+                      </div>
+                      <div class="id-container">
+                        <div>
+                          Failed
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="failed-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                        <div id="failed-ids-section"></div>
+                      </div>
+                      <div class="id-container">
+                        <div>
+                          Skipped
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="skipped-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                        <div id="skipped-ids-section"></div>
+                      </div>
+                      <div class="id-container">
+                        <div>
+                          Invalid IDs
+                          <button
+                            class="btn btn-sm copy-btn"
+                            data-text-id="invalid-ids"
+                          >
+                            <i class="fa fa-copy"></i>
+                          </button>
+                        </div>
+                        <div id="invalid-ids-section"></div>
+                      </div> 
+                    </div>
+                  {{/content}}
+                {{/embed}}
+              </li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+  {{/content}}
+{{/extend}}

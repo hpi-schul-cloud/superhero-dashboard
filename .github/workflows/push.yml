@@ -13,7 +13,19 @@ permissions:
 
 jobs:
   build_and_push:
+    # this basically means do not execute it as dependabot unless it is labeled as ready-for-ci
+    # because automated processes and pr from forks are dangerous, therefore those prs won't have access to secrets, labeling them acts like allow-listing them
+    # more details here https://docs.github.com/en/rest/dependabot/secrets?apiVersion=2022-11-28
+    # even when re-running an action manually the actor stays the same as of mid 2022, details here https://github.blog/changelog/2022-07-19-differentiating-triggering-actor-from-executing-actor/
+
+    #https://github.com/actions/runner/issues/1173#issuecomment-1354501147 when false equals true, you have to come up with something ...
+    if: |
+      (github.actor == 'dependabot[bot]' &&
+      contains(github.event.issue.labels.*.name, 'ready-for-ci') == 'true') ||
+      github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    needs:
+      - branch_meta
     permissions:
       packages: write
     steps:
@@ -36,7 +48,7 @@ jobs:
 
       - name: test image exists
         run: |
-         echo "IMAGE_EXISTS=$(docker manifest inspect ghcr.io/${{ github.repository }}:${{ github.sha }} > /dev/null && echo 1 || echo 0)" >> $GITHUB_ENV
+         echo "IMAGE_EXISTS=$(docker manifest inspect ghcr.io/${{ github.repository }}:${{ needs.branch_meta.outputs.sha }} > /dev/null && echo 1 || echo 0)" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         if: ${{ env.IMAGE_EXISTS == 0 }}
@@ -53,7 +65,7 @@ jobs:
           platforms: linux/amd64
           push: true
           pull: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}:${{ needs.branch_meta.outputs.sha }}
           labels: ${{ steps.docker_meta_img.outputs.labels }}
 
   branch_meta:
@@ -117,7 +129,7 @@ jobs:
       - name: run trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0
         with:
-          image-ref: 'ghcr.io/${{ github.repository }}:${{ github.sha }}'
+          image-ref: 'ghcr.io/${{ github.repository }}:${{ needs.branch_meta.outputs.sha }}'
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'

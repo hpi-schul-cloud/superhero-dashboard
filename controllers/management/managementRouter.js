@@ -16,3 +16,5 @@ router.post('/uploadConsent', controllerLogic.updateInstancePolicy);
 router.get('/', controllerLogic.mainRoute);
 
 module.exports = router;
+
+
