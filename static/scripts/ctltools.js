@@ -333,9 +333,6 @@ $(document).ready(function () {
     function setMediaMetadataFormat(format) {
         switch (format) {
             case 'ANONYMOUS':
-                $('#mediumId').prop('disabled', false).prop('required', true);
-                $('.btn-load-media-metadata').prop('disabled', true);
-                break;
             case 'VIDIS':
                 $('#mediumId').prop('disabled', false).prop('required', true);
                 $('.btn-load-media-metadata').prop('disabled', true);
