@@ -13,6 +13,7 @@ $(document).ready(function () {
 
         $addModal.find('.custom-parameter-list').children().remove();
         $addModal.find('#mediumId').prop('disabled', true);
+        $addModal.find('#publisher').prop('disabled', true);
         $addModal.find('#btn-load-media-metadata').prop('disabled', true);
 
         populateModalForm($addModal, {
@@ -339,14 +340,17 @@ $(document).ready(function () {
             case 'ANONYMOUS':
             case 'VIDIS':
                 $modal.find('#mediumId').prop('disabled', false).prop('required', true);
+                $modal.find('#publisher').prop('disabled', false);
                 $modal.find('#btn-load-media-metadata').prop('disabled', true);
                 break;
             case 'BILDUNGSLOGIN':
                 $modal.find('#mediumId').prop('disabled', false).prop('required', true);
+                $modal.find('#publisher').prop('disabled', false);
                 $modal.find('#btn-load-media-metadata').prop('disabled', false);
                 break;
             default:
                 $modal.find('#mediumId').prop('disabled', true).val('').prop('required', false);
+                $modal.find('#publisher').prop('disabled', true).val('');
                 $modal.find('#btn-load-media-metadata').prop('disabled', true);
                 break;
         }
