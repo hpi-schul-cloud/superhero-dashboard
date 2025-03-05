@@ -118,8 +118,7 @@ const getDetailHandler = (req, res, next) => {
     Promise.all([
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`),
-        api(req, {version: 'v3'}).get('/media-sources'),
-    ]).then(([toolData, toolMetaData, mediaSourceList]) => {
+    ]).then(([toolData, toolMetaData]) => {
         if (toolData.config.type === 'oauth2') {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
         }
@@ -130,7 +129,7 @@ const getDetailHandler = (req, res, next) => {
         }
 
         if(toolData.medium) {
-            toolData.mediaSource = getMediaSource(mediaSourceList.responses, toolData.medium);
+            toolData.mediaSource = getMediaSource(toolData.medium);
         }
 
         convertZerosToString(toolMetaData);
@@ -246,18 +245,21 @@ const mediaSources = [
     { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'ANONYMOUS'}
 ];
 
-const getMediaSources = (mediaSourceList) => [
-    ...mediaSources,
-    ...mediaSourceList.map(({ name, sourceId, format }) => ({ label: name, sourceId, format }))
-];
+const getMediaSources = (mediaSourceList) => {
+    const existingMediaSources = new Set(mediaSources.map(item => JSON.stringify(item)));
 
-const getMediaSource = (data, medium) => {
-    const mediaSourceList = getMediaSources(data);
+    const newMediaSources = mediaSourceList
+        .map(({ name, sourceId, format }) => ({ label: name, sourceId, format }))
+        .filter(item => !existingMediaSources.has(JSON.stringify(item)));
 
+    mediaSources.push(...newMediaSources);
+};
+
+const getMediaSource = (medium) => {
     if(medium.mediaSourceId){
-        return mediaSourceList.find(source => source.sourceId === medium.mediaSourceId);
+        return mediaSources.find(source => source.sourceId === medium.mediaSourceId);
     } else {
-        return mediaSourceList.find(source => source.format === 'ANONYMOUS');
+        return mediaSources.find(source => source.format === 'ANONYMOUS');
     }
 }
 
@@ -297,6 +299,7 @@ const showTools = (req, res) => {
         })
     ]).then(([contextTypes, mediaSourceList, tools]) => {
         const toolContextTypes = contextTypes.data;
+        getMediaSources(mediaSourceList.responses);
 
         const body = tools.data.map(item => {
             return [
@@ -339,7 +342,7 @@ const showTools = (req, res) => {
             customParameterScopes,
             customParameterLocations,
             toolContextTypes,
-            mediaSources: getMediaSources(mediaSourceList.responses)
+            mediaSources
         });
     }).catch(err => {
         next(err);
