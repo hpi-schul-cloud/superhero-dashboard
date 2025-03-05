@@ -152,7 +152,4 @@ module.exports = {
         }
         return (fileSize + ' ' + unit);
     },
-    json: (data) => {
-        return JSON.stringify(data);
-    }
 };
