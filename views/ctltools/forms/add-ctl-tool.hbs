@@ -32,12 +32,13 @@
 <div class="form-group" style="display: flex; flex-direction: column;">
     <label class="control-label">Medien-Katalog</label>
     <div style="display: flex; align-items: center; gap: 10px;">
-        <select class="drop-down-media-catalog" name="mediaSource" id="mediaSource" style="flex: 70%; max-width: 70%;">
+        <select name="mediaSource[sourceId]" id="mediaSource" style="flex: 70%; max-width: 70%;">
             {{#each mediaSources}}
-                <option value="{{json this.value}}">{{this.label}}</option>
+                <option value="{{this.sourceId}}" data-media-format="{{this.format}}">{{this.label}}</option>
             {{/each}}
         </select>
-        <button type="button" class="btn btn-secondary ml-1 btn-load-media-metadata" style="flex: 30%; max-width: 30%;">
+        <input type="hidden" name="mediaSource[format]" id="format" class="form-control">
+        <button type="button" class="btn btn-secondary ml-1" id="btn-load-media-metadata" style="flex: 30%; max-width: 30%;">
             Metadaten laden
         </button>
     </div>

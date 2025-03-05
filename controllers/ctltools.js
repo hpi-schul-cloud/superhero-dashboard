@@ -51,23 +51,7 @@ const transformToolInputs = (id, body) => {
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
     if(body.mediaSource){
-        const mediaSource = JSON.parse(body.mediaSource);
-        const format = mediaSource.format || '';
-
-        switch (format) {
-            case 'ANONYMOUS':
-                body.medium.mediaSourceId = '';
-                break;
-            case 'BILDUNGSLOGIN':
-            case 'VIDIS':
-                body.medium.mediaSourceId = mediaSource.sourceId;
-                break;
-            default:
-                body.medium.mediaSourceId = '';
-                body.medium.mediumId = '';
-                break;
-        }
-        delete body.mediaSource;
+        body = transformMedium(body);
     }
 
     if (body.config.type === 'oauth2') {
@@ -86,6 +70,27 @@ const transformToolInputs = (id, body) => {
 
     return body;
 };
+
+const transformMedium = (body) => {
+    const format = body.mediaSource.format || '';
+
+    switch (format) {
+        case 'ANONYMOUS':
+            body.medium.mediaSourceId = '';
+            break;
+        case 'BILDUNGSLOGIN':
+        case 'VIDIS':
+            body.medium.mediaSourceId = body.mediaSource.sourceId;
+            break;
+        default:
+            body.medium.mediaSourceId = '';
+            body.medium.mediumId = '';
+            break;
+    }
+    delete body.mediaSource;
+
+    return body;
+}
 
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
@@ -237,29 +242,22 @@ const customParameterScopes = [
 ];
 
 const mediaSources = [
-    { label: 'Nicht zutreffend', value: { format: '', sourceId: '' }},
-    { label: 'Ohne Medien-Katalog', value: { format: 'ANONYMOUS', sourceId: '' }},
+    { label: 'Nicht zutreffend', sourceId: '', format: ''},
+    { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'ANONYMOUS'}
 ];
 
-const getMediaSources = (data) => {
-    const mediaSourceList = data.map(source => ({
-        label: source.name,
-        value: {
-            format: source.format,
-            sourceId: source.sourceId
-        }
-    }));
-
-    return [...mediaSources, ...mediaSourceList];
-};
+const getMediaSources = (mediaSourceList) => [
+    ...mediaSources,
+    ...mediaSourceList.map(({ name, sourceId, format }) => ({ label: name, sourceId, format }))
+];
 
 const getMediaSource = (data, medium) => {
     const mediaSourceList = getMediaSources(data);
-    
+
     if(medium.mediaSourceId){
-        return mediaSourceList.find(source => source.value.sourceId === medium.mediaSourceId);
+        return mediaSourceList.find(source => source.sourceId === medium.mediaSourceId);
     } else {
-        return mediaSourceList.find(source => source.value.format === 'ANONYMOUS');
+        return mediaSourceList.find(source => source.format === 'ANONYMOUS');
     }
 }
 
@@ -357,9 +355,9 @@ const getDatasheet = (req,res,next) => {
 }
 
 const getMediaMedataHandler = (req,res,next) => {
-    const format = req.query.format;
-    const mediaSourceId = encodeURIComponent(req.query.mediaSourceId);
-    const mediumId = encodeURIComponent(req.query.mediumId);
+    const format = req.params.format;
+    const mediaSourceId = encodeURIComponent(req.params.mediaSourceId);
+    const mediumId = encodeURIComponent(req.params.mediumId);
 
     try {
         api(req, { version: 'v3' }).get(`/tools/external-tools/medium/${mediumId}/media-source/${format}/${mediaSourceId}/metadata`).then((reponse) => {
@@ -373,7 +371,7 @@ const getMediaMedataHandler = (req,res,next) => {
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
-router.get('/medium/metadata', getMediaMedataHandler)
+router.get('/medium/:mediumId/:format/:mediaSourceId/metadata', getMediaMedataHandler);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
