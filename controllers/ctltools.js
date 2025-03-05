@@ -354,7 +354,7 @@ const getDatasheet = (req,res,next) => {
     }
 }
 
-const getMediaMedataHandler = (req,res,next) => {
+const getMediumMedataHandler = (req,res,next) => {
     const format = req.params.format;
     const mediaSourceId = encodeURIComponent(req.params.mediaSourceId);
     const mediumId = encodeURIComponent(req.params.mediumId);
@@ -371,7 +371,7 @@ const getMediaMedataHandler = (req,res,next) => {
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
-router.get('/medium/:mediumId/:format/:mediaSourceId/metadata', getMediaMedataHandler);
+router.get('/medium/:mediumId/:format/:mediaSourceId/metadata', getMediumMedataHandler);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
