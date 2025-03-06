@@ -337,6 +337,7 @@ $(document).ready(function () {
         $modal.find('#format').val(format);
 
         switch (format) {
+            case 'NONE':
             case 'ANONYMOUS':
             case 'VIDIS':
                 $modal.find('#mediumId').prop('disabled', false).prop('required', true);

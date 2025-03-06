@@ -67,7 +67,6 @@ const transformToolInputs = (id, body) => {
     }
 
     clearEmptyInputs(body);
-
     return body;
 };
 
@@ -75,9 +74,10 @@ const transformMedium = (body) => {
     const format = body.mediaSource.format || '';
 
     switch (format) {
-        case 'ANONYMOUS':
+        case 'NONE':
             body.medium.mediaSourceId = '';
             break;
+        case 'ANONYMOUS':
         case 'BILDUNGSLOGIN':
         case 'VIDIS':
             body.medium.mediaSourceId = body.mediaSource.sourceId;
@@ -242,14 +242,18 @@ const customParameterScopes = [
 
 const mediaSources = [
     { label: 'Nicht zutreffend', sourceId: '', format: ''},
-    { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'ANONYMOUS'}
+    { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'NONE'}
 ];
 
 const getMediaSources = (mediaSourceList) => {
     const existingMediaSources = new Set(mediaSources.map(item => JSON.stringify(item)));
 
     const newMediaSources = mediaSourceList
-        .map(({ name, sourceId, format }) => ({ label: name, sourceId, format }))
+        .map(({ name, sourceId, format }) => ({ 
+            label: name.trim() ? name : sourceId,
+            sourceId, 
+            format: format ?? 'ANONYMOUS',
+        }))
         .filter(item => !existingMediaSources.has(JSON.stringify(item)));
 
     mediaSources.push(...newMediaSources);
@@ -259,7 +263,7 @@ const getMediaSource = (medium) => {
     if(medium.mediaSourceId){
         return mediaSources.find(source => source.sourceId === medium.mediaSourceId);
     } else {
-        return mediaSources.find(source => source.format === 'ANONYMOUS');
+        return mediaSources.find(source => source.format === 'NONE');
     }
 }
 
