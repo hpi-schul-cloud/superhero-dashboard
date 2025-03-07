@@ -151,5 +151,5 @@ module.exports = {
                 break;
         }
         return (fileSize + ' ' + unit);
-    },
+    }
 };

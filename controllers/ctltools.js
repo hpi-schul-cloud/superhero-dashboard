@@ -117,7 +117,7 @@ const convertZerosToString = (obj) => {
 const getDetailHandler = (req, res, next) => {
     Promise.all([
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
-        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`),
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`)
     ]).then(([toolData, toolMetaData]) => {
         if (toolData.config.type === 'oauth2') {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
