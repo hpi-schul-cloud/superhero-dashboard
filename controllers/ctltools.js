@@ -250,7 +250,7 @@ const getMediaSources = (mediaSourceList) => {
 
     const newMediaSources = mediaSourceList
         .map(({ name, sourceId, format }) => ({ 
-            label: name.trim() ? name : sourceId,
+            label: name && name.trim() ? name : sourceId,
             sourceId, 
             format: format ?? 'ANONYMOUS',
         }))
