@@ -50,6 +50,10 @@ const transformToolInputs = (id, body) => {
     body.isPreferred = !!body.isPreferred;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
+    if(body.mediaSource){
+        body = transformMedium(body);
+    }
+
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
         body.config.redirectUris = body.config.redirectUris.split(';');
@@ -63,9 +67,30 @@ const transformToolInputs = (id, body) => {
     }
 
     clearEmptyInputs(body);
-
     return body;
 };
+
+const transformMedium = (body) => {
+    const format = body.mediaSource.format || '';
+
+    switch (format) {
+        case 'NONE':
+            body.medium.mediaSourceId = '';
+            break;
+        case 'ANONYMOUS':
+        case 'BILDUNGSLOGIN':
+        case 'VIDIS':
+            body.medium.mediaSourceId = body.mediaSource.sourceId;
+            break;
+        default:
+            body.medium.mediaSourceId = '';
+            body.medium.mediumId = '';
+            break;
+    }
+    delete body.mediaSource;
+
+    return body;
+}
 
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
@@ -101,6 +126,10 @@ const getDetailHandler = (req, res, next) => {
         const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
         if (showMediaShelfCount) {
             delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
+        }
+
+        if(toolData.medium) {
+            toolData.mediaSource = getMediaSource(toolData.medium);
         }
 
         convertZerosToString(toolMetaData);
@@ -211,6 +240,33 @@ const customParameterScopes = [
     { label: 'Context', value: 'context' },
 ];
 
+const mediaSources = [
+    { label: 'Nicht zutreffend', sourceId: '', format: ''},
+    { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'NONE'}
+];
+
+const getMediaSources = (mediaSourceList) => {
+    const existingMediaSources = new Set(mediaSources.map(item => JSON.stringify(item)));
+
+    const newMediaSources = mediaSourceList
+        .map(({ name, sourceId, format }) => ({ 
+            label: name?.trim() ? name : sourceId,
+            sourceId, 
+            format: format ?? 'ANONYMOUS',
+        }))
+        .filter(item => !existingMediaSources.has(JSON.stringify(item)));
+
+    mediaSources.push(...newMediaSources);
+};
+
+const getMediaSource = (medium) => {
+    if(medium.mediaSourceId){
+        return mediaSources.find(source => source.sourceId === medium.mediaSourceId);
+    } else {
+        return mediaSources.find(source => source.format === 'NONE');
+    }
+}
+
 const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
@@ -235,6 +291,7 @@ const showTools = (req, res) => {
 
     Promise.all([
         api(req, {version: 'v3'}).get('/tools/context-types'),
+        api(req, {version: 'v3'}).get('/media-sources'),
         api(req, {version: 'v3'}).get('/tools/external-tools', {
             qs: {
                 name: req.query.q,
@@ -244,8 +301,9 @@ const showTools = (req, res) => {
                 sortBy,
             },
         })
-    ]).then(([contextTypes, tools]) => {
+    ]).then(([contextTypes, mediaSourceList, tools]) => {
         const toolContextTypes = contextTypes.data;
+        getMediaSources(mediaSourceList.responses);
 
         const body = tools.data.map(item => {
             return [
@@ -287,7 +345,8 @@ const showTools = (req, res) => {
             customParameterTypes,
             customParameterScopes,
             customParameterLocations,
-            toolContextTypes
+            toolContextTypes,
+            mediaSources
         });
     }).catch(err => {
         next(err);
@@ -302,9 +361,24 @@ const getDatasheet = (req,res,next) => {
     }
 }
 
+const getMediumMedataHandler = (req,res,next) => {
+    const format = req.params.format;
+    const mediaSourceId = encodeURIComponent(req.params.mediaSourceId);
+    const mediumId = encodeURIComponent(req.params.mediumId);
+
+    try {
+        api(req, { version: 'v3' }).get(`/tools/external-tools/medium/${mediumId}/media-source/${format}/${mediaSourceId}/metadata`).then((reponse) => {
+            res.json(reponse);
+        })
+    } catch (e) {
+        next(e);
+    };
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
+router.get('/medium/:mediumId/:format/:mediaSourceId/metadata', getMediumMedataHandler);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);

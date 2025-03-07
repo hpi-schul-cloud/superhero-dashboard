@@ -12,6 +12,9 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
+        $addModal.find('#mediumId').prop('disabled', true);
+        $addModal.find('#publisher').prop('disabled', true);
+        $addModal.find('#btn-load-media-metadata').prop('disabled', true);
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -29,6 +32,7 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            setMediumMetadataFormat($editModal);
             populateModalForm($editModal, {
                 action: entry,
                 title: 'Bearbeiten',
@@ -328,4 +332,64 @@ $(document).ready(function () {
         }
     });
 
+    function setMediumMetadataFormat($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
+        $modal.find('#format').val(format);
+
+        switch (format) {
+            case 'NONE':
+            case 'ANONYMOUS':
+            case 'VIDIS':
+                $modal.find('#mediumId').prop('disabled', false).prop('required', true);
+                $modal.find('#publisher').prop('disabled', false);
+                $modal.find('#btn-load-media-metadata').prop('disabled', true);
+                break;
+            case 'BILDUNGSLOGIN':
+                $modal.find('#mediumId').prop('disabled', false).prop('required', true);
+                $modal.find('#publisher').prop('disabled', false);
+                $modal.find('#btn-load-media-metadata').prop('disabled', false);
+                break;
+            default:
+                $modal.find('#mediumId').prop('disabled', true).val('').prop('required', false);
+                $modal.find('#publisher').prop('disabled', true).val('');
+                $modal.find('#btn-load-media-metadata').prop('disabled', true);
+                break;
+        }
+    }
+
+    function loadMediumMetadata($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
+        const sourceId = $modal.find('#mediaSource').val();
+        const mediumId = $modal.find('#mediumId').val();
+
+        const encodedSourceId = encodeURIComponent(sourceId);
+        const encodedMediumId = encodeURIComponent(mediumId);
+
+        const route = `/ctltools/medium/${encodedMediumId}/${format}/${encodedSourceId}/metadata`;
+
+        $.getJSON(route, function(response) {
+            $modal.find('#name').val(response.name);
+            $modal.find('#description').val(response.description);
+            $modal.find('#publisher').val(response.publisher);
+            $modal.find('#logoUrl').val(response.logoUrl);
+            $modal.find('#thumbnailUrl').val(response.thumbnailUrl);
+            $modal.find('#modifiedAt').val(response.modifiedAt);   
+        });
+    }
+
+    $addModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($addModal);
+    });
+
+    $editModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($editModal);
+    });
+    
+    $addModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($addModal);
+    });
+
+    $editModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($editModal);
+    });
 });
