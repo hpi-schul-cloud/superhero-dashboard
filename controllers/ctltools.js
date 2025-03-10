@@ -48,12 +48,10 @@ const transformToolInputs = (id, body) => {
     body.isHidden = !!body.isHidden;
     body.isDeactivated = !!body.isDeactivated;
     body.isPreferred = !!body.isPreferred;
-    body.hasMedium = !!body.hasMedium;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
-    if(!body.hasMedium){
-        body.medium = undefined;
-    }
+    body.medium = body.hasMedium ? body.medium : undefined;
+    delete body.hasMedium;
 
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
@@ -107,9 +105,10 @@ const getDetailHandler = (req, res, next) => {
             delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
         }
 
+        toolData.hasMedium = !!toolData.medium;
+
         convertZerosToString(toolMetaData);
         res.json({...toolData, ...toolMetaData});
-
     }).catch(err => {
         next(err);
     });

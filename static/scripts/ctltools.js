@@ -14,7 +14,9 @@ $(document).ready(function () {
         $addModal.find('.custom-parameter-list').children().remove();
         $addModal.find('#hasMedium').prop('checked', false);
         $addModal.find('#btn-load-media-metadata').prop('disabled', true);
-
+        $addModal.find('#mediumId').prop('disabled', true);
+        $addModal.find('#publisher').prop('disabled', true);
+        
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
@@ -31,10 +33,6 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
-            if(result.medium){
-                $editModal.find('#hasMedium').prop('checked', true);
-            }
-            setMediumMetadataFormat($editModal);
             populateModalForm($editModal, {
                 action: entry,
                 title: 'Bearbeiten',
@@ -42,6 +40,9 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
+            if(result.hasMedium){
+                hasMedium($editModal);
+            }
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
         });
@@ -336,8 +337,9 @@ $(document).ready(function () {
 
     function setMediumMetadataFormat($modal) {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
+        const isChecked = $modal.find('#hasMedium').is(':checked');
 
-        if (format === 'BILDUNGSLOGIN') {
+        if (format === 'BILDUNGSLOGIN' && isChecked) {
             $modal.find('#btn-load-media-metadata').prop('disabled', false);
         } else {
             $modal.find('#btn-load-media-metadata').prop('disabled', true);
@@ -366,11 +368,14 @@ $(document).ready(function () {
 
     function hasMedium($modal) {
         const isChecked = $modal.find('#hasMedium').is(':checked');
+        setMediumMetadataFormat($modal);
 
         if(isChecked){
-            $modal.find('#mediumId').prop('required', true);
+            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+            $modal.find("#publisher").prop('disabled', false);
         } else {
-            $modal.find('#mediumId').prop('required', false);
+            $modal.find('#mediumId').prop('required', false).prop('disabled', true);
+            $modal.find("#publisher").prop('disabled', true);
         }
     }
 
