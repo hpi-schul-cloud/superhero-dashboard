@@ -48,10 +48,11 @@ const transformToolInputs = (id, body) => {
     body.isHidden = !!body.isHidden;
     body.isDeactivated = !!body.isDeactivated;
     body.isPreferred = !!body.isPreferred;
+    body.hasMedium = !!body.hasMedium;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
 
-    if(body.mediaSource){
-        body = transformMedium(body);
+    if(!body.hasMedium){
+        body.medium = undefined;
     }
 
     if (body.config.type === 'oauth2') {
@@ -69,28 +70,6 @@ const transformToolInputs = (id, body) => {
     clearEmptyInputs(body);
     return body;
 };
-
-const transformMedium = (body) => {
-    const format = body.mediaSource.format || '';
-
-    switch (format) {
-        case 'NONE':
-            body.medium.mediaSourceId = '';
-            break;
-        case 'ANONYMOUS':
-        case 'BILDUNGSLOGIN':
-        case 'VIDIS':
-            body.medium.mediaSourceId = body.mediaSource.sourceId;
-            break;
-        default:
-            body.medium.mediaSourceId = '';
-            body.medium.mediumId = '';
-            break;
-    }
-    delete body.mediaSource;
-
-    return body;
-}
 
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
@@ -126,10 +105,6 @@ const getDetailHandler = (req, res, next) => {
         const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
         if (showMediaShelfCount) {
             delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
-        }
-
-        if(toolData.medium) {
-            toolData.mediaSource = getMediaSource(toolData.medium);
         }
 
         convertZerosToString(toolMetaData);
@@ -241,31 +216,18 @@ const customParameterScopes = [
 ];
 
 const mediaSources = [
-    { label: 'Nicht zutreffend', sourceId: '', format: ''},
-    { label: 'Ohne Medien-Katalog', sourceId: 'no source', format: 'NONE'}
+    { label: 'Ohne Medien-Katalog', sourceId: '', format: ''}
 ];
 
-const getMediaSources = (mediaSourceList) => {
-    const existingMediaSources = new Set(mediaSources.map(item => JSON.stringify(item)));
+const getMediaSources = (data) => {
+    const mediaSourceList = data.map(({ name, sourceId, format }) => ({
+        label: name?.trim() ? name : sourceId,
+        sourceId, 
+        format: format ?? '',
+    }));
 
-    const newMediaSources = mediaSourceList
-        .map(({ name, sourceId, format }) => ({ 
-            label: name?.trim() ? name : sourceId,
-            sourceId, 
-            format: format ?? 'ANONYMOUS',
-        }))
-        .filter(item => !existingMediaSources.has(JSON.stringify(item)));
-
-    mediaSources.push(...newMediaSources);
+    return mediaSources.concat(mediaSourceList);
 };
-
-const getMediaSource = (medium) => {
-    if(medium.mediaSourceId){
-        return mediaSources.find(source => source.sourceId === medium.mediaSourceId);
-    } else {
-        return mediaSources.find(source => source.format === 'NONE');
-    }
-}
 
 const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
@@ -303,7 +265,6 @@ const showTools = (req, res) => {
         })
     ]).then(([contextTypes, mediaSourceList, tools]) => {
         const toolContextTypes = contextTypes.data;
-        getMediaSources(mediaSourceList.responses);
 
         const body = tools.data.map(item => {
             return [
@@ -346,7 +307,7 @@ const showTools = (req, res) => {
             customParameterScopes,
             customParameterLocations,
             toolContextTypes,
-            mediaSources
+            mediaSources: getMediaSources(mediaSourceList.responses)
         });
     }).catch(err => {
         next(err);

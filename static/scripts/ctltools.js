@@ -12,8 +12,7 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
-        $addModal.find('#mediumId').prop('disabled', true);
-        $addModal.find('#publisher').prop('disabled', true);
+        $addModal.find('#hasMedium').prop('checked', false);
         $addModal.find('#btn-load-media-metadata').prop('disabled', true);
 
         populateModalForm($addModal, {
@@ -32,6 +31,9 @@ $(document).ready(function () {
         e.preventDefault();
         var entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            if(result.medium){
+                $editModal.find('#hasMedium').prop('checked', true);
+            }
             setMediumMetadataFormat($editModal);
             populateModalForm($editModal, {
                 action: entry,
@@ -334,24 +336,12 @@ $(document).ready(function () {
 
     function setMediumMetadataFormat($modal) {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
-        $modal.find('#format').val(format);
 
         switch (format) {
-            case 'NONE':
-            case 'ANONYMOUS':
-            case 'VIDIS':
-                $modal.find('#mediumId').prop('disabled', false).prop('required', true);
-                $modal.find('#publisher').prop('disabled', false);
-                $modal.find('#btn-load-media-metadata').prop('disabled', true);
-                break;
             case 'BILDUNGSLOGIN':
-                $modal.find('#mediumId').prop('disabled', false).prop('required', true);
-                $modal.find('#publisher').prop('disabled', false);
                 $modal.find('#btn-load-media-metadata').prop('disabled', false);
                 break;
             default:
-                $modal.find('#mediumId').prop('disabled', true).val('').prop('required', false);
-                $modal.find('#publisher').prop('disabled', true).val('');
                 $modal.find('#btn-load-media-metadata').prop('disabled', true);
                 break;
         }
@@ -377,6 +367,16 @@ $(document).ready(function () {
         });
     }
 
+    function hasMedium($modal) {
+        const isChecked = $modal.find('#hasMedium').is(':checked');
+
+        if(isChecked){
+            $modal.find('#mediumId').prop('required', true);
+        } else {
+            $modal.find('#mediumId').prop('required', false);
+        }
+    }
+
     $addModal.find('#mediaSource').on('change', function () {
         setMediumMetadataFormat($addModal);
     });
@@ -391,5 +391,13 @@ $(document).ready(function () {
 
     $editModal.find('#btn-load-media-metadata').on('click', function () {
         loadMediumMetadata($editModal);
+    });
+
+    $addModal.find('#hasMedium').on('change', function () {
+        hasMedium($addModal);
+    });
+
+    $editModal.find('#hasMedium').on('change', function () {
+        hasMedium($editModal);
     });
 });
