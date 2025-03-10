@@ -10,13 +10,14 @@ $(document).ready(function () {
 
     $('.btn-create-ctl-tool').click(function () {
         customParameterId = 0;
-
+        
         $addModal.find('.custom-parameter-list').children().remove();
         $addModal.find('#hasMedium').prop('checked', false);
         $addModal.find('#btn-load-media-metadata').prop('disabled', true);
         $addModal.find('#mediumId').prop('disabled', true);
         $addModal.find('#publisher').prop('disabled', true);
-        
+        $addModal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
+
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
@@ -373,9 +374,11 @@ $(document).ready(function () {
         if(isChecked){
             $modal.find('#mediumId').prop('required', true).prop('disabled', false);
             $modal.find("#publisher").prop('disabled', false);
+            $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
         } else {
             $modal.find('#mediumId').prop('required', false).prop('disabled', true);
             $modal.find("#publisher").prop('disabled', true);
+            $modal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
         }
     }
 
