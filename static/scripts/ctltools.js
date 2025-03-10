@@ -12,6 +12,11 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
+        $addModal.find('#hasMedium').prop('checked', false);
+        $addModal.find('#btn-load-media-metadata').prop('disabled', true);
+        $addModal.find('#mediumId').prop('disabled', true);
+        $addModal.find('#publisher').prop('disabled', true);
+        $addModal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -36,6 +41,9 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
+            if(result.hasMedium){
+                hasMedium($editModal);
+            }
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
         });
@@ -328,4 +336,73 @@ $(document).ready(function () {
         }
     });
 
+    function setMediumMetadataFormat($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
+        const isChecked = $modal.find('#hasMedium').is(':checked');
+
+        if (format === 'BILDUNGSLOGIN' && isChecked) {
+            $modal.find('#btn-load-media-metadata').prop('disabled', false);
+        } else {
+            $modal.find('#btn-load-media-metadata').prop('disabled', true);
+        }
+    }
+
+    function loadMediumMetadata($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
+        const sourceId = $modal.find('#mediaSource').val();
+        const mediumId = $modal.find('#mediumId').val();
+
+        const encodedSourceId = encodeURIComponent(sourceId);
+        const encodedMediumId = encodeURIComponent(mediumId);
+
+        const route = `/ctltools/medium/${encodedMediumId}/${format}/${encodedSourceId}/metadata`;
+
+        $.getJSON(route, function(response) {
+            $modal.find('#name').val(response.name);
+            $modal.find('#description').val(response.description);
+            $modal.find('#publisher').val(response.publisher);
+            $modal.find('#logoUrl').val(response.logoUrl);
+            $modal.find('#thumbnailUrl').val(response.thumbnailUrl);
+            $modal.find('#modifiedAt').val(response.modifiedAt);   
+        });
+    }
+
+    function hasMedium($modal) {
+        const isChecked = $modal.find('#hasMedium').is(':checked');
+        setMediumMetadataFormat($modal);
+
+        if(isChecked){
+            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+            $modal.find("#publisher").prop('disabled', false);
+            $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+        } else {
+            $modal.find('#mediumId').prop('required', false).prop('disabled', true);
+            $modal.find("#publisher").prop('disabled', true);
+            $modal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
+        }
+    }
+
+    $addModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($addModal);
+    });
+
+    $editModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($editModal);
+    });
+    
+    $addModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($addModal);
+    });
+
+    $editModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($editModal);
+    });
+
+    $addModal.find('#hasMedium').on('change', function () {
+        hasMedium($addModal);
+    });
+
+    $editModal.find('#hasMedium').on('change', function () {
+        hasMedium($editModal);
+    });
 });
