@@ -337,13 +337,10 @@ $(document).ready(function () {
     function setMediumMetadataFormat($modal) {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
 
-        switch (format) {
-            case 'BILDUNGSLOGIN':
-                $modal.find('#btn-load-media-metadata').prop('disabled', false);
-                break;
-            default:
-                $modal.find('#btn-load-media-metadata').prop('disabled', true);
-                break;
+        if (format === 'BILDUNGSLOGIN') {
+            $modal.find('#btn-load-media-metadata').prop('disabled', false);
+        } else {
+            $modal.find('#btn-load-media-metadata').prop('disabled', true);
         }
     }
 
