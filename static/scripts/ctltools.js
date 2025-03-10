@@ -10,7 +10,7 @@ $(document).ready(function () {
 
     $('.btn-create-ctl-tool').click(function () {
         customParameterId = 0;
-        
+
         $addModal.find('.custom-parameter-list').children().remove();
         $addModal.find('#hasMedium').prop('checked', false);
         $addModal.find('#btn-load-media-metadata').prop('disabled', true);

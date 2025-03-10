@@ -66,6 +66,7 @@ const transformToolInputs = (id, body) => {
     }
 
     clearEmptyInputs(body);
+
     return body;
 };
 
