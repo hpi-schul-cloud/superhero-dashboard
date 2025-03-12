@@ -13,10 +13,7 @@ $(document).ready(function () {
 
         $addModal.find('.custom-parameter-list').children().remove();
         $addModal.find('#hasMedium').prop('checked', false);
-        $addModal.find('#btn-load-media-metadata').prop('disabled', true);
-        $addModal.find('#mediumId').prop('disabled', true);
-        $addModal.find('#publisher').prop('disabled', true);
-        $addModal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
+        resetMediumForms($addModal);
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -44,6 +41,7 @@ $(document).ready(function () {
             if(result.hasMedium){
                 hasMedium($editModal);
             }
+            setMediumMetadataFormat($editModal);
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
         });
@@ -338,9 +336,8 @@ $(document).ready(function () {
 
     function setMediumMetadataFormat($modal) {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
-        const isChecked = $modal.find('#hasMedium').is(':checked');
 
-        if (format === 'BILDUNGSLOGIN' && isChecked) {
+        if (format === 'BILDUNGSLOGIN') {
             $modal.find('#btn-load-media-metadata').prop('disabled', false);
         } else {
             $modal.find('#btn-load-media-metadata').prop('disabled', true);
@@ -367,18 +364,23 @@ $(document).ready(function () {
         });
     }
 
+    function resetMediumForms($modal){
+        $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
+        $modal.find("#publisher").prop('disabled', true).val('');
+        $modal.find("#modifiedAt").val('');
+        $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
+        $modal.find('#btn-load-media-metadata').prop('disabled', true);
+    }
+
     function hasMedium($modal) {
         const isChecked = $modal.find('#hasMedium').is(':checked');
-        setMediumMetadataFormat($modal);
 
         if(isChecked){
             $modal.find('#mediumId').prop('required', true).prop('disabled', false);
             $modal.find("#publisher").prop('disabled', false);
             $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
         } else {
-            $modal.find('#mediumId').prop('required', false).prop('disabled', true);
-            $modal.find("#publisher").prop('disabled', true);
-            $modal.find('#mediaSource').prop('disabled', true).trigger('chosen:updated');
+            resetMediumForms($modal);
         }
     }
 
