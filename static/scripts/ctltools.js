@@ -87,7 +87,7 @@ $(document).ready(function () {
     });
 
     $('.parameters-regex').on('input', function(e){
-        var splitId = $(this).attr("id").split('-');
+        var splitId = $(this).attr('id').split('-');
         var customIdIndex = splitId[splitId.length-1];
         var regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
         if ($(this).val().length > 0 ) {
@@ -366,8 +366,8 @@ $(document).ready(function () {
 
     function resetMediumForms($modal){
         $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
-        $modal.find("#publisher").prop('disabled', true).val('');
-        $modal.find("#modifiedAt").val('');
+        $modal.find('#publisher').prop('disabled', true).val('');
+        $modal.find('#modifiedAt').val('');
         $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
         $modal.find('#btn-load-media-metadata').prop('disabled', true);
     }
@@ -377,7 +377,7 @@ $(document).ready(function () {
 
         if(isChecked){
             $modal.find('#mediumId').prop('required', true).prop('disabled', false);
-            $modal.find("#publisher").prop('disabled', false);
+            $modal.find('#publisher').prop('disabled', false);
             $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
         } else {
             resetMediumForms($modal);

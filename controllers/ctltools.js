@@ -7,7 +7,7 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
-const {isFeatureFlagTrue} = require("../helpers/featureFlagHelper");
+const {isFeatureFlagTrue} = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
 const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
@@ -27,7 +27,7 @@ const clearEmptyInputs = (object) => {
             case 'string':
                 object[key] = object[key].trim();
 
-                if(object[key] === "") {
+                if(object[key] === '') {
                     object[key] = undefined;
                 }
                 break;
@@ -268,9 +268,9 @@ const showTools = (req, res) => {
 
         const body = tools.data.map(item => {
             return [
-                item.id || "",
-                item.name || "",
-                item.config.clientId || "",
+                item.id || '',
+                item.name || '',
+                item.config.clientId || '',
                 getTableActions(item, '/ctltools/')
             ];
         });
