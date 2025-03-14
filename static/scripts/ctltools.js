@@ -29,7 +29,7 @@ $(document).ready(function () {
         $editModal.find('.custom-parameter-list').children().remove();
 
         e.preventDefault();
-        var entry = $(this).attr('href');
+        const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
             populateModalForm($editModal, {
                 action: entry,
@@ -50,7 +50,7 @@ $(document).ready(function () {
 
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
-        var entry = $(this).attr('href');
+        const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
             populateModalForm($reglinkmodal, {
                 action: entry,
@@ -66,7 +66,7 @@ $(document).ready(function () {
 
     $('.btn-delete').on('click', function(e) {
         e.preventDefault();
-        var entry = $(this).parent().attr('action');
+        const entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
             if (!result.contextExternalToolCountPerContext.mediaBoard) {
                 $('#media-board-label').hide();
@@ -87,9 +87,9 @@ $(document).ready(function () {
     });
 
     $('.parameters-regex').on('input', function(e){
-        var splitId = $(this).attr('id').split('-');
-        var customIdIndex = splitId[splitId.length-1];
-        var regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
+        const splitId = $(this).attr('id').split('-');
+        const customIdIndex = splitId[splitId.length-1];
+        const regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
         if ($(this).val().length > 0 ) {
             regexComment.prop('required', true);
         } else {
