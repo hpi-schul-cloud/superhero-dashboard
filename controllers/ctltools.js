@@ -324,7 +324,7 @@ const getDatasheet = (req,res,next) => {
 
 const getMediumMedataHandler = (req,res,next) => {
     const mediaSourceId = encodeURIComponent(req.query.sourceId);
-    const mediumId = encodeURIComponent(req.params.mediumId);
+    const mediumId = encodeURIComponent(req.query.mediumId);
 
     try {
         api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
