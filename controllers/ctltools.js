@@ -323,12 +323,11 @@ const getDatasheet = (req,res,next) => {
 }
 
 const getMediumMedataHandler = (req,res,next) => {
-    const format = req.params.format;
-    const mediaSourceId = encodeURIComponent(req.params.mediaSourceId);
+    const mediaSourceId = encodeURIComponent(req.query.sourceId);
     const mediumId = encodeURIComponent(req.params.mediumId);
 
     try {
-        api(req, { version: 'v3' }).get(`/tools/external-tools/medium/${mediumId}/media-source/${format}/${mediaSourceId}/metadata`).then((reponse) => {
+        api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
             res.json(reponse);
         })
     } catch (e) {
@@ -339,7 +338,7 @@ const getMediumMedataHandler = (req,res,next) => {
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
-router.get('/medium/:mediumId/:format/:mediaSourceId/metadata', getMediumMedataHandler);
+router.get('/medium/metadata', getMediumMedataHandler);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);

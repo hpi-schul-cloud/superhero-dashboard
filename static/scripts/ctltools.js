@@ -345,21 +345,20 @@ $(document).ready(function () {
     }
 
     function loadMediumMetadata($modal) {
-        const format = $modal.find('#mediaSource option:selected').data('media-format');
         const sourceId = $modal.find('#mediaSource').val();
         const mediumId = $modal.find('#mediumId').val();
 
         const encodedSourceId = encodeURIComponent(sourceId);
         const encodedMediumId = encodeURIComponent(mediumId);
 
-        const route = `/ctltools/medium/${encodedMediumId}/${format}/${encodedSourceId}/metadata`;
+        const route = `/ctltools/medium/metadata?mediumId=${encodedMediumId}&sourceId=${encodedSourceId}`;
 
         $.getJSON(route, function(response) {
             $modal.find('#name').val(response.name);
             $modal.find('#description').val(response.description);
             $modal.find('#publisher').val(response.publisher);
             $modal.find('#logoUrl').val(response.logoUrl);
-            $modal.find('#thumbnailUrl').val(response.thumbnailUrl);
+            $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
             $modal.find('#modifiedAt').val(response.modifiedAt);   
         });
     }
