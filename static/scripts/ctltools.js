@@ -371,7 +371,7 @@ $(document).ready(function () {
                 $modal.find('#load-media-metadata-error').text('');
             })
             .fail(function(response) {
-                if (response.responseJSON?.error) {
+                if (response.responseJSON && response.responseJSON.error) {
                     const err = response.responseJSON.error;
                     const message = `Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`;
             
