@@ -326,13 +326,12 @@ const getMediumMedataHandler = (req,res,next) => {
     const mediaSourceId = encodeURIComponent(req.query.sourceId);
     const mediumId = encodeURIComponent(req.query.mediumId);
 
-    try {
-        api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
-            res.json(reponse);
-        })
-    } catch (e) {
-        next(e);
-    };
+    api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
+        res.json(reponse);
+    }).catch(err => {
+        res.status(err.statusCode).json({ error: err.error });
+    });
+
 }
 
 router.use(authHelper.authChecker);

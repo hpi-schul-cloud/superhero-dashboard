@@ -336,6 +336,7 @@ $(document).ready(function () {
 
     function setMediumMetadataFormat($modal) {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
+        $modal.find('#load-media-metadata-error').text('');
 
         if (format === 'BILDUNGSLOGIN') {
             $modal.find('#btn-load-media-metadata').prop('disabled', false);
@@ -345,22 +346,46 @@ $(document).ready(function () {
     }
 
     function loadMediumMetadata($modal) {
+        $modal.find('#load-media-metadata-error').text('');
         const sourceId = $modal.find('#mediaSource').val();
         const mediumId = $modal.find('#mediumId').val();
+
+        if(!mediumId){
+            $modal.find('#load-media-metadata-error').text('Bitte geben Sie eine Medium-Id ein!');
+            return;
+        }
 
         const encodedSourceId = encodeURIComponent(sourceId);
         const encodedMediumId = encodeURIComponent(mediumId);
 
         const route = `/ctltools/medium/metadata?mediumId=${encodedMediumId}&sourceId=${encodedSourceId}`;
 
-        $.getJSON(route, function(response) {
-            $modal.find('#name').val(response.name);
-            $modal.find('#description').val(response.description);
-            $modal.find('#publisher').val(response.publisher);
-            $modal.find('#logoUrl').val(response.logoUrl);
-            $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
-            $modal.find('#modifiedAt').val(response.modifiedAt);   
-        });
+        $.getJSON(route)
+            .done(function(response) {
+                $modal.find('#name').val(response.name);
+                $modal.find('#description').val(response.description);
+                $modal.find('#publisher').val(response.publisher);
+                $modal.find('#logoUrl').val(response.logoUrl);
+                $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+                $modal.find('#modifiedAt').val(response.modifiedAt);
+                $modal.find('#load-media-metadata-error').text('');
+            })
+            .fail(function(response) {
+                if (response.responseJSON && response.responseJSON.error) {
+                    const err = response.responseJSON.error;
+                    const message = `Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`;
+            
+                    if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
+                        $modal.find('#load-media-metadata-error').text('Für das Medium wurden keine Metadaten geliefert.');
+                    } else {
+                        $modal.find('#load-media-metadata-error').text(message);
+                    }
+
+                } else {
+                    $modal.find('#load-media-metadata-error').text('Es ist ein Fehler aufgetreten.');
+                    console.error('Unbekannter Fehler:', response);
+                }
+            });
     }
 
     function resetMediumForms($modal){
@@ -369,6 +394,7 @@ $(document).ready(function () {
         $modal.find('#modifiedAt').val('');
         $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
         $modal.find('#btn-load-media-metadata').prop('disabled', true);
+        $modal.find('#load-media-metadata-error').text('');
     }
 
     function hasMedium($modal) {
@@ -378,6 +404,7 @@ $(document).ready(function () {
             $modal.find('#mediumId').prop('required', true).prop('disabled', false);
             $modal.find('#publisher').prop('disabled', false);
             $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+            $modal.find('#load-media-metadata-error').text('');
         } else {
             resetMediumForms($modal);
         }
