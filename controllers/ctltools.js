@@ -322,7 +322,7 @@ const getDatasheet = (req,res,next) => {
     }
 }
 
-const getMediumMedataHandler = (req,res,next) => {
+const getMediumMedataHandler = (req, res) => {
     const mediaSourceId = encodeURIComponent(req.query.sourceId);
     const mediumId = encodeURIComponent(req.query.mediumId);
 
