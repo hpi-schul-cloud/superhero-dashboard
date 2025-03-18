@@ -331,7 +331,6 @@ const getMediumMedataHandler = (req, res) => {
     }).catch(err => {
         res.status(err.statusCode).json({ error: err.error });
     });
-
 }
 
 router.use(authHelper.authChecker);
