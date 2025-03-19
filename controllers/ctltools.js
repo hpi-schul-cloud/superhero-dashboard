@@ -7,7 +7,7 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
-const {isFeatureFlagTrue} = require("../helpers/featureFlagHelper");
+const {isFeatureFlagTrue} = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
 const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
@@ -27,7 +27,7 @@ const clearEmptyInputs = (object) => {
             case 'string':
                 object[key] = object[key].trim();
 
-                if(object[key] === "") {
+                if(object[key] === '') {
                     object[key] = undefined;
                 }
                 break;
@@ -49,6 +49,9 @@ const transformToolInputs = (id, body) => {
     body.isDeactivated = !!body.isDeactivated;
     body.isPreferred = !!body.isPreferred;
     body.restrictToContexts = [].concat(body.restrictToContexts || []);
+
+    body.medium = body.hasMedium ? body.medium : undefined;
+    delete body.hasMedium;
 
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
@@ -103,9 +106,10 @@ const getDetailHandler = (req, res, next) => {
             delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
         }
 
+        toolData.hasMedium = !!toolData.medium;
+
         convertZerosToString(toolMetaData);
         res.json({...toolData, ...toolMetaData});
-
     }).catch(err => {
         next(err);
     });
@@ -211,6 +215,20 @@ const customParameterScopes = [
     { label: 'Context', value: 'context' },
 ];
 
+const mediaSources = [
+    { label: 'Ohne Medien-Katalog', sourceId: '', format: ''}
+];
+
+const getMediaSources = (data) => {
+    const mediaSourceList = data.map(({ name, sourceId, format }) => ({
+        label: name?.trim() ? name : sourceId,
+        sourceId, 
+        format: format ?? '',
+    }));
+
+    return mediaSources.concat(mediaSourceList);
+};
+
 const showTools = (req, res) => {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
@@ -235,6 +253,7 @@ const showTools = (req, res) => {
 
     Promise.all([
         api(req, {version: 'v3'}).get('/tools/context-types'),
+        api(req, {version: 'v3'}).get('/media-sources'),
         api(req, {version: 'v3'}).get('/tools/external-tools', {
             qs: {
                 name: req.query.q,
@@ -244,14 +263,14 @@ const showTools = (req, res) => {
                 sortBy,
             },
         })
-    ]).then(([contextTypes, tools]) => {
+    ]).then(([contextTypes, mediaSourceList, tools]) => {
         const toolContextTypes = contextTypes.data;
 
         const body = tools.data.map(item => {
             return [
-                item.id || "",
-                item.name || "",
-                item.config.clientId || "",
+                item.id || '',
+                item.name || '',
+                item.config.clientId || '',
                 getTableActions(item, '/ctltools/')
             ];
         });
@@ -287,7 +306,8 @@ const showTools = (req, res) => {
             customParameterTypes,
             customParameterScopes,
             customParameterLocations,
-            toolContextTypes
+            toolContextTypes,
+            mediaSources: getMediaSources(mediaSourceList.responses)
         });
     }).catch(err => {
         next(err);
@@ -302,9 +322,21 @@ const getDatasheet = (req,res,next) => {
     }
 }
 
+const getMediumMedataHandler = (req, res) => {
+    const mediaSourceId = encodeURIComponent(req.query.sourceId);
+    const mediumId = encodeURIComponent(req.query.mediumId);
+
+    api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
+        res.json(reponse);
+    }).catch(err => {
+        res.status(err.statusCode).json({ error: err.error });
+    });
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
+router.get('/medium/metadata', getMediumMedataHandler);
 router.put('/:id', getUpdateHandler);
 router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
