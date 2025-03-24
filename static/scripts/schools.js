@@ -10,7 +10,7 @@ $(document).ready(function () {
         $.getJSON(entry, function (result) {
           populateModalForm($deleteFilesModal, {
             action: `${entry}/delete-files`,
-            title: 'Löschen alle Dateien der Schule',
+            title: 'Alle Dateien der Schule löschen',
             closeLabel: 'Schließen',
             submitLabel: 'Löschen',
             fields: result,
