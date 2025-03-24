@@ -52,5 +52,10 @@
                     {{> "lib/components/delete-form"}}
                 {{/content}}
             {{/embed}}
+            {{#embed "lib/components/modal-form" method="delete" class="delete-files-modal"}}
+                {{#content "fields"}}
+                    {{> "schools/forms/delete-files-form"}}
+                {{/content}}
+            {{/embed}}
     {{/content}}
 {{/extend}}
