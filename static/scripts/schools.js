@@ -2,11 +2,11 @@ $(document).ready(function () {
     var $editModal = $('.edit-modal');
     var $reglinkmodal = $('.reglink-modal');
     var $deleteModal = $('.delete-modal');
-    var $deleteFilesModal = $('.delete-files-modal');
+    const $deleteFilesModal = $('.delete-files-modal');
 
     $('.btn-delete-files').on('click', function (e) {
         e.preventDefault();
-        var entry = $(this).parent().attr('action');
+        const entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
           populateModalForm($deleteFilesModal, {
             action: `${entry}/delete-files`,

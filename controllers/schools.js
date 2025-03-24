@@ -268,7 +268,7 @@ const getDeleteHandler = (service) => {
   };
 };
 
-const getDeleteFilesHandler = (service) => {
+const getDeleteFilesHandler = () => {
   return function (req, res, next) {
     api(req, { version: 'v3', filesStorageApi: true })
       .delete('/admin/file/storage-location/school/' + req.params.id)
@@ -373,6 +373,6 @@ router.get('/:id', getDetailHandler('schools'));
 router.delete('/:id', getDeleteHandler('schools'));
 router.post('/', getCreateHandler('schools'));
 router.all('/', getHandler);
-router.delete("/:id/delete-files", getDeleteFilesHandler("schools"));
+router.delete("/:id/delete-files", getDeleteFilesHandler());
 
 module.exports = router;
