@@ -274,7 +274,7 @@ const getDeleteFilesHandler = () => {
       .delete('/admin/file/storage-location/school/' + req.params.id)
       .then((result) => {
         res.render('schools/after-files-delete', {
-          title: 'Alle Dateien der Schule würden gelöscht',
+          title: 'Alle Dateien der Schule wurden gelöscht',
           data: result
         });
       })
