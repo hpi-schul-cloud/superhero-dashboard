@@ -273,7 +273,6 @@ const getDeleteFilesHandler = () => {
     api(req, { version: 'v3', filesStorageApi: true })
       .delete('/admin/file/storage-location/school/' + req.params.id)
       .then((result) => {
-        console.log(result);
         res.render('schools/after-files-delete', {
           title: 'Alle Dateien der Schule würden gelöscht',
           data: result
