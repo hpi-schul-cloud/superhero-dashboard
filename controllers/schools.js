@@ -17,14 +17,14 @@ const SCHOOL_FEATURES = [
   'rocketChat',
   'videoconference',
   'messenger',
-  'studentVisibility',
+  // 'studentVisibility', // is now handled instead with env vars / permission in school combination
   'messengerSchoolRoom',
   'oauthProvisioningEnabled',
   'showOutdatedUsers',
   'enableLdapSyncDuringMigration'
 ];
 
-const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_USER_LOGIN_MIGRATION_ENABLED);
 const SHOW_OUTDATED_USERS = isFeatureFlagTrue(process.env.FEATURE_SHOW_OUTDATED_USERS);
 const ENABLE_LDAP_SYNC_DURING_MIGRATION = isFeatureFlagTrue(process.env.FEATURE_ENABLE_LDAP_SYNC_DURING_MIGRATION);
 
@@ -144,8 +144,33 @@ const sortSchools = (schools, sortCriteria) => {
   });
 };
 
+const collectSchoolFeatures = (data) => {
+  const features = [];
+  for (let feature of SCHOOL_FEATURES) {
+    let key = "hasFeature_" + feature;
+    if (data[key]) {
+      features.push(feature);
+    }
+  }
+  return features;
+}
+
+const separateSchoolFeatures = (data) => {
+  for (let feature of SCHOOL_FEATURES) {
+    let key = 'hasFeature_' + feature;
+    if (data.features) {
+      data[key] = data.features.indexOf(feature) !== -1;
+    } else {
+      data[key] = false;
+    }
+  }
+  return data;
+}
+
 const getCreateHandler = (service) => {
   return function (req, res, next) {
+    req.body.features = collectSchoolFeatures(req.body);
+
     api(req)
       .post('/' + service + '/', {
         // TODO: sanitize
@@ -161,55 +186,66 @@ const getCreateHandler = (service) => {
 };
 
 const getUpdateHandler = (service) => {
-  return function (req, res, next) {
-    // parse school features
-    req.body.features = [];
-    for (let feature of SCHOOL_FEATURES) {
-      let key = 'hasFeature_' + feature;
-      if (req.body[key]) {
-        req.body.features.push(feature);
-      }
-    }
+  return async function (req, res, next) {
+    try {
+      const configuration = await api(req, {version: 'v3'}).get(`/config/public`);
 
-    api(req)
-      .patch('/' + service + '/' + req.params.id, {
+      
+
+      if (configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
+        await api(req, {version: 'v3'}).patch(`/school/${req.params.id}`, {
+          json: {
+            permissions: {
+              teacher: {
+                STUDENT_LIST: !!req.body.hasFeature_studentVisibility
+              }
+            }
+          },
+        })
+      }
+      
+      req.body.features = collectSchoolFeatures(req.body);
+
+      await api(req).patch('/' + service + '/' + req.params.id, {
         // TODO: sanitize
         json: req.body,
       })
-      .then((data) => {
-        res.redirect(req.header('Referer'));
-      })
-      .catch((err) => {
-        next(err);
-      });
+
+      res.redirect(req.header('Referer'));
+    } catch (err) {
+      next(err);
+    }
   };
 };
 
 const getDetailHandler = (service) => {
-  return function (req, res, next) {
-    api(req)
-      .get('/' + service + '/' + req.params.id)
-      .then((data) => {
-        // parse school features
-        for (let feature of SCHOOL_FEATURES) {
-          let key = 'hasFeature_' + feature;
-          if (data.features) {
-            data[key] = data.features.indexOf(feature) !== -1;
-          } else {
-            data[key] = false;
-          }
-        }
+  return async function (req, res, next) {
+    try {
+      const configuration = await api(req, { version: 'v3' }).get(`/config/public`);
+      const data = await api(req).get('/' + service + '/' + req.params.id)
 
-        if (data.county && data.county.name && data.county._id) {
-          data.county = data.county._id;
-        }
+      // parse school features
+      separateSchoolFeatures(data);
 
-        res.json(data);
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
+      if (!configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
+        data.hasFeature_studentVisibility_disabled = true;
+      }
+
+      data.hasFeature_studentVisibility = !!configuration.TEACHER_STUDENT_VISIBILITY__IS_ENABLED_BY_DEFAULT;
+
+      if (data.permissions && data.permissions.teacher && data.permissions.teacher.STUDENT_LIST !== undefined) {
+        data.hasFeature_studentVisibility = data.permissions.teacher.STUDENT_LIST;
+      }
+
+      if (data.county && data.county.name && data.county._id) {
+        data.county = data.county._id;
+      }
+
+      res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  }
 };
 
 const getDeleteHandler = (service) => {

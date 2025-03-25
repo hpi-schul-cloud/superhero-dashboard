@@ -1,12 +1,11 @@
-<p>Hinweis: Änderungen, die zur Erhöhung der Versionsnummer dieser Konfiguration führen, haben Auswirkungen auf die von dieser Konfiguration abhängigen Tools, die Kursen bereits zugeordnet wurden.<p>
-<p>Zur Erhöhung der Versionsnummer führen folgende Änderungen: Hinzufüge, Entfernen, Umbenennen von Pflicht-Custom Parametern; Änderung des Typs, Scopes oder des regulären Ausdrucks der Parameter.</p>
+<p>Hinweis: <br> Folgende Änderungen an Tools können dazu führen, dass abhängige Tool-Konfigurationen angepasst werden müssen: Hinzufügen, Entfernen, Umbenennen von benutzerdefinierten Pflicht-Parametern; Änderung des Typs, Scopes oder des regulären Ausdrucks der Parameter.<p>
 <div class="form-group">
     <label class="control-label" for="name">Name *</label>
     <input type="text" name="name" id="name" class="form-control" placeholder="Learn App" required>
 </div>
 <div class="form-group">
     <label class="control-label" for="description">Beschreibung</label>
-    <textarea type="text" name="description" id="description" class="form-control" rows="4" placeholder="Sein Name steht für die größte Wende der Astronomie-Geschichte: Nikolaus Kopernikus begründete nichts Geringeres als das neue Weltbild, wonach die Sonne - nicht die Erde im Zentrum des Planetensystems steht."></textarea>
+    <textarea type="text" name="description" id="description" class="form-control" rows="4" placeholder="Hier können Sie das Tool ausführlicher beschreiben…"></textarea>
 </div>
 <div class="form-group">
     <label class="control-label" for="url">URL</label>
@@ -19,19 +18,47 @@
         Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png
     </p>
 </div>
+<div class="form-group">
+    <label class="control-label" for="thumbnailUrl">Vorschau-URL</label>
+    <input type="text" name="thumbnailUrl" id="thumbnailUrl" class="form-control">
+    <p class="text-danger" style="font-size:0.75rem;">
+        Zulässige Formate: jpeg, png, svg, pdf, bmp, webp, gif, heic, heif, tiff
+    </p>
+</div>
 
 <h3>Medium</h3>
 <hr/>
 <div class="form-group">
-    <label class="control-label" for="mediumId">Medium-Id</label>
-    <input type="text" name="medium[mediumId]" id="mediumId" class="form-control" placeholder="urn:bilo:medium:123456789">
+    <label class="control-label">Mit einem externen Medium verknüpfen?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" id="hasMedium" name="hasMedium" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, es soll verknüpft werden
+    </label>
+</div>
+<div class="form-group" style="display: flex; flex-direction: column;">
+    <label class="control-label">Medienverwaltung</label>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <select name="medium[mediaSourceId]" id="mediaSource" style="flex: 70%; max-width: 70%;">
+            {{#each mediaSources}}
+                <option value="{{this.sourceId}}" data-media-format="{{this.format}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+        <button type="button" class="btn btn-secondary ml-1" id="btn-load-media-metadata" style="flex: 30%; max-width: 30%;">
+            Metadaten laden
+        </button>
+    </div>
+    <p class="text-danger mt-1 mb-0" id="load-media-metadata-error"></p>
 </div>
 <div class="form-group">
-    <label class="control-label" for="mediaSourceId">Medienkatalog-Id</label>
-    <input type="text" name="medium[mediaSourceId]" id="mediaSourceId" class="form-control">
-</div><div class="form-group">
+    <label class="control-label" for="mediumId">Medium-Id</label>
+    <input type="text" name="medium[mediumId]" id="mediumId" class="form-control">
+</div>
+<div class="form-group">
     <label class="control-label" for="publisher">Anbieter</label>
     <input type="text" name="medium[publisher]" id="publisher" class="form-control">
+</div>
+<div class="form-group">
+    <input type="hidden" name="medium[modifiedAt]" id="modifiedAt" class="form-control">
 </div>
 
 <h3>Verfügbarkeit</h3>
@@ -55,6 +82,17 @@
     <label  style="width: 100%">
         <input type="checkbox" name="isDeactivated" value="1" class="form-control" style="width:10%;display:inline-block;">
         Ja, es soll deaktiviert werden
+    </label>
+</div>
+<div class="form-group">
+    <label class="control-label">Als "bevorzugtes Tool" markieren?</label>
+    <label  style="width: 100%">
+        <input type="checkbox" name="isPreferred" value="1" class="form-control" style="width:10%;display:inline-block;">
+        Ja, es soll markiert werden
+    </label>
+    <label  style="width: 100%; display: flex; padding-left: 10.5%;">
+        <span style="flex-basis: 25%; align-content: center">Icon-Name:</span>
+        <input type="text" name="iconName" class="form-control" style="flex-basis: auto">
     </label>
 </div>
 <div class="form-group">
@@ -160,7 +198,7 @@
     </div>
 </div>
 
-<h3 class="mt-1">Custom Parameters</h3>
+<h3 class="mt-1">Benutzerdefinierte Parameter</h3>
 <hr/>
 <div class="custom-parameter-list"></div>
 <button type="button" class="btn btn-primary btn-add-custom-parameter mt-1">+</button>

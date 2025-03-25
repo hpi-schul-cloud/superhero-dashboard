@@ -11,7 +11,7 @@ const moment = require('moment');
 const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
-const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_SCHOOL_SANIS_USER_MIGRATION_ENABLED);
+const USER_MIGRATION_ENABLED = isFeatureFlagTrue(process.env.FEATURE_USER_LOGIN_MIGRATION_ENABLED);
 
 const getTableActions = (item, path) => {
 	let tableActions = [
@@ -438,7 +438,7 @@ router.get('/search', function (req, res, next) {
 
 router.get('/jwt/:id', async (req, res, next) => {
 	try {
-		const getJWT = api(req).post('/accounts/supportJWT', {
+		const getJWT = api(req, {version: 'v3'}).post('/shd/supportJwt', {
 			json: {
 				userId: req.params.id,
 			},
@@ -449,7 +449,7 @@ router.get('/jwt/:id', async (req, res, next) => {
 
 		res.render('users/jwt', {
 			title: `JWT für ${user.displayName}`,
-			jwt: jwt || '',
+			jwt: jwt.accessToken || '',
 			user: user,
 			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 		});

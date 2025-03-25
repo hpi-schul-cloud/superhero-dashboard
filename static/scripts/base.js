@@ -22,7 +22,6 @@ function updateQueryStringParameter(uri, key, value) {
 }
 
 function populateModalForm(modal, data) {
-
     var $title = modal.find('.modal-title');
     var $btnSubmit = modal.find('.btn-submit');
     var $btnClose = modal.find('.btn-close');
@@ -54,10 +53,10 @@ function populateModalForm(modal, data) {
                 case "radio":
                 case "checkbox":
                     $(this).each(function () {
-                        if (($(this).attr('name') == $(this).prop('name')) && value) {
-                            $(this).attr("checked", value);
-                        } else {
-                            $(this).removeAttr("checked");
+                        $(this).prop("checked", value);
+                
+                        if (data.fields[$(this).attr('name') + "_disabled"] ){
+                            $(this).attr("disabled", true);
                         }
                     });
                     break;

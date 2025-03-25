@@ -1,0 +1,101 @@
+@import "../lib/colors.scss";
+@import "../lib/bootstrap/scss/bootstrap-flex";
+
+.file-input-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px 0px;
+}
+
+#file {
+  display: none;
+}
+
+.batch-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.batch-list-item {
+  margin: 14px 0px;
+}
+
+.batch-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: $gray-lightest;
+
+  .batch-info {
+    width: 64%;
+  }
+
+  .batch-title {
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-thin {
+    max-height: 40px;
+  }
+
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    border-radius: 9999px;
+    padding: 0 10px;
+    height: 26px;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+    margin-left: 0.5rem;
+    color: #000;
+
+    &.status-created {
+      background-color: rgba($brand-info, 0.8);
+    }
+
+    &.status-deletion-requested {
+      background-color: rgba($brand-warning, 0.8);
+    }
+
+    &.status-finished {
+      background-color: rgba($brand-success, 0.8);
+    }
+
+    &.status-invalid {
+      background-color: rgba($brand-danger, 0.8);
+    }
+  }
+}
+
+.id-container {
+  margin-bottom: 20px;
+}
+
+.id-list {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  cursor: text;
+  user-select: all;
+  background-color: $gray-lightest;
+  padding: 10px;
+  border: none;
+  width: 100%;
+  resize: none;
+  margin-top: 4px;
+}
+
+.no-ids-text {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.copy-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+}
