@@ -67,7 +67,7 @@
     "gulp-sass": "^5.1.0",
     "gulp-sass-grapher": "^1.0.0",
     "gulp-uglify": "^3.0.2",
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "pump": "^3.0.0",
     "sinon": "^15.0.1",
     "vinyl-map": "^1.0.2"

@@ -12,6 +12,8 @@ $(document).ready(function () {
         customParameterId = 0;
 
         $addModal.find('.custom-parameter-list').children().remove();
+        $addModal.find('#hasMedium').prop('checked', false);
+        resetMediumForms($addModal);
 
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
@@ -27,7 +29,7 @@ $(document).ready(function () {
         $editModal.find('.custom-parameter-list').children().remove();
 
         e.preventDefault();
-        var entry = $(this).attr('href');
+        const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
             populateModalForm($editModal, {
                 action: entry,
@@ -36,6 +38,10 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
+            if(result.hasMedium){
+                hasMedium($editModal);
+            }
+            setMediumMetadataFormat($editModal);
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
         });
@@ -44,7 +50,7 @@ $(document).ready(function () {
 
     $('.btn-reglink').on('click', function (e) {
         e.preventDefault();
-        var entry = $(this).attr('href');
+        const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
             populateModalForm($reglinkmodal, {
                 action: entry,
@@ -60,7 +66,7 @@ $(document).ready(function () {
 
     $('.btn-delete').on('click', function(e) {
         e.preventDefault();
-        var entry = $(this).parent().attr('action');
+        const entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
             if (!result.contextExternalToolCountPerContext.mediaBoard) {
                 $('#media-board-label').hide();
@@ -81,9 +87,9 @@ $(document).ready(function () {
     });
 
     $('.parameters-regex').on('input', function(e){
-        var splitId = $(this).attr("id").split('-');
-        var customIdIndex = splitId[splitId.length-1];
-        var regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
+        const splitId = $(this).attr('id').split('-');
+        const customIdIndex = splitId[splitId.length-1];
+        const regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
         if ($(this).val().length > 0 ) {
             regexComment.prop('required', true);
         } else {
@@ -328,4 +334,101 @@ $(document).ready(function () {
         }
     });
 
+    function setMediumMetadataFormat($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
+        $modal.find('#load-media-metadata-error').text('');
+
+        if (format === 'BILDUNGSLOGIN') {
+            $modal.find('#btn-load-media-metadata').prop('disabled', false);
+        } else {
+            $modal.find('#btn-load-media-metadata').prop('disabled', true);
+        }
+    }
+
+    function loadMediumMetadata($modal) {
+        const $errorMessage = $modal.find('#load-media-metadata-error');
+        const sourceId = $modal.find('#mediaSource').val();
+        const mediumId = $modal.find('#mediumId').val();
+        $errorMessage.text('');
+
+        if(!mediumId){
+            $errorMessage.text('Bitte geben Sie eine Medium-Id ein!');
+            return;
+        }
+
+        const encodedSourceId = encodeURIComponent(sourceId);
+        const encodedMediumId = encodeURIComponent(mediumId);
+
+        const route = `/ctltools/medium/metadata?mediumId=${encodedMediumId}&sourceId=${encodedSourceId}`;
+
+        $.getJSON(route)
+            .done(function(response) {
+                $modal.find('#name').val(response.name);
+                $modal.find('#description').val(response.description);
+                $modal.find('#publisher').val(response.publisher);
+                $modal.find('#logoUrl').val(response.logoUrl);
+                $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+                $modal.find('#modifiedAt').val(response.modifiedAt);
+            })
+            .fail(function(response) {
+                if (response.responseJSON && response.responseJSON.error) {
+                    const err = response.responseJSON.error;
+            
+                    if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
+                        $errorMessage.text('Für das Medium wurden keine Metadaten geliefert.');
+                    } else {
+                        $errorMessage.text(`Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`);
+                    }
+
+                } else {
+                    $errorMessage.text('Es ist ein Fehler aufgetreten.');
+                }
+            });
+    }
+
+    function resetMediumForms($modal){
+        $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
+        $modal.find('#publisher').prop('disabled', true).val('');
+        $modal.find('#modifiedAt').val('');
+        $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
+        $modal.find('#btn-load-media-metadata').prop('disabled', true);
+        $modal.find('#load-media-metadata-error').text('');
+    }
+
+    function hasMedium($modal) {
+        const isChecked = $modal.find('#hasMedium').is(':checked');
+
+        if(isChecked){
+            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+            $modal.find('#publisher').prop('disabled', false);
+            $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+            $modal.find('#load-media-metadata-error').text('');
+        } else {
+            resetMediumForms($modal);
+        }
+    }
+
+    $addModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($addModal);
+    });
+
+    $editModal.find('#mediaSource').on('change', function () {
+        setMediumMetadataFormat($editModal);
+    });
+    
+    $addModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($addModal);
+    });
+
+    $editModal.find('#btn-load-media-metadata').on('click', function () {
+        loadMediumMetadata($editModal);
+    });
+
+    $addModal.find('#hasMedium').on('change', function () {
+        hasMedium($addModal);
+    });
+
+    $editModal.find('#hasMedium').on('change', function () {
+        hasMedium($editModal);
+    });
 });
