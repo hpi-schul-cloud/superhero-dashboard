@@ -2,6 +2,35 @@ $(document).ready(function () {
     var $editModal = $('.edit-modal');
     var $reglinkmodal = $('.reglink-modal');
     var $deleteModal = $('.delete-modal');
+    const $deleteFilesModal = $('.delete-files-modal');
+
+    $('.btn-delete-files').on('click', function (e) {
+        e.preventDefault();
+        const entry = $(this).parent().attr('action');
+        $.getJSON(entry, function (result) {
+          populateModalForm($deleteFilesModal, {
+            action: `${entry}/delete-files`,
+            title: 'Alle Dateien der Schule löschen',
+            closeLabel: 'Schließen',
+            submitLabel: 'Löschen',
+            fields: result,
+          });
+    
+          $deleteFilesModal.modal('show');
+        });
+      });
+    
+      const submitButton = $('.delete-files-modal').find('.btn-submit');
+      const schoolIdInput = $('.delete-files-modal').find('#schoolId');
+      const repeatSchoolIdInput = $('.delete-files-modal').find('#repeatSchoolId');
+    
+      repeatSchoolIdInput.on('input change', function (e) {
+        if ($(this).val() !== $(schoolIdInput).val()) {
+          $(submitButton).prop('disabled', true);
+        } else {
+          $(submitButton).prop('disabled', false);
+        }
+      });
 
     $('.btn-create-school').click(function () {
         let $createSchoolModal = $('.add-modal');
@@ -9,71 +38,71 @@ $(document).ready(function () {
             title: 'Neues Element hinzufügen',
             closeLabel: 'Schließen',
             submitLabel: 'Speichern',
-            fields: {
+      fields: {
                 silent: false
             }
-        });
-        $createSchoolModal.modal('show');
     });
+        $createSchoolModal.modal('show');
+  });
 
     $('.btn-edit').on('click', function (e) {
-        e.preventDefault();
+    e.preventDefault();
         var entry = $(this).attr('href');
-        $.getJSON(entry, function (result) {
+    $.getJSON(entry, function (result) {
             if(result.roles){
                 result.roles = result.roles.map(role => {
-                    return role.name;
-                });
-            }
-            populateModalForm($editModal, {
-                action: entry,
+          return role.name;
+        });
+      }
+      populateModalForm($editModal, {
+        action: entry,
                 title: 'Bearbeiten',
                 closeLabel: 'Schließen',
                 submitLabel: 'Speichern',
                 fields: result
-            });
+      });
 
             $editModal.modal('show');
-        });
     });
+  });
 
     $('.btn-reglink').on('click', function (e) {
-        e.preventDefault();
+    e.preventDefault();
         var entry = $(this).attr('href');
-        $.getJSON(entry, function (result) {
-            populateModalForm($reglinkmodal, {
-                action: entry,
+    $.getJSON(entry, function (result) {
+      populateModalForm($reglinkmodal, {
+        action: entry,
                 title: 'Registrierungslink',
                 closeLabel: 'Schließen',
-                submitLabel: false,
+        submitLabel: false,
                 fields: result
-            });
+      });
 
             $reglinkmodal.modal('show');
-        });
     });
+  });
 
     $('.btn-delete').on('click', function (e) {
-        e.preventDefault();
+    e.preventDefault();
         var entry = $(this).parent().attr('action');
-        $.getJSON(entry, function (result) {
-            populateModalForm($deleteModal, {
-                action: entry,
+    $.getJSON(entry, function (result) {
+      populateModalForm($deleteModal, {
+        action: entry,
                 title: 'Löschen',
                 closeLabel: 'Schließen',
                 submitLabel: 'Löschen',
                 fields: result
-            });
+      });
 
             $deleteModal.modal('show');
-        });
     });
+  });
 
     $editModal.find('.enableLdapSyncDuringMigration').on('click', function(e) {
-        e.preventDefault();
-    });
+    e.preventDefault();
+  });
 
-    const dictionary = {
+  const dictionary = {
         'Vorname': 'firstName',
         'Nachname': 'lastName',
         'E-Mail': 'email',
@@ -138,67 +167,67 @@ $(document).ready(function () {
         'userLoginMigration.finishedAt': 'Migration final beendet',
         'systems': 'Login-System',
         'ldapId': 'External Id'
-    };
+  };
 
     $('tr th').each(function(i,j) {
         $(j).on('click', function (e) {
 
             let location = window.location.search.split('&');
-            let contained = false;
+      let contained = false;
 
             location = location.map(entity => {
                 if (entity.includes('sort')) {
                     if (entity === 'sort=' + dictionary[$(j).text()]) {
                         entity = 'sort=-' + dictionary[$(j).text()];
-                    } else {
+          } else {
                         entity = 'sort=' + dictionary[$(j).text()];
-                    }
-                    contained = true;
-                }
-                return entity;
-            });
+          }
+          contained = true;
+        }
+        return entity;
+      });
             if (!contained)
                 location.push('sort=' + dictionary[$(j).text()]);
             window.location.search = location.join('&');
-        });
     });
+  });
 
     $('#limit').change(function changeLimit() {
 
         let location = window.location.search.split('&');
-        let contained = false;
+    let contained = false;
 
         location = location.map(entity => {
             if (entity.includes('limit')) {
                 entity = 'limit=' + $('#limit').val();
-                contained = true;
-            }
-            return entity;
-        });
+        contained = true;
+      }
+      return entity;
+    });
         if (!contained)
             location.push('limit=' + $('#limit').val());
         window.location.search = location.join('&');
-    });
+  });
 
     let location = window.location.search.split('&');
     location.map(entity => {
         if (entity.includes('sort')) {
             let queryParam = entity.split('=');
-            queryParam = queryParam[1].toString();
+      queryParam = queryParam[1].toString();
 
-            let asc = true;
+      let asc = true;
 
             if (queryParam.charAt(0) === '-') {
-                asc = false;
-                queryParam = queryParam.slice(1);
-            }
+        asc = false;
+        queryParam = queryParam.slice(1);
+      }
 
-            if (asc) {
+      if (asc) {
                 $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-down" aria-hidden="true"></i>');
-            } else {
+      } else {
                 $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-up" aria-hidden="true"></i>');
-            }
-        }
-    });
+      }
+    }
+  });
 
 });
