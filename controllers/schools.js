@@ -45,7 +45,7 @@ const getTableActions = (item, path) => [
   {
     link: path + item._id,
     class: "btn-delete-files",
-    icon: "files-o",
+    icon: "trash",
     method: "delete",
     title: "Alle Dateien der Schule löschen",
   },
