@@ -338,7 +338,7 @@ $(document).ready(function () {
         const format = $modal.find('#mediaSource option:selected').data('media-format');
         $modal.find('#load-media-metadata-error').text('');
 
-        if (format === 'BILDUNGSLOGIN') {
+        if (format === 'BILDUNGSLOGIN' || format === 'VIDIS') {
             $modal.find('#btn-load-media-metadata').prop('disabled', false);
         } else {
             $modal.find('#btn-load-media-metadata').prop('disabled', true);
@@ -346,6 +346,7 @@ $(document).ready(function () {
     }
 
     function loadMediumMetadata($modal) {
+        const format = $modal.find('#mediaSource option:selected').data('media-format');
         const $errorMessage = $modal.find('#load-media-metadata-error');
         const sourceId = $modal.find('#mediaSource').val();
         const mediumId = $modal.find('#mediumId').val();
@@ -363,12 +364,23 @@ $(document).ready(function () {
 
         $.getJSON(route)
             .done(function(response) {
-                $modal.find('#name').val(response.name);
-                $modal.find('#description').val(response.description);
-                $modal.find('#publisher').val(response.publisher);
-                $modal.find('#logoUrl').val(response.logoUrl);
-                $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
-                $modal.find('#modifiedAt').val(response.modifiedAt);
+                switch (format) {
+                    case 'BILDUNGSLOGIN':
+                        $modal.find('#name').val(response.name);
+                        $modal.find('#description').val(response.description);
+                        $modal.find('#publisher').val(response.publisher);
+                        $modal.find('#logoUrl').val(response.logoUrl);
+                        $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+                        $modal.find('#modifiedAt').val(response.modifiedAt);
+                        break;
+                    case 'VIDIS':
+                        $modal.find('#name').val(response.name);
+                        $modal.find('#description').val(response.description);
+                        // $modal.find('#logoUrl').val(response.logoUrl);
+                        break;
+                    default:
+                        break;
+                }
             })
             .fail(function(response) {
                 if (response.responseJSON && response.responseJSON.error) {
