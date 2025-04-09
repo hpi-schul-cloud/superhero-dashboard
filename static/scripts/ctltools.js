@@ -376,7 +376,7 @@ $(document).ready(function () {
                     case 'VIDIS':
                         $modal.find('#name').val(response.name);
                         $modal.find('#description').val(response.description);
-                        // $modal.find('#logoUrl').val(response.logoUrl);
+                        $modal.find('#logoUrl').val(response.logoUrl);
                         break;
                     default:
                         break;
