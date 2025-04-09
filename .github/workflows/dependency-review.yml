@@ -25,3 +25,8 @@ jobs:
             0BSD,
             GPL-3.0,
             AGPL-3.0
+          allow-dependencies-licenses: >
+            pkg:npm/lodash.includes@4.3.0,
+            pkg:npm/lodash.isinteger@4.0.4,
+            pkg:npm/lodash.once@4.1.1
+            
