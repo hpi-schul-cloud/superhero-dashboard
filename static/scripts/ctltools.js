@@ -364,22 +364,14 @@ $(document).ready(function () {
 
         $.getJSON(route)
             .done(function(response) {
-                switch (format) {
-                    case 'BILDUNGSLOGIN':
-                        $modal.find('#name').val(response.name);
-                        $modal.find('#description').val(response.description);
-                        $modal.find('#publisher').val(response.publisher);
-                        $modal.find('#logoUrl').val(response.logoUrl);
-                        $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
-                        $modal.find('#modifiedAt').val(response.modifiedAt);
-                        break;
-                    case 'VIDIS':
-                        $modal.find('#name').val(response.name);
-                        $modal.find('#description').val(response.description);
-                        $modal.find('#logoUrl').val(response.logoUrl);
-                        break;
-                    default:
-                        break;
+                $modal.find('#name').val(response.name);
+                $modal.find('#description').val(response.description);
+                $modal.find('#logoUrl').val(response.logoUrl);
+
+                if (format === 'BILDUNGSLOGIN') {
+                    $modal.find('#publisher').val(response.publisher);
+                    $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+                    $modal.find('#modifiedAt').val(response.modifiedAt);
                 }
             })
             .fail(function(response) {
