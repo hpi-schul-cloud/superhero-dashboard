@@ -380,6 +380,8 @@ $(document).ready(function () {
             
                     if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
                         $errorMessage.text('Für das Medium wurden keine Metadaten geliefert.');
+                    } else if (err.type === 'MEDIUM_NOT_FOUND') {
+                        $errorMessage.text('Das Medium konnte nicht gefunden werden.');
                     } else {
                         $errorMessage.text(`Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`);
                     }
