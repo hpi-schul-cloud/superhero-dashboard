@@ -13,7 +13,6 @@ $(document).ready(function () {
 
     $addModal.find('.custom-parameter-list').children().remove();
     $addModal.find('#hasMedium').prop('checked', false);
-
     resetMediumForms($addModal);
 
     populateModalForm($addModal, {
@@ -37,12 +36,12 @@ $(document).ready(function () {
         title: 'Bearbeiten',
         closeLabel: 'Schließen',
         submitLabel: 'Speichern',
-        fields: result,
+        fields: result
       });
       if (result.hasMedium) {
         hasMedium($editModal);
-        setMediumStatus($editModal);
       }
+      setMediumStatus($editModal);
       setMediumMetadataFormat($editModal);
       populateCustomParameter($editModal, result.parameters);
       $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
@@ -59,7 +58,7 @@ $(document).ready(function () {
         title: 'Registrierungslink',
         closeLabel: 'Schließen',
         submitLabel: false,
-        fields: result,
+        fields: result
       });
 
       $reglinkmodal.modal('show');
@@ -81,7 +80,7 @@ $(document).ready(function () {
         title: 'Tool wirklich löschen?',
         closeLabel: 'Schließen',
         submitLabel: 'Löschen',
-        fields: result,
+        fields: result
       });
 
       $deleteModal.modal('show');
@@ -131,84 +130,39 @@ $(document).ready(function () {
   $modalForms.on('submit', function () {
     $('.tab-pane').not('.active').remove();
 
-    $(this)
-      .find('.custom-parameter-container')
-      .each(function (index) {
-        $(this)
-          .find('.parameters-is-optional')
-          .attr('name', `parameters[${index}][isOptional]`);
-        $(this)
-          .find('.parameters-is-protected')
-          .attr('name', `parameters[${index}][isProtected]`);
-        $(this)
-          .find('.parameters-name')
-          .attr('name', `parameters[${index}][name]`);
-        $(this)
-          .find('.parameters-displayName')
-          .attr('name', `parameters[${index}][displayName]`);
-        $(this)
-          .find('.parameters-description')
-          .attr('name', `parameters[${index}][description]`);
-        $(this)
-          .find('.parameters-type')
-          .attr('name', `parameters[${index}][type]`);
-        $(this)
-          .find('.parameters-scope')
-          .attr('name', `parameters[${index}][scope]`);
-        $(this)
-          .find('.parameters-location')
-          .attr('name', `parameters[${index}][location]`);
-        $(this)
-          .find('.parameters-default')
-          .attr('name', `parameters[${index}][defaultValue]`);
-        $(this)
-          .find('.parameters-regex')
-          .attr('name', `parameters[${index}][regex]`);
-        $(this)
-          .find('.parameters-regex-comment')
-          .attr('name', `parameters[${index}][regexComment]`);
-      });
+    $(this).find('.custom-parameter-container').each(function (index) {
+      $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
+      $(this).find('.parameters-is-protected').attr('name', `parameters[${index}][isProtected]`);
+      $(this).find('.parameters-name').attr('name', `parameters[${index}][name]`);
+      $(this).find('.parameters-displayName').attr('name', `parameters[${index}][displayName]`);
+      $(this).find('.parameters-description').attr('name', `parameters[${index}][description]`);
+      $(this).find('.parameters-type').attr('name', `parameters[${index}][type]`);
+      $(this).find('.parameters-scope').attr('name', `parameters[${index}][scope]`);
+      $(this).find('.parameters-location').attr('name', `parameters[${index}][location]`);
+      $(this).find('.parameters-default').attr('name', `parameters[${index}][defaultValue]`);
+      $(this).find('.parameters-regex').attr('name', `parameters[${index}][regex]`);
+      $(this).find('.parameters-regex-comment').attr('name', `parameters[${index}][regexComment]`);
+    });
   });
 
   function populateCustomParameter($modal, parameters) {
-    parameters.forEach((param) => {
+    parameters.forEach(param => {
       const customParameter = addCustomParameter($modal);
 
-      customParameter
-        .find('.parameters-is-optional')
-        .attr('checked', param.isOptional);
-      customParameter
-        .find('.parameters-is-protected')
-        .attr('checked', param.isProtected);
+      customParameter.find('.parameters-is-optional').attr('checked', param.isOptional);
+      customParameter.find('.parameters-is-protected').attr('checked', param.isProtected);
       customParameter.find('.parameters-name').attr('value', param.name);
-      customParameter
-        .find('.parameters-displayName')
-        .attr('value', param.displayName);
-      customParameter
-        .find('.parameters-description')
-        .attr('value', param.description);
-      customParameter
-        .find('.parameters-default')
-        .attr('value', param.defaultValue);
+      customParameter.find('.parameters-displayName').attr('value', param.displayName);
+      customParameter.find('.parameters-description').attr('value', param.description);
+      customParameter.find('.parameters-default').attr('value', param.defaultValue);
       customParameter.find('.parameters-regex').attr('value', param.regex);
-      customParameter
-        .find('.parameters-regex-comment')
-        .attr('value', param.regexComment);
-      customParameter
-        .find('.parameters-type')
-        .find(`option[value=${param.type}]`)
-        .prop('selected', true);
+      customParameter.find('.parameters-regex-comment').attr('value', param.regexComment);
+      customParameter.find('.parameters-type').find(`option[value=${param.type}]`).prop('selected', true);
       if (param.type === 'boolean') {
         customParameter.find('.parameters-type').trigger('change');
       }
-      customParameter
-        .find('.parameters-scope')
-        .find(`option[value=${param.scope}]`)
-        .prop('selected', true);
-      customParameter
-        .find('.parameters-location')
-        .find(`option[value=${param.location}]`)
-        .prop('selected', true);
+      customParameter.find('.parameters-scope').find(`option[value=${param.scope}]`).prop('selected', true);
+      customParameter.find('.parameters-location').find(`option[value=${param.location}]`).prop('selected', true);
     });
   }
 
@@ -226,8 +180,7 @@ $(document).ready(function () {
 
     newCustomParamContainer.find('.parameters-type').on('change', function () {
       const selectedType = $(this).val();
-      const booleanTypeText =
-        newCustomParamContainer.find('.boolean-type-text');
+      const booleanTypeText = newCustomParamContainer.find('.boolean-type-text');
 
       if (selectedType === 'boolean') {
         $(booleanTypeText).show();
@@ -237,72 +190,28 @@ $(document).ready(function () {
     });
 
     // Bind labels to input fields
-    newCustomParamContainer
-      .find('.parameters-is-optional-label')
-      .attr('for', `parameters-is-optional-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-is-optional')
-      .attr('for', `parameters-is-optional-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-is-protected-label')
-      .attr('for', `parameters-is-protected-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-is-protected')
-      .attr('for', `parameters-is-protected-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-name-label')
-      .attr('for', `parameters-name-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-name')
-      .attr('id', `parameters-name-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-displayName-label')
-      .attr('for', `parameters-displayName-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-displayName')
-      .attr('id', `parameters-displayName-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-description-label')
-      .attr('for', `parameters-description-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-description')
-      .attr('id', `parameters-description-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-type-label')
-      .attr('for', `parameters-type-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-type')
-      .attr('id', `parameters-type-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-scope-label')
-      .attr('for', `parameters-scope-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-scope')
-      .attr('id', `parameters-scope-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-location-label')
-      .attr('for', `parameters-location-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-location')
-      .attr('id', `parameters-location-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-default-label')
-      .attr('for', `parameters-default-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-default')
-      .attr('id', `parameters-default-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-regex-label')
-      .attr('for', `parameters-regex-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-regex')
-      .attr('id', `parameters-regex-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-regex-comment-label')
-      .attr('for', `parameters-regex-comment-${customParameterId}`);
-    newCustomParamContainer
-      .find('.parameters-regex-comment')
-      .attr('id', `parameters-regex-comment-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-is-optional-label').attr('for', `parameters-is-optional-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-is-optional').attr('for', `parameters-is-optional-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-is-protected-label').attr('for', `parameters-is-protected-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-is-protected').attr('for', `parameters-is-protected-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-name-label').attr('for', `parameters-name-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-name').attr('id', `parameters-name-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-displayName-label').attr('for', `parameters-displayName-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-displayName').attr('id', `parameters-displayName-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-description-label').attr('for', `parameters-description-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-description').attr('id', `parameters-description-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-type-label').attr('for', `parameters-type-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-type').attr('id', `parameters-type-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-scope-label').attr('for', `parameters-scope-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-scope').attr('id', `parameters-scope-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-location-label').attr('for', `parameters-location-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-location').attr('id', `parameters-location-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-default-label').attr('for', `parameters-default-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-default').attr('id', `parameters-default-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-regex-label').attr('for', `parameters-regex-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-regex').attr('id', `parameters-regex-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-regex-comment-label').attr('for', `parameters-regex-comment-${customParameterId}`);
+    newCustomParamContainer.find('.parameters-regex-comment').attr('id', `parameters-regex-comment-${customParameterId}`);
 
     customParameterId++;
 
@@ -310,58 +219,58 @@ $(document).ready(function () {
   }
 
   const dictionary = {
-    Vorname: 'firstName',
-    Nachname: 'lastName',
+    'Vorname': 'firstName',
+    'Nachname': 'lastName',
     'E-Mail': 'email',
-    Rollen: 'roles',
-    Rolen: 'roles',
-    Schule: 'schoolId',
-    Name: 'name',
-    ID: '_id',
-    Bundesland: 'federalState',
-    Permissions: 'permissions',
+    'Rollen': 'roles',
+    'Rolen': 'roles',
+    'Schule': 'schoolId',
+    'Name': 'name',
+    'ID': '_id',
+    'Bundesland': 'federalState',
+    'Permissions': 'permissions',
     'Geerbt von': 'roles',
-    Titel: 'subject',
-    Kategorie: 'category',
+    'Titel': 'subject',
+    'Kategorie': 'category',
     'Ist-Zustand': 'currentState',
     'Soll-Zustand': 'targetState',
-    Status: 'state',
-    Erstellungsdatum: 'createdAt',
-    Anmerkungen: 'notes',
-    Abkürzung: 'abbreviation',
-    Logo: 'logoUrl',
+    'Status': 'state',
+    'Erstellungsdatum': 'createdAt',
+    'Anmerkungen': 'notes',
+    'Abkürzung': 'abbreviation',
+    'Logo': 'logoUrl',
     'E-Mail-Adresse': 'email',
-    Klassen: 'classIds',
-    Lehrer: 'teacherIds',
+    'Klassen': 'classIds',
+    'Lehrer': 'teacherIds',
     'Klasse(n)': 'classIds',
-    Bezeichnung: 'name',
-    Typ: 'type',
-    Url: 'url',
-    Alias: 'alias',
+    'Bezeichnung': 'name',
+    'Typ': 'type',
+    'Url': 'url',
+    'Alias': 'alias',
 
-    subject: 'Titel',
-    firstName: 'Vorname',
-    lastName: 'Nachname',
-    roles: 'Rollen',
-    schoolId: 'Schule',
-    name: 'Name',
-    _id: 'ID',
-    federalState: 'Bundesland',
-    category: 'Kategorie',
-    currentState: 'Ist-Zustand',
-    targetState: 'Soll-Zustand',
-    state: 'Status',
-    createdAt: 'Erstellungsdatum',
-    notes: 'Anmerkungen',
-    logoUrl: 'Logo',
-    abbreviation: 'Abkürzung',
-    type: 'Typ',
-    url: 'Url',
-    alias: 'Alias',
-    permissions: 'Permissions',
-    teacherIds: 'Lehrer',
-    classIds: 'Klasse(n)',
-    email: 'E-Mail-Adresse',
+    'subject': 'Titel',
+    'firstName': 'Vorname',
+    'lastName': 'Nachname',
+    'roles': 'Rollen',
+    'schoolId': 'Schule',
+    'name': 'Name',
+    '_id': 'ID',
+    'federalState': 'Bundesland',
+    'category': 'Kategorie',
+    'currentState': 'Ist-Zustand',
+    'targetState': 'Soll-Zustand',
+    'state': 'Status',
+    'createdAt': 'Erstellungsdatum',
+    'notes': 'Anmerkungen',
+    'logoUrl': 'Logo',
+    'abbreviation': 'Abkürzung',
+    'type': 'Typ',
+    'url': 'Url',
+    'alias': 'Alias',
+    'permissions': 'Permissions',
+    'teacherIds': 'Lehrer',
+    'classIds': 'Klasse(n)',
+    'email': 'E-Mail-Adresse'
   };
 
   $('tr th').each(function (i, j) {
@@ -369,7 +278,7 @@ $(document).ready(function () {
       let location = window.location.search.split('&');
       let contained = false;
 
-      location = location.map((entity) => {
+      location = location.map(entity => {
         if (entity.includes('sort')) {
           if (entity === 'sort=' + dictionary[$(j).text()]) {
             entity = 'sort=-' + dictionary[$(j).text()];
@@ -380,7 +289,8 @@ $(document).ready(function () {
         }
         return entity;
       });
-      if (!contained) location.push('sort=' + dictionary[$(j).text()]);
+      if (!contained)
+        location.push('sort=' + dictionary[$(j).text()]);
       window.location.search = location.join('&');
     });
   });
@@ -389,19 +299,20 @@ $(document).ready(function () {
     let location = window.location.search.split('&');
     let contained = false;
 
-    location = location.map((entity) => {
+    location = location.map(entity => {
       if (entity.includes('limit')) {
         entity = 'limit=' + $('#limit').val();
         contained = true;
       }
       return entity;
     });
-    if (!contained) location.push('limit=' + $('#limit').val());
+    if (!contained)
+      location.push('limit=' + $('#limit').val());
     window.location.search = location.join('&');
   });
 
   let location = window.location.search.split('&');
-  location.map((entity) => {
+  location.map(entity => {
     if (entity.includes('sort')) {
       let queryParam = entity.split('=');
       queryParam = queryParam[1].toString();
@@ -414,13 +325,9 @@ $(document).ready(function () {
       }
 
       if (asc) {
-        $('th:contains(' + dictionary[queryParam] + ')').append(
-          '<i class="fa fa-arrow-down" aria-hidden="true"></i>'
-        );
+        $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-down" aria-hidden="true"></i>');
       } else {
-        $('th:contains(' + dictionary[queryParam] + ')').append(
-          '<i class="fa fa-arrow-up" aria-hidden="true"></i>'
-        );
+        $('th:contains(' + dictionary[queryParam] + ')').append('<i class="fa fa-arrow-up" aria-hidden="true"></i>');
       }
     }
   });
@@ -433,21 +340,19 @@ $(document).ready(function () {
     $modal.find('#load-medium-status-error').text('');
 
     if (status === 'template') {
-      $modal.find('mediumId').prop('required', false).prop('disabled', true);
+      $modal.find('mediumId').prop('disabled', true);
     } else if (status === 'draft') {
-      $modal.find('mediumId').prop('required', false).prop('disabled', false);
+      $modal.find('mediumId').prop('disabled', false);
     } else if (status === 'active') {
       $modal.find('mediumId').prop('required', true).prop('disabled', false);
     }
   }
 
   function setMediumMetadataFormat($modal) {
-    const format = $modal
-      .find('#mediaSource option:selected')
-      .data('media-format');
+    const format = $modal.find('#mediaSource option:selected').data('media-format');
     $modal.find('#load-media-metadata-error').text('');
 
-    if (format === 'BILDUNGSLOGIN' || format === 'VIDIS') {
+    if (format === 'BILDUNGSLOGIN') {
       $modal.find('#btn-load-media-metadata').prop('disabled', false);
     } else {
       $modal.find('#btn-load-media-metadata').prop('disabled', true);
@@ -455,13 +360,9 @@ $(document).ready(function () {
   }
 
   function loadMediumMetadata($modal) {
-    const format = $modal
-      .find('#mediaSource option:selected')
-      .data('media-format');
     const $errorMessage = $modal.find('#load-media-metadata-error');
     const sourceId = $modal.find('#mediaSource').val();
     const mediumId = $modal.find('#mediumId').val();
-
     $errorMessage.text('');
 
     if (!mediumId) {
@@ -478,29 +379,21 @@ $(document).ready(function () {
       .done(function (response) {
         $modal.find('#name').val(response.name);
         $modal.find('#description').val(response.description);
+        $modal.find('#publisher').val(response.publisher);
         $modal.find('#logoUrl').val(response.logoUrl);
-
-        if (format === 'BILDUNGSLOGIN') {
-          $modal.find('#publisher').val(response.publisher);
-          $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
-          $modal.find('#modifiedAt').val(response.modifiedAt);
-        }
+        $modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+        $modal.find('#modifiedAt').val(response.modifiedAt);
       })
       .fail(function (response) {
         if (response.responseJSON && response.responseJSON.error) {
           const err = response.responseJSON.error;
 
           if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
-            $errorMessage.text(
-              'Für das Medium wurden keine Metadaten geliefert.'
-            );
-          } else if (err.type === 'MEDIUM_NOT_FOUND') {
-            $errorMessage.text('Das Medium konnte nicht gefunden werden.');
+            $errorMessage.text('Für das Medium wurden keine Metadaten geliefert.');
           } else {
-            $errorMessage.text(
-              `Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`
-            );
+            $errorMessage.text(`Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`);
           }
+
         } else {
           $errorMessage.text('Es ist ein Fehler aufgetreten.');
         }
@@ -508,23 +401,11 @@ $(document).ready(function () {
   }
 
   function resetMediumForms($modal) {
-    $modal
-      .find('#mediumId')
-      .prop('required', false)
-      .prop('disabled', true)
-      .val('');
+    $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
     $modal.find('#publisher').prop('disabled', true).val('');
     $modal.find('#modifiedAt').val('');
-    $modal
-      .find('#mediaSource')
-      .val('')
-      .prop('disabled', true)
-      .trigger('chosen:updated');
-    $modal
-      .find('#mediumStatus')
-      .prop('required', false)
-      .prop('disabled', true)
-      .trigger('chosen:updated');
+    $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
+    $modal.find('#mediumStatus').val('').prop('disabled', true).trigger('chosen:updated');
     $modal.find('#btn-load-media-metadata').prop('disabled', true);
     $modal.find('#load-media-metadata-error').text('');
   }
@@ -533,15 +414,8 @@ $(document).ready(function () {
     const isChecked = $modal.find('#hasMedium').is(':checked');
 
     if (isChecked) {
-      $modal
-        .find('#mediaSource')
-        .prop('disabled', false)
-        .trigger('chosen:updated');
-      $modal
-        .find('#mediumStatus')
-        .prop('disabled', false)
-        .prop('required', false)
-        .trigger('chosen:updated');
+      $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+      $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
       $modal.find('#mediumId').prop('disabled', false);
       $modal.find('#publisher').prop('disabled', false);
       $modal.find('#load-media-metadata-error').text('');
