@@ -40,8 +40,9 @@ $(document).ready(function () {
       });
       if (result.hasMedium) {
         hasMedium($editModal);
+        setMediumStatus($editModal);
       }
-      setMediumStatus($editModal);
+      //setMediumStatus($editModal);
       setMediumMetadataFormat($editModal);
       populateCustomParameter($editModal, result.parameters);
       $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
