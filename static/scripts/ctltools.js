@@ -338,7 +338,6 @@ $(document).ready(function () {
     $modal.find('#load-medium-status-error').text('');
 
     if (status === 'template') {
-      $modal.find('#mediaSource').prop('required', true).trigger('chosen:updated');
       $modal.find('mediumId').prop('required', false).prop('disabled', true).val('');
       $modal.find('#publisher').prop('disabled', true).val('');
     } else if (status === 'draft') {
@@ -416,10 +415,8 @@ $(document).ready(function () {
     const isChecked = $modal.find('#hasMedium').is(':checked');
 
     if (isChecked) {
-      $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+      $modal.find('#mediaSource').prop('disabled', false).prop('required', true).trigger('chosen:updated');
       $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
-      $modal.find('#mediumId').prop('disabled', false);
-      $modal.find('#publisher').prop('disabled', false);
       $modal.find('#load-media-metadata-error').text('');
     } else {
       resetMediumForms($modal);
