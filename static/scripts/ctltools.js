@@ -342,11 +342,17 @@ $(document).ready(function () {
     } else if (status === 'draft') {
       $modal.find('mediumId').prop('disabled', false);
       $modal.find('mediumId').prop('required', true);
+      $modal.find('#mediaSource').prop('disabled', false);
+      $modal.find('#mediaSource').prop('required', true).trigger('chosen:updated');
       $modal.find('#publisher').prop('disabled', false);
     } else if (status === 'active') {
+      $modal.find('#mediaSource').prop('disabled', false);
+      $modal.find('#mediaSource').prop('required', true).trigger('chosen:updated');
       $modal.find('mediumId').prop('disabled', false);
       $modal.find('#publisher').prop('disabled', false);
       $modal.find('mediumId').prop('required', true);
+    } else {
+      resetMediumForms($modal);
     }
   }
 
