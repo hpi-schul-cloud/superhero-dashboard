@@ -401,8 +401,6 @@ $(document).ready(function () {
     if (isChecked) {
       $modal.find('#mediaSource').prop('disabled', false).prop('required', true).trigger('chosen:updated');
       $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
-      // $modal.find('#mediumId').prop('disabled', false);
-      // $modal.find('#publisher').prop('disabled', false);
       $modal.find('#load-media-metadata-error').text('');
     } else {
       resetMediumForms($modal);
@@ -419,8 +417,8 @@ $(document).ready(function () {
       $modal.find('#mediumId').prop('disabled', false).prop('required', true);
       $modal.find('#publisher').prop('disabled', false);
     } else if (status === 'active') {
-      $modal.find('#mediumId').prop('disabled', false);
-      $modal.find('#mediumId').prop('required', true);
+      $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+      $modal.find('#publisher').prop('disabled', false);
     }
   }
 
