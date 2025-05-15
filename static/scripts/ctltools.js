@@ -386,11 +386,11 @@ $(document).ready(function () {
   }
 
   function resetMediumForms($modal) {
-    $modal.find('#mediumId').prop('disabled', true).val('');
+    $modal.find('#mediumId').prop('disabled', true).prop('required', false).val('');
     $modal.find('#publisher').prop('disabled', true).val('');
     $modal.find('#modifiedAt').val('');
-    $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
-    $modal.find('#mediumStatus').val('').prop('disabled', true).trigger('chosen:updated');
+    $modal.find('#mediaSource').val('').prop('disabled', true).prop('required', false).trigger('chosen:updated');
+    $modal.find('#mediumStatus').val('').prop('disabled', true).prop('required', false).trigger('chosen:updated');
     $modal.find('#btn-load-media-metadata').prop('disabled', true);
     $modal.find('#load-media-metadata-error').text('');
   }
@@ -401,8 +401,8 @@ $(document).ready(function () {
     if (isChecked) {
       $modal.find('#mediaSource').prop('disabled', false).prop('required', true).trigger('chosen:updated');
       $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
-      $modal.find('mediumId').prop('disabled', false);
-      $modal.find('#publisher').prop('disabled', false);
+      // $modal.find('#mediumId').prop('disabled', false);
+      // $modal.find('#publisher').prop('disabled', false);
       $modal.find('#load-media-metadata-error').text('');
     } else {
       resetMediumForms($modal);
@@ -413,21 +413,17 @@ $(document).ready(function () {
     const status = $modal.find('#mediumStatus option:selected').data('medium-status');
 
     if (status === 'template') {
-      $modal.find('mediumId').prop('disabled', true).val('');
-      $modal.find('mediumId').prop('required', false);
-      $modal.find('#publisher').prop('disabled', true).val('');
-      $modal.find('publisher').prop('required', false);
+      $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
+      $modal.find('#publisher').prop('required', false).prop('disabled', true).val('');
     } else if (status === 'draft') {
-      $modal.find('mediumId').prop('disabled', false);
-      $modal.find('mediumId').prop('required', true);
+      $modal.find('#mediumId').prop('disabled', false).prop('required', true);
       $modal.find('#publisher').prop('disabled', false);
     } else if (status === 'active') {
-      $modal.find('mediumId').prop('disabled', false);
-      $modal.find('mediumId').prop('required', true);
-    } else {
-      resetMediumForms($modal);
+      $modal.find('#mediumId').prop('disabled', false);
+      $modal.find('#mediumId').prop('required', true);
     }
   }
+
   $addModal.find('#mediumStatus').on('change', function () {
     setMediumStatus($addModal);
   });
