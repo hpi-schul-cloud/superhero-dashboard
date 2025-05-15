@@ -335,11 +335,9 @@ $(document).ready(function () {
   function setMediumStatus($modal) {
     const status = $modal.find('#mediumStatus option:selected').data('medium-status');
 
-    $modal.find('#load-medium-status-error').text('');
-
     if (status === 'template') {
-      $modal.find('mediumId').prop('disabled', true).val('');
       $modal.find('mediumId').prop('required', false);
+      $modal.find('mediumId').prop('disabled', true).val('');
       $modal.find('#publisher').prop('disabled', true).val('');
     } else if (status === 'draft') {
       $modal.find('mediumId').prop('disabled', false);
@@ -347,8 +345,8 @@ $(document).ready(function () {
       $modal.find('#publisher').prop('disabled', false);
     } else if (status === 'active') {
       $modal.find('mediumId').prop('disabled', false);
+      $modal.find('#publisher').prop('disabled', false);
       $modal.find('mediumId').prop('required', true);
-      $modal.find('#mediaSource').trigger('chosen:updated');
     }
   }
 
