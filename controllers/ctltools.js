@@ -117,7 +117,6 @@ const getDetailHandler = (req, res, next) => {
       }
 
       toolData.hasMedium = !!toolData.medium;
-      toolData.mediumStatus = !!toolData.medium ? toolData.medium.status : '';
 
       convertZerosToString(toolMetaData);
       res.json({ ...toolData, ...toolMetaData });
