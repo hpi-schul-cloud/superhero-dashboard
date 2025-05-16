@@ -221,8 +221,8 @@ const mediaSources = [
 
 const mediumStatuses = [
     { label: 'Nicht anwenden', status: 'active' },
-    { label: 'Template', status: 'template' },
     { label: 'Draft', status: 'draft' },
+    { label: 'Template', status: 'template' },
 ];
 
 const getMediaSources = (data) => {
