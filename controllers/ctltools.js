@@ -10,9 +10,7 @@ const moment = require('moment');
 const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
-const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(
-    process.env.FEATURE_MEDIA_SHELF_ENABLED
-);
+const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
 
 const clearEmptyInputs = (object) => {
     Object.keys(object).forEach((key) => {
@@ -41,7 +39,7 @@ const clearEmptyInputs = (object) => {
                 break;
         }
     });
-};
+}
 
 const transformToolInputs = (id, body) => {
     body.id = id;
@@ -75,81 +73,66 @@ const transformToolInputs = (id, body) => {
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
 
-    api(req, { version: 'v3' })
-        .post(`/tools/external-tools/${req.params.id}`, {
-            json: req.body,
-        })
-        .then(() => {
-            res.redirect(req.header('Referer'));
-        })
-        .catch((err) => {
-            next(err);
-        });
+    api(req, { version: 'v3' }).post(`/tools/external-tools/${req.params.id}`, {
+        json: req.body
+    }).then(() => {
+        res.redirect(req.header('Referer'));
+    }).catch(err => {
+        next(err);
+    });
 };
 
 const convertZerosToString = (obj) => {
-    Object.keys(obj).forEach((key) => {
+    Object.keys(obj).forEach(key => {
         if (typeof obj[key] === 'object') {
             convertZerosToString(obj[key]);
         } else if (obj[key] === 0) {
             obj[key] = '0';
         }
     });
-};
+}
 
 const getDetailHandler = (req, res, next) => {
     Promise.all([
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
-        api(req, { version: 'v3' }).get(
-            `/tools/external-tools/${req.params.id}/metadata`
-        ),
-    ])
-        .then(([toolData, toolMetaData]) => {
-            if (toolData.config.type === 'oauth2') {
-                toolData.config.redirectUris = toolData.config.redirectUris.join(';');
-            }
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`)
+    ]).then(([toolData, toolMetaData]) => {
+        if (toolData.config.type === 'oauth2') {
+            toolData.config.redirectUris = toolData.config.redirectUris.join(';');
+        }
 
-            const showMediaShelfCount =
-                !MEDIA_SHELF_ENABLED &&
-                toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
-            if (showMediaShelfCount) {
-                delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
-            }
+        const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
+        if (showMediaShelfCount) {
+            delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
+        }
 
-            toolData.hasMedium = !!toolData.medium;
+        toolData.hasMedium = !!toolData.medium;
 
-            convertZerosToString(toolMetaData);
-            res.json({ ...toolData, ...toolMetaData });
-        })
-        .catch((err) => {
-            next(err);
-        });
+        convertZerosToString(toolMetaData);
+        res.json({ ...toolData, ...toolMetaData });
+    }).catch(err => {
+        next(err);
+    });
 };
 
 const getDeleteHandler = (req, res, next) => {
-    api(req, { version: 'v3' })
-        .delete(`/tools/external-tools/${req.params.id}`)
-        .then(() => {
-            res.redirect(req.header('Referer'));
-        })
-        .catch((err) => {
-            next(err);
-        });
+    api(req, { version: 'v3' }).delete(`/tools/external-tools/${req.params.id}`).then(() => {
+        res.redirect(req.header('Referer'));
+    }).catch(err => {
+        next(err);
+    });
 };
 
 const getCreateHandler = (req, res, next) => {
     req.body = transformToolInputs(undefined, req.body);
 
-    api(req, { version: 'v3' })
-        .post('/tools/external-tools/', {
-            json: req.body,
-        })
-        .then(() => {
-            next();
-        })
-        .catch((err) => {
-            next(err);
-        });
+    api(req, { version: 'v3' }).post('/tools/external-tools/', {
+        json: req.body
+    }).then(() => {
+        next();
+    }).catch(err => {
+        next(err);
+    });
 };
 
 const getTableActions = (item, path) => {
@@ -158,33 +141,35 @@ const getTableActions = (item, path) => {
             link: path + item.id,
             class: 'btn-edit',
             icon: 'edit',
-            title: 'bearbeiten',
+            title: 'bearbeiten'
         },
         {
             link: path + item.id + '/datasheet',
             class: 'btn-data-sheet',
             icon: 'file-text-o',
             title: 'Datenblatt anzeigen',
-            target: '_blank',
+            target: '_blank'
         },
         {
             link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
             method: 'delete',
-            title: 'löschen',
-        },
+            title: 'löschen'
+        }
     ];
 };
 
-const head = ['ID', 'Name', 'OAuthClientId', ''];
+const head = [
+    'ID',
+    'Name',
+    'OAuthClientId',
+    '',
+];
 
 const messageTypes = [
     { label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
-    {
-        label: 'ContentItemSelectionRequest',
-        value: 'ContentItemSelectionRequest',
-    },
+    { label: 'ContentItemSelectionRequest', value: 'ContentItemSelectionRequest' },
 ];
 
 const privacies = [
@@ -231,7 +216,7 @@ const customParameterScopes = [
 ];
 
 const mediaSources = [
-    { label: 'Ohne Medien-Katalog', sourceId: '', format: '' },
+    { label: 'Ohne Medien-Katalog', sourceId: '', format: '' }
 ];
 
 const mediumStatuses = [
@@ -251,7 +236,7 @@ const getMediaSources = (data) => {
 };
 
 const showTools = (req, res) => {
-    const itemsPerPage = req.query.limit || 10;
+    const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
     let sortOrder;
@@ -283,84 +268,77 @@ const showTools = (req, res) => {
                 sortOrder,
                 sortBy,
             },
-        }),
-    ])
-        .then(([contextTypes, mediaSourceList, tools]) => {
-            const toolContextTypes = contextTypes.data;
-
-            const body = tools.data.map((item) => {
-                return [
-                    item.id || '',
-                    item.name || '',
-                    item.config.clientId || '',
-                    getTableActions(item, '/ctltools/'),
-                ];
-            });
-
-            let sortQuery = '';
-            if (req.query.sort) {
-                sortQuery = '&sort=' + req.query.sort;
-            }
-
-            let limitQuery = '';
-            if (req.query.limit) {
-                limitQuery = '&limit=' + req.query.limit;
-            }
-
-            const pagination = {
-                currentPage,
-                numPages: Math.ceil(tools.total / itemsPerPage),
-                baseUrl: '/ctltools/?p={{page}}' + sortQuery + limitQuery,
-            };
-
-            res.render('ctltools/ctltools', {
-                title: 'Tools',
-                head,
-                body,
-                pagination,
-                user: res.locals.currentUser,
-                limit: true,
-                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
-                messageTypes,
-                privacies,
-                authMethods,
-                toolTypes,
-                customParameterTypes,
-                customParameterScopes,
-                customParameterLocations,
-                toolContextTypes,
-                mediumStatuses,
-                mediaSources: getMediaSources(mediaSourceList.responses),
-            });
         })
-        .catch((err) => {
-            next(err);
+    ]).then(([contextTypes, mediaSourceList, tools]) => {
+        const toolContextTypes = contextTypes.data;
+
+        const body = tools.data.map(item => {
+            return [
+                item.id || '',
+                item.name || '',
+                item.config.clientId || '',
+                getTableActions(item, '/ctltools/')
+            ];
         });
+
+        let sortQuery = '';
+        if (req.query.sort) {
+            sortQuery = '&sort=' + req.query.sort;
+        }
+
+        let limitQuery = '';
+        if (req.query.limit) {
+            limitQuery = '&limit=' + req.query.limit;
+        }
+
+        const pagination = {
+            currentPage,
+            numPages: Math.ceil(tools.total / itemsPerPage),
+            baseUrl: '/ctltools/?p={{page}}' + sortQuery + limitQuery
+        };
+
+        res.render('ctltools/ctltools', {
+            title: 'Tools',
+            head,
+            body,
+            pagination,
+            user: res.locals.currentUser,
+            limit: true,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
+            messageTypes,
+            privacies,
+            authMethods,
+            toolTypes,
+            customParameterTypes,
+            customParameterScopes,
+            customParameterLocations,
+            toolContextTypes,
+            mediumStatuses,
+            mediaSources: getMediaSources(mediaSourceList.responses)
+        });
+    }).catch(err => {
+        next(err);
+    });
 };
 
 const getDatasheet = (req, res, next) => {
     try {
-        api(req, { version: 'v3' })
-            .get(`/tools/external-tools/${req.params.id}/datasheet`)
-            .pipe(res);
+        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
     } catch (e) {
         next(e);
     }
-};
+}
 
 const getMediumMedataHandler = (req, res) => {
     const mediaSourceId = encodeURIComponent(req.query.sourceId);
     const mediumId = encodeURIComponent(req.query.mediumId);
 
-    api(req, { version: 'v3' })
-        .get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`)
-        .then((reponse) => {
-            res.json(reponse);
-        })
-        .catch((err) => {
-            res.status(err.statusCode).json({ error: err.error });
-        });
-};
+    api(req, { version: 'v3' }).get(`/medium-metadata/medium/${mediumId}/media-source/${mediaSourceId}/`).then((reponse) => {
+        res.json(reponse);
+    }).catch(err => {
+        res.status(err.statusCode).json({ error: err.error });
+    });
+}
 
 router.use(authHelper.authChecker);
 
