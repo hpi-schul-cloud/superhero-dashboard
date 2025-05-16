@@ -95,6 +95,7 @@ $(document).ready(function () {
 		} else {
 			regexComment.removeAttr('required');
 		}
+
 	});
 
 	function useTabHandler($modal, modalId) {
@@ -274,6 +275,7 @@ $(document).ready(function () {
 
 	$('tr th').each(function (i, j) {
 		$(j).on('click', function () {
+
 			let location = window.location.search.split('&');
 			let contained = false;
 
@@ -295,6 +297,7 @@ $(document).ready(function () {
 	});
 
 	$('#limit').change(function changeLimit() {
+
 		let location = window.location.search.split('&');
 		let contained = false;
 
@@ -331,13 +334,11 @@ $(document).ready(function () {
 		}
 	});
 
-
-
 	function setMediumMetadataFormat($modal) {
 		const format = $modal.find('#mediaSource option:selected').data('media-format');
 		$modal.find('#load-media-metadata-error').text('');
 
-		if (format === 'BILDUNGSLOGIN') {
+		if (format === 'BILDUNGSLOGIN' || format === 'VIDIS') {
 			$modal.find('#btn-load-media-metadata').prop('disabled', false);
 		} else {
 			$modal.find('#btn-load-media-metadata').prop('disabled', true);
@@ -345,6 +346,7 @@ $(document).ready(function () {
 	}
 
 	function loadMediumMetadata($modal) {
+		const format = $modal.find('#mediaSource option:selected').data('media-format');
 		const $errorMessage = $modal.find('#load-media-metadata-error');
 		const sourceId = $modal.find('#mediaSource').val();
 		const mediumId = $modal.find('#mediumId').val();
@@ -364,10 +366,13 @@ $(document).ready(function () {
 			.done(function (response) {
 				$modal.find('#name').val(response.name);
 				$modal.find('#description').val(response.description);
-				$modal.find('#publisher').val(response.publisher);
 				$modal.find('#logoUrl').val(response.logoUrl);
-				$modal.find('#thumbnailUrl').val(response.previewLogoUrl);
-				$modal.find('#modifiedAt').val(response.modifiedAt);
+
+				if (format === 'BILDUNGSLOGIN') {
+					$modal.find('#publisher').val(response.publisher);
+					$modal.find('#thumbnailUrl').val(response.previewLogoUrl);
+					$modal.find('#modifiedAt').val(response.modifiedAt);
+				}
 			})
 			.fail(function (response) {
 				if (response.responseJSON && response.responseJSON.error) {
@@ -375,6 +380,8 @@ $(document).ready(function () {
 
 					if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
 						$errorMessage.text('Für das Medium wurden keine Metadaten geliefert.');
+					} else if (err.type === 'MEDIUM_NOT_FOUND') {
+						$errorMessage.text('Das Medium konnte nicht gefunden werden.');
 					} else {
 						$errorMessage.text(`Metadaten konnten nicht geladen werden - Error ${err.code} - ${err.type}`);
 					}
