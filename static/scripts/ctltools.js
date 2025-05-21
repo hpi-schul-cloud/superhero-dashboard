@@ -409,6 +409,7 @@ $(document).ready(function () {
             $modal.find('#mediaSource').prop('disabled', false).prop('required', true).trigger('chosen:updated');
             $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
             $modal.find('#load-media-metadata-error').text('');
+            setMediumStatus($modal);
         } else {
             resetMediumForms($modal);
         }
