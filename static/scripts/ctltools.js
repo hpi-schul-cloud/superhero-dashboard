@@ -420,10 +420,7 @@ $(document).ready(function () {
         if (status === 'template') {
             $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
             $modal.find('#publisher').prop('required', false).prop('disabled', true).val('');
-        } else if (status === 'draft') {
-            $modal.find('#mediumId').prop('disabled', false).prop('required', true);
-            $modal.find('#publisher').prop('disabled', false);
-        } else if (status === 'active') {
+        } else {
             $modal.find('#mediumId').prop('required', true).prop('disabled', false);
             $modal.find('#publisher').prop('disabled', false);
         }
