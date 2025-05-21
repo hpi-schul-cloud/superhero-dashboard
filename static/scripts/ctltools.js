@@ -406,7 +406,7 @@ $(document).ready(function () {
         const isChecked = $modal.find('#hasMedium').is(':checked');
 
         if (isChecked) {
-            $modal.find('#mediaSource').prop('disabled', false).prop('required', true).trigger('chosen:updated');
+            $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
             $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
             $modal.find('#load-media-metadata-error').text('');
             setMediumStatus($modal);
