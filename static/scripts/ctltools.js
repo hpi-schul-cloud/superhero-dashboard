@@ -396,7 +396,7 @@ $(document).ready(function () {
         $modal.find('#mediumId').prop('disabled', true).prop('required', false).val('');
         $modal.find('#publisher').prop('disabled', true).val('');
         $modal.find('#modifiedAt').val('');
-        $modal.find('#mediaSource').val('').prop('disabled', true).prop('required', false).trigger('chosen:updated');
+        $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
         $modal.find('#mediumStatus').val('').prop('disabled', true).prop('required', false).trigger('chosen:updated');
         $modal.find('#btn-load-media-metadata').prop('disabled', true);
         $modal.find('#load-media-metadata-error').text('');
