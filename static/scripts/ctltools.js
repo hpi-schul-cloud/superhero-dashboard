@@ -422,8 +422,15 @@ $(document).ready(function () {
             $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
             $modal.find('#publisher').prop('required', false).prop('disabled', true).val('');
         } else {
-            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
-            $modal.find('#publisher').prop('disabled', false);
+            const isChecked = $modal.find('#hasMedium').is(':checked');
+
+            if (isChecked) {
+                $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+                $modal.find('#publisher').prop('required', false).prop('disabled', false);
+            } else {
+                $modal.find('#mediumId').prop('required', false).prop('disabled', true);
+                $modal.find('#publisher').prop('required', false).prop('disabled', true);
+            }
         }
     }
 
