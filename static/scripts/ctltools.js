@@ -38,9 +38,7 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
-            if (result.hasMedium) {
-                hasMedium($editModal);
-            }
+            hasMedium($editModal);
             setMediumMetadataFormat($editModal);
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
