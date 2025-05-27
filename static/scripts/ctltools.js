@@ -38,9 +38,7 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
-            if (result.hasMedium) {
-                hasMedium($editModal);
-            }
+            hasMedium($editModal);
             setMediumMetadataFormat($editModal);
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
@@ -422,15 +420,8 @@ $(document).ready(function () {
             $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
             $modal.find('#publisher').prop('required', false).prop('disabled', true).val('');
         } else {
-            const isChecked = $modal.find('#hasMedium').is(':checked');
-
-            if (isChecked) {
-                $modal.find('#mediumId').prop('required', true).prop('disabled', false);
-                $modal.find('#publisher').prop('required', false).prop('disabled', false);
-            } else {
-                $modal.find('#mediumId').prop('required', false).prop('disabled', true);
-                $modal.find('#publisher').prop('required', false).prop('disabled', true);
-            }
+            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+            $modal.find('#publisher').prop('disabled', false);
         }
     }
 
