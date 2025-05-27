@@ -1,18 +1,23 @@
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
+// TODO: can we remove jsonwebtoken?
 const { api } = require('../api');
 
-const isJWT = (req) => {
+/* const isJWT = (req) => {
     return (req && req.cookies && req.cookies.jwt);
+}; */
+
+const isLoggedIn = (req) => {
+    return (req && req.cookies && req.cookies.isLoggedIn);
 };
 
 const isAuthenticated = (req) => {
-   if(!isJWT(req)) {
+   if(!isLoggedIn(req)) {
         return Promise.resolve(false);
     }
 
     return api(req).post('/authentication', {json: {
-        strategy: 'jwt',
-        accessToken: req.cookies.jwt
+        strategy: 'isLoggedIn',
+        accessToken: req.cookies.isLoggedIn
     }}).then(_ => {
         return true;
     }).catch(_ => {
@@ -41,8 +46,8 @@ const authChecker = (req, res, next) => {
 
 const populateCurrentUser = (req, res) => {
     let payload = {};
-    if(isJWT(req)) {
-        payload = (jwt.decode(req.cookies.jwt, {complete: true}) || {}).payload;
+    if(isLoggedIn(req)) {
+        payload = (req.cookies.isLoggedIn || {}).payload;
         res.locals.currentPayload = payload;
     }
 
@@ -132,7 +137,7 @@ const restrictSidebar = (req, res) => {
 };
 
 module.exports = {
-    isJWT,
+    isLoggedIn,
     authChecker,
     isAuthenticated,
     restrictSidebar,

@@ -25,11 +25,15 @@ const api = (
     headers["Authorization"] =
       (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
       req.cookies.jwt;
-  } else if (req && req.cookies && req.cookies.jwt) {
+  } /* else if (req && req.cookies && req.cookies.jwt) {
     headers["Authorization"] =
       (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
       req.cookies.jwt;
-  }
+  } */
+    else if (req && req.cookies && req.cookies.isLoggedIn) {
+      headers["Authorization"] =
+        req.cookies.isLoggedIn;
+    }
 
   const handler = useCallback ? request : rp;
 
