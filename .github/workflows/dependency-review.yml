@@ -3,6 +3,7 @@ on: [pull_request]
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   dependency-review:
@@ -13,20 +14,5 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
-          allow-licenses: > 
-            AGPL-3.0-only,
-            LGPL-3.0,
-            MIT,
-            Apache-2.0,
-            BSD-2-Clause,
-            BSD-3-Clause,
-            ISC,
-            X11,
-            0BSD,
-            GPL-3.0,
-            AGPL-3.0
-          allow-dependencies-licenses: >
-            pkg:npm/lodash.includes@4.3.0,
-            pkg:npm/lodash.isinteger@4.0.4,
-            pkg:npm/lodash.once@4.1.1
-            
+          config-file: 'hpi-schul-cloud/dependency-review-config/.github/dependency-review-config.yml@main'
+
