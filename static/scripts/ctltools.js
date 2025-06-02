@@ -38,9 +38,7 @@ $(document).ready(function () {
                 submitLabel: 'Speichern',
                 fields: result
             });
-            if(result.hasMedium){
-                hasMedium($editModal);
-            }
+            hasMedium($editModal);
             setMediumMetadataFormat($editModal);
             populateCustomParameter($editModal, result.parameters);
             $editModal.find(`#${result.config.type}-tab-${editModalId}`).click();
@@ -64,7 +62,7 @@ $(document).ready(function () {
         });
     });
 
-    $('.btn-delete').on('click', function(e) {
+    $('.btn-delete').on('click', function (e) {
         e.preventDefault();
         const entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
@@ -86,11 +84,11 @@ $(document).ready(function () {
         });
     });
 
-    $('.parameters-regex').on('input', function(e){
+    $('.parameters-regex').on('input', function (e) {
         const splitId = $(this).attr('id').split('-');
-        const customIdIndex = splitId[splitId.length-1];
+        const customIdIndex = splitId[splitId.length - 1];
         const regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
-        if ($(this).val().length > 0 ) {
+        if ($(this).val().length > 0) {
             regexComment.prop('required', true);
         } else {
             regexComment.removeAttr('required');
@@ -114,20 +112,20 @@ $(document).ready(function () {
     useTabHandler($addModal, addModalId);
     useTabHandler($editModal, editModalId);
 
-    $addModal.find('.btn-add-custom-parameter').on('click', function() {
+    $addModal.find('.btn-add-custom-parameter').on('click', function () {
         addCustomParameter($addModal);
     });
-    $editModal.find('.btn-add-custom-parameter').on('click', function() {
+    $editModal.find('.btn-add-custom-parameter').on('click', function () {
         addCustomParameter($editModal);
     });
 
-    $('.btn-remove-custom-parameter').on('click', function() {
+    $('.btn-remove-custom-parameter').on('click', function () {
         $(this).parent('.custom-parameter-container').remove();
     });
 
     const $modalForms = $('.add-modal, .edit-modal').find('.modal-form');
 
-    $modalForms.on('submit', function() {
+    $modalForms.on('submit', function () {
         $('.tab-pane').not('.active').remove();
 
         $(this).find('.custom-parameter-container').each(function (index) {
@@ -178,7 +176,7 @@ $(document).ready(function () {
             $(this).siblings('div').remove();
         });
 
-        newCustomParamContainer.find('.parameters-type').on('change', function (){
+        newCustomParamContainer.find('.parameters-type').on('change', function () {
             const selectedType = $(this).val();
             const booleanTypeText = newCustomParamContainer.find('.boolean-type-text');
 
@@ -273,7 +271,7 @@ $(document).ready(function () {
         'email': 'E-Mail-Adresse'
     };
 
-    $('tr th').each(function(i,j) {
+    $('tr th').each(function (i, j) {
         $(j).on('click', function () {
 
             let location = window.location.search.split('&');
@@ -352,7 +350,7 @@ $(document).ready(function () {
         const mediumId = $modal.find('#mediumId').val();
         $errorMessage.text('');
 
-        if(!mediumId){
+        if (!mediumId) {
             $errorMessage.text('Bitte geben Sie eine Medium-Id ein!');
             return;
         }
@@ -363,7 +361,7 @@ $(document).ready(function () {
         const route = `/ctltools/medium/metadata?mediumId=${encodedMediumId}&sourceId=${encodedSourceId}`;
 
         $.getJSON(route)
-            .done(function(response) {
+            .done(function (response) {
                 $modal.find('#name').val(response.name);
                 $modal.find('#description').val(response.description);
                 $modal.find('#logoUrl').val(response.logoUrl);
@@ -374,10 +372,10 @@ $(document).ready(function () {
                     $modal.find('#modifiedAt').val(response.modifiedAt);
                 }
             })
-            .fail(function(response) {
+            .fail(function (response) {
                 if (response.responseJSON && response.responseJSON.error) {
                     const err = response.responseJSON.error;
-            
+
                     if (err.type === 'MEDIUM_METADATA_NOT_FOUND') {
                         $errorMessage.text('Für das Medium wurden keine Metadaten geliefert.');
                     } else if (err.type === 'MEDIUM_NOT_FOUND') {
@@ -392,11 +390,12 @@ $(document).ready(function () {
             });
     }
 
-    function resetMediumForms($modal){
-        $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
+    function resetMediumForms($modal) {
+        $modal.find('#mediumId').prop('disabled', true).prop('required', false).val('');
         $modal.find('#publisher').prop('disabled', true).val('');
         $modal.find('#modifiedAt').val('');
         $modal.find('#mediaSource').val('').prop('disabled', true).trigger('chosen:updated');
+        $modal.find('#mediumStatus').val('').prop('disabled', true).prop('required', false).trigger('chosen:updated');
         $modal.find('#btn-load-media-metadata').prop('disabled', true);
         $modal.find('#load-media-metadata-error').text('');
     }
@@ -404,15 +403,35 @@ $(document).ready(function () {
     function hasMedium($modal) {
         const isChecked = $modal.find('#hasMedium').is(':checked');
 
-        if(isChecked){
-            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
-            $modal.find('#publisher').prop('disabled', false);
+        if (isChecked) {
             $modal.find('#mediaSource').prop('disabled', false).trigger('chosen:updated');
+            $modal.find('#mediumStatus').prop('disabled', false).prop('required', true).trigger('chosen:updated');
             $modal.find('#load-media-metadata-error').text('');
+            setMediumStatus($modal);
         } else {
             resetMediumForms($modal);
         }
     }
+
+    function setMediumStatus($modal) {
+        const status = $modal.find('#mediumStatus option:selected').data('medium-status');
+
+        if (status === 'template') {
+            $modal.find('#mediumId').prop('required', false).prop('disabled', true).val('');
+            $modal.find('#publisher').prop('required', false).prop('disabled', true).val('');
+        } else {
+            $modal.find('#mediumId').prop('required', true).prop('disabled', false);
+            $modal.find('#publisher').prop('disabled', false);
+        }
+    }
+
+    $addModal.find('#mediumStatus').on('change', function () {
+        setMediumStatus($addModal);
+    });
+
+    $editModal.find('#mediumStatus').on('change', function () {
+        setMediumStatus($editModal);
+    });
 
     $addModal.find('#mediaSource').on('change', function () {
         setMediumMetadataFormat($addModal);
@@ -421,7 +440,7 @@ $(document).ready(function () {
     $editModal.find('#mediaSource').on('change', function () {
         setMediumMetadataFormat($editModal);
     });
-    
+
     $addModal.find('#btn-load-media-metadata').on('click', function () {
         loadMediumMetadata($addModal);
     });
