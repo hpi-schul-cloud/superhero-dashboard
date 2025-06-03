@@ -15,7 +15,7 @@
     <label class="control-label" for="logoUrl">Logo-URL</label>
     <input type="text" name="logoUrl" id="logoUrl" class="form-control">
     <p class="text-danger" style="font-size:0.75rem;">
-        Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png
+        Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png, svg, gif
     </p>
 </div>
 <div class="form-group">
@@ -35,6 +35,7 @@
         Ja, es soll verknüpft werden
     </label>
 </div>
+
 <div class="form-group" style="display: flex; flex-direction: column;">
     <label class="control-label">Medienverwaltung</label>
     <div style="display: flex; align-items: center; gap: 10px;">
@@ -49,6 +50,18 @@
     </div>
     <p class="text-danger mt-1 mb-0" id="load-media-metadata-error"></p>
 </div>
+
+<div class="form-group" style="display: flex; flex-direction: column;">
+    <label class="control-label">Automatisierte Medienprovisionierung</label>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <select name="medium[status]" id="mediumStatus" type="text">
+            {{#each mediumStatuses}}
+                <option value="{{this.status}}" data-medium-status="{{this.status}}">{{this.label}}</option>
+            {{/each}}
+        </select>
+    </div>
+</div>
+
 <div class="form-group">
     <label class="control-label" for="mediumId">Medium-Id</label>
     <input type="text" name="medium[mediumId]" id="mediumId" class="form-control">

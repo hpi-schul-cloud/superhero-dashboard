@@ -42,6 +42,13 @@ const getTableActions = (item, path) => [
     method: 'delete',
     title: 'löschen',
   },
+  {
+    link: path + item._id,
+    class: "btn-delete-files",
+    icon: "trash",
+    method: "delete",
+    title: "Alle Dateien der Schule löschen",
+  },
 ];
 
 const getStorageTypes = () => [
@@ -203,7 +210,7 @@ const getUpdateHandler = (service) => {
           },
         })
       }
-      
+
       req.body.features = collectSchoolFeatures(req.body);
 
       await api(req).patch('/' + service + '/' + req.params.id, {
@@ -254,6 +261,22 @@ const getDeleteHandler = (service) => {
       .delete('/' + service + '/' + req.params.id)
       .then((_) => {
         res.redirect(req.header('Referer'));
+      })
+      .catch((err) => {
+        next(err);
+      });
+  };
+};
+
+const getDeleteFilesHandler = () => {
+  return function (req, res, next) {
+    api(req, { version: 'v3', filesStorageApi: true })
+      .delete('/admin/file/storage-location/school/' + req.params.id)
+      .then((result) => {
+        res.render('schools/after-files-delete', {
+          title: 'Alle Dateien der Schule wurden gelöscht',
+          data: result
+        });
       })
       .catch((err) => {
         next(err);
@@ -349,5 +372,6 @@ router.get('/:id', getDetailHandler('schools'));
 router.delete('/:id', getDeleteHandler('schools'));
 router.post('/', getCreateHandler('schools'));
 router.all('/', getHandler);
+router.delete("/:id/delete-files", getDeleteFilesHandler());
 
 module.exports = router;

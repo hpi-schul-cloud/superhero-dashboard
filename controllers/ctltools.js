@@ -7,7 +7,7 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
-const {isFeatureFlagTrue} = require('../helpers/featureFlagHelper');
+const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
 const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
@@ -20,14 +20,14 @@ const clearEmptyInputs = (object) => {
             case 'object':
                 clearEmptyInputs(object[key]);
 
-                if(JSON.stringify(object[key]) === JSON.stringify({})) {
+                if (JSON.stringify(object[key]) === JSON.stringify({})) {
                     object[key] = undefined;
                 }
                 break;
             case 'string':
                 object[key] = object[key].trim();
 
-                if(object[key] === '') {
+                if (object[key] === '') {
                     object[key] = undefined;
                 }
                 break;
@@ -58,7 +58,7 @@ const transformToolInputs = (id, body) => {
         body.config.redirectUris = body.config.redirectUris.split(';');
     }
 
-    if(body.parameters && Array.isArray(body.parameters)) {
+    if (body.parameters && Array.isArray(body.parameters)) {
         body.parameters.forEach((param) => {
             param.isOptional = !!param.isOptional;
             param.isProtected = !!param.isProtected;
@@ -109,7 +109,7 @@ const getDetailHandler = (req, res, next) => {
         toolData.hasMedium = !!toolData.medium;
 
         convertZerosToString(toolMetaData);
-        res.json({...toolData, ...toolMetaData});
+        res.json({ ...toolData, ...toolMetaData });
     }).catch(err => {
         next(err);
     });
@@ -168,27 +168,27 @@ const head = [
 ];
 
 const messageTypes = [
-	{ label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
-	{ label: 'ContentItemSelectionRequest', value: 'ContentItemSelectionRequest' },
+    { label: 'basic-lti-launch-request', value: 'basic-lti-launch-request' },
+    { label: 'ContentItemSelectionRequest', value: 'ContentItemSelectionRequest' },
 ];
 
 const privacies = [
-  { label: 'Anonym', value: 'anonymous' },
-  { label: 'Pseudonym', value: 'pseudonymous' },
-  { label: 'E-Mail', value: 'e-mail' },
-  { label: 'Name', value: 'name' },
-  { label: 'Öffentlich', value: 'public' },
+    { label: 'Anonym', value: 'anonymous' },
+    { label: 'Pseudonym', value: 'pseudonymous' },
+    { label: 'E-Mail', value: 'e-mail' },
+    { label: 'Name', value: 'name' },
+    { label: 'Öffentlich', value: 'public' },
 ];
 
 const authMethods = [
-  { label: 'client_secret_basic', value: 'client_secret_basic' },
-  { label: 'client_secret_post', value: 'client_secret_post' },
+    { label: 'client_secret_basic', value: 'client_secret_basic' },
+    { label: 'client_secret_post', value: 'client_secret_post' },
 ];
 
 const toolTypes = [
-    { label: 'Basic', value:'basic', active:'active' },
-    { label: 'OAuth2', value:'oauth2' },
-    { label: 'Lti 1.1', value:'lti11' },
+    { label: 'Basic', value: 'basic', active: 'active' },
+    { label: 'OAuth2', value: 'oauth2' },
+    { label: 'Lti 1.1', value: 'lti11' },
 ];
 
 const customParameterTypes = [
@@ -216,13 +216,19 @@ const customParameterScopes = [
 ];
 
 const mediaSources = [
-    { label: 'Ohne Medien-Katalog', sourceId: '', format: ''}
+    { label: 'Ohne Medien-Katalog', sourceId: '', format: '' }
+];
+
+const mediumStatuses = [
+    { label: 'Nicht anwenden', status: 'active' },
+    { label: 'Draft', status: 'draft' },
+    { label: 'Template', status: 'template' },
 ];
 
 const getMediaSources = (data) => {
     const mediaSourceList = data.map(({ name, sourceId, format }) => ({
         label: name?.trim() ? name : sourceId,
-        sourceId, 
+        sourceId,
         format: format ?? '',
     }));
 
@@ -244,17 +250,17 @@ const showTools = (req, res) => {
             sortBy = req.query.sort;
         }
 
-        if(sortBy === '_id') {
+        if (sortBy === '_id') {
             sortBy = 'id';
-        } else if(sortBy === 'undefined') {
+        } else if (sortBy === 'undefined') {
             sortBy = undefined;
         }
     }
 
     Promise.all([
-        api(req, {version: 'v3'}).get('/tools/context-types'),
-        api(req, {version: 'v3'}).get('/media-sources'),
-        api(req, {version: 'v3'}).get('/tools/external-tools', {
+        api(req, { version: 'v3' }).get('/tools/context-types'),
+        api(req, { version: 'v3' }).get('/media-sources'),
+        api(req, { version: 'v3' }).get('/tools/external-tools', {
             qs: {
                 name: req.query.q,
                 limit: itemsPerPage,
@@ -307,6 +313,7 @@ const showTools = (req, res) => {
             customParameterScopes,
             customParameterLocations,
             toolContextTypes,
+            mediumStatuses,
             mediaSources: getMediaSources(mediaSourceList.responses)
         });
     }).catch(err => {
@@ -314,7 +321,7 @@ const showTools = (req, res) => {
     });
 };
 
-const getDatasheet = (req,res,next) => {
+const getDatasheet = (req, res, next) => {
     try {
         api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/datasheet`).pipe(res);
     } catch (e) {

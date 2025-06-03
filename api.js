@@ -3,7 +3,13 @@ const rp = require("request-promise");
 
 const api = (
   req,
-  { useCallback = false, json = true, version = "v1", adminApi = false } = {}
+  {
+    useCallback = false,
+    json = true,
+    version = "v1",
+    adminApi = false,
+    filesStorageApi = false,
+  } = {}
 ) => {
   let baseUrl = process.env.BACKEND_URL || "http://localhost:3030/api/";
 
@@ -11,7 +17,14 @@ const api = (
 
   if (adminApi) {
     baseUrl = process.env.ADMIN_API_URL || "http://localhost:4030/admin/api/";
-    headers["x-api-key"] = process.env.ADMIN_API_KEY || "thisisasupersecureapikeythatisabsolutelysave";
+    headers["x-api-key"] =
+      process.env.ADMIN_API_KEY ||
+      "thisisasupersecureapikeythatisabsolutelysave";
+  } else if (filesStorageApi) {
+    baseUrl = process.env.FILES_STORAGE_API_URL || "http://localhost:4444/api/";
+    headers["Authorization"] =
+      (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
+      req.cookies.jwt;
   } else if (req && req.cookies && req.cookies.jwt) {
     headers["Authorization"] =
       (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
@@ -25,7 +38,7 @@ const api = (
     json,
     headers,
   };
-  
+
   return handler.defaults(apiRequest);
 };
 
