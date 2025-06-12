@@ -207,6 +207,7 @@ const customParameterLocations = [
     { label: 'Path-Parameter', value: 'path' },
     { label: 'Query-Parameter', value: 'query' },
     { label: 'Body-Parameter', value: 'body' },
+    { label: 'Anchor-Parameter', value: 'fragment' },
 ];
 
 const customParameterScopes = [
