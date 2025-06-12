@@ -1,5 +1,7 @@
 const { api } = require("../../api");
 const moment = require("moment");
+const { Readable } = require('stream');
+const fastcsv = require('fast-csv');
 
 moment.locale("de");
 
@@ -123,28 +125,33 @@ const sendDeletionRequest = async (req, res, next) => {
 };
 
 const sendFile = async (req, res, next) => {
-  const { fileContent, batchTitle } = req.body;
+  const { batchTitle, batchFileData } = req.body;
 
-  if (!fileContent || !batchTitle) {
-    return res
-      .status(400)
-      .send({ message: "No file content or batch title provided" });
+  if (!batchTitle || !batchFileData) {
+    return res.status(400).send({ message: "No batch title or file data provided" });
   }
 
-  const targetRefIds = fileContent.split("\n").map((item) => item.trim());
   try {
-    const response = await api(req, { adminApi: true }).post(
-      "/deletion-batches/",
-      {
-        json: {
-          name: batchTitle,
-          targetRefDomain: "user",
-          targetRefIds,
-        },
-      }
-    );
+    const targetRefIds = [];
+    await new Promise((resolve, reject) => {
+      Readable.from(batchFileData)
+        .pipe(fastcsv.parse({ headers: false, ignoreEmpty: true }))
+        .on('data', row => {
+          if (row[0]) targetRefIds.push(row[0].trim());
+        })
+        .on('end', resolve)
+        .on('error', reject);
+    });
 
-    res.status(200).send({ message: "File sent successfully" });
+    await api(req, { adminApi: true }).post("/deletion-batches/", {
+      json: {
+        name: batchTitle,
+        targetRefDomain: "user",
+        targetRefIds,
+      },
+    });
+
+    res.redirect(req.header('Referer'));
   } catch (error) {
     next(error);
   }

@@ -1,0 +1,42 @@
+<div class="batch-header">
+  <div class="batch-info">
+    <div class="batch-title">
+      <h5>{{batchTitle}}</h5>
+      <span class="status-chip status-{{this.status}}">
+        {{#ifeq this.status "deletion-requested"}}
+            gesendet
+        {{else}}
+          {{../status}}
+        {{/ifeq}}
+      </span>
+    </div>
+    <span>
+      {{this.overallCount}}
+      insgesamt -
+      {{#each this.usersByRole}}
+        <span>{{this.userCount}} {{this.roleName}}{{#unless @last}}<span>, </span>{{/unless}}</span>
+      {{/each}}
+    </span>
+  </div>
+  <div class="actions">
+    {{#if this.canStartDeletion}}
+      <button class="btn btn-primary btn-thin execute-batch-btn" data-batch-id="{{this.id}}">
+        Starten
+      </button>
+    {{/if}}
+    <button
+      class="show-batch-details-btn btn btn-secondary btn-thin"
+      data-toggle="modal"
+      data-target=".details-modal"
+      data-title="{{this.batchTitle}}"
+      data-batch-id="{{this.id}}"
+    >
+      Details
+    </button>
+    {{#if this.canDeleteBatch}}
+      <button class="btn btn-secondary btn-thin delete-batch-btn" data-batch-id="{{this.id}}">
+        Entfernen
+      </button>
+    {{/if}}
+  </div>
+</div>
