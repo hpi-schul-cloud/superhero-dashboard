@@ -1,4 +1,4 @@
-const MAX_FILE_SIZE_MB = 4;
+const MAX_FILE_SIZE_MB = 3;
 
 function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} B`;
@@ -26,16 +26,31 @@ function isProbablyText(file, callback) {
     reader.readAsArrayBuffer(blob);
 }
 
+function resetFormFields() {
+    document.querySelector('#batch-title').value = '';
+    document.querySelector('#batch-file-name').innerHTML = '';
+    document.querySelector('#batch-file-data').value = '';
+    document.querySelector('#batch-file-input').value = '';
+}
+
 function loadCsvFile() {
     const file = document.querySelector('#batch-file-input').files[0];
     if (!file) return;
 
+    // File size check
+	const filesize = ((file.size / 1024) / 1024).toFixed(4); // MB
+    if (filesize > MAX_FILE_SIZE_MB) {
+        $.showNotification(
+            `CSV Datei ist zu groß. Maximal ${MAX_FILE_SIZE_MB}MB`, 'danger', true,
+        );
+        resetFormFields();
+        return;
+    }
+
     // Check file extension and type
     if (!file.name.endsWith('.csv') || (file.type && file.type !== 'text/csv')) {
         $.showNotification('nur CSV Dateien werden unterstützt', 'danger', true);
-        document.querySelector('#batch-input').value = '';
-        document.querySelector('#batch-file-name').innerHTML = '';
-        document.querySelector('#batch-file-data').value = '';
+        resetFormFields();
         return;
     }
 
@@ -43,18 +58,7 @@ function loadCsvFile() {
     isProbablyText(file, function(isText) {
         if (!isText) {
             $.showNotification('CSV Datei sieht nicht wie eine Textdatei aus', 'danger', true);
-            document.querySelector('#batch-input').value = '';
-            document.querySelector('#batch-file-name').innerHTML = '';
-            document.querySelector('#batch-file-data').value = '';
-            return;
-        }
-
-        // File size check
-        const filesize = file.size / (1024 * 1024);
-        if (filesize > MAX_FILE_SIZE_MB) {
-            $.showNotification(
-			    `CSV Datei ist zu groß. Maximal ${{MAX_FILE_SIZE_MB}}MB`, 'danger', true,
-			);
+            resetFormFields();
             return;
         }
 
@@ -67,6 +71,8 @@ function loadCsvFile() {
         });
         reader.readAsText(file);
     });
+
+    resetFormFields();
 }
 
 $(document).ready(() => {
