@@ -124,6 +124,8 @@ const sendDeletionRequest = async (req, res, next) => {
   }
 };
 
+const isMongoId = (str) => typeof str === 'string' && /^[a-f\d]{24}$/i.test(str);
+
 const sendFile = async (req, res, next) => {
   const { batchTitle, batchFileData } = req.body;
 
@@ -137,7 +139,8 @@ const sendFile = async (req, res, next) => {
       Readable.from(batchFileData)
         .pipe(fastcsv.parse({ headers: false, ignoreEmpty: true }))
         .on('data', row => {
-          if (row[0]) targetRefIds.push(row[0].trim());
+          // skip header row + all that don't match MongoDB ObjectId format
+          if (row[0] && isMongoId(row[0])) targetRefIds.push(row[0].trim());
         })
         .on('end', resolve)
         .on('error', reject);
