@@ -71,8 +71,6 @@ function loadCsvFile() {
         });
         reader.readAsText(file);
     });
-
-    resetFormFields();
 }
 
 $(document).ready(() => {
@@ -86,6 +84,7 @@ $(document).ready(() => {
 			submitLabel: "Hinzufügen",
 		});
 		$addDeletionModal.appendTo('body').modal('show');
+        resetFormFields();
 	})
 
     document.querySelector('#batch-file-input').addEventListener('change', loadCsvFile);
