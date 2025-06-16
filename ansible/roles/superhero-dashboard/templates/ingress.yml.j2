@@ -7,7 +7,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "{{ TLS_ENABLED|default("false") }}"
     nginx.ingress.kubernetes.io/proxy-body-size: "{{ SHD_INGRESS_MAX_BODY_SIZE }}"
-    # nginx.org/client-max-body-size: "{{ SHD_INGRESS_MAX_BODY_SIZE }}"
     # type of authentication
     nginx.ingress.kubernetes.io/auth-type: basic
     # name of the secret that contains the user/password definitions
