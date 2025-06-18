@@ -139,19 +139,19 @@
         <h4>OAuth2</h4>
         <div class="form-group">
             <label class="control-label" for="oauth-client-id">ClientId *</label>
-            <input type="text" name="config[oauth2][clientId]" id="oauth-client-id" class="form-control required">
+            <input type="text" name="config[clientId]" id="oauth-client-id" class="form-control required">
         </div>
         <div class="form-group">
             <label class="control-label" for="oauth-client-secret">ClientSecret{{#if requireSecret}} *{{/if}}</label>
-            <input type="text" name="config[oauth2][clientSecret]" id="oauth-client-secret" class="form-control {{#if requireSecret}}required{{/if}}" {{#unless requireSecret}}placeholder="*****"{{/unless}}>
+            <input type="text" name="config[clientSecret]" id="oauth-client-secret" class="form-control {{#if requireSecret}}required{{/if}}" {{#unless requireSecret}}placeholder="*****"{{/unless}}>
         </div>
         <div class="form-group">
             <label class="control-label" for="redirect-url">Redirect-URLs (Semikolon-separiert) *</label>
-            <input type="text" name="config[oauth2][redirectUris]" id="redirect-url" class="form-control required">
+            <input type="text" name="config[redirectUris]" id="redirect-url" class="form-control required">
         </div>
         <div class="form-group">
             <label class="control-label" for="token_endpoint_auth_method">Token Endpoint Auth Method *</label>
-            <select name="config[oauth2][tokenEndpointAuthMethod]" id="token_endpoint_auth_method" class="required">
+            <select name="config[tokenEndpointAuthMethod]" id="token_endpoint_auth_method" class="required">
                 {{#each authMethods}}
                     <option value="{{this.value}}">{{this.label}}</option>
                 {{/each}}
@@ -159,16 +159,16 @@
         </div>
         <div class="form-group">
             <label class="control-label" for="scope">Scope</label>
-            <input type="text" name="config[oauth2][scope]" id="scope" class="form-control" placeholder="openid offline">
+            <input type="text" name="config[scope]" id="scope" class="form-control" placeholder="openid offline">
         </div>
         <div class="form-group">
             <label class="control-label" for="frontchannel_logout_uri">Frontchannel Logout URL</label>
-            <input type="text" name="config[oauth2][frontchannelLogoutUri]" id="frontchannel_logout_uri" class="form-control">
+            <input type="text" name="config[frontchannelLogoutUri]" id="frontchannel_logout_uri" class="form-control">
         </div>
         <div class="form-group">
             <label class="control-label" for="skip-consent">Consent skippen? (Zustimmung liegt in anderer Form vor)</label>
             <label  style="width: 100%">
-                <input type="checkbox" name="config[oauth2][skipConsent]" id="skip-consent" value="1" class="form-control" style="width:10%;display:inline-block;">
+                <input type="checkbox" name="config[skipConsent]" id="skip-consent" value="1" class="form-control" style="width:10%;display:inline-block;">
                 Ja, skippen
             </label>
         </div>
@@ -180,16 +180,16 @@
         <h4>LTI1.1</h4>
         <div class="form-group">
             <label class="control-label" for="key">Key *</label>
-            <textarea name="config[lti11][key]" id="key" class="form-control required"></textarea>
+            <textarea name="config[key]" id="key" class="form-control required"></textarea>
         </div>
         <div class="form-group">
             <label class="control-label" for="secret">Secret{{#if requireSecret}} *{{/if}}</label>
-            <input type="text" name="config[lti11][secret]" id="secret" class="form-control {{#if requireSecret}}required{{/if}}" {{#unless requireSecret}}placeholder="*****"{{/unless}} pattern=".{6,64}"
+            <input type="text" name="config[secret]" id="secret" class="form-control {{#if requireSecret}}required{{/if}}" {{#unless requireSecret}}placeholder="*****"{{/unless}} pattern=".{6,64}"
                    title="Mindestens 6 Zeichen">
         </div>
         <div class="form-group">
             <label class="control-label" for="lti_message_type">Message Type *</label>
-            <select name="config[lti11][lti_message_type]" id="lti_message_type" class="required">
+            <select name="config[lti_message_type]" id="lti_message_type" class="required">
                 {{#each messageTypes}}
                     <option value="{{this.value}}">{{this.label}}</option>
                 {{/each}}
@@ -198,11 +198,11 @@
         <p><b>Resource Link ID wird automatisch generiert</b></p>
         <div class="form-group">
             <label class="control-label" for="key">Sprache *</label>
-            <textarea name="config[lti11][launch_presentation_locale]" id="launch_presentation_locale" placeholder="de-DE" class="form-control required"></textarea>
+            <textarea name="config[launch_presentation_locale]" id="launch_presentation_locale" placeholder="de-DE" class="form-control required"></textarea>
         </div>
         <div class="form-group">
             <label class="control-label" for="privacy_permission">Privatsphäre *</label>
-            <select name="config[lti11][privacy_permission]" id="privacy_permission" class="required">
+            <select name="config[privacy_permission]" id="privacy_permission" class="required">
                 {{#each privacies}}
                     <option value="{{this.value}}">{{this.label}}</option>
                 {{/each}}

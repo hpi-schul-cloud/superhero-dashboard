@@ -41,6 +41,39 @@ const clearEmptyInputs = (object) => {
     });
 }
 
+const configParameterKeys = {
+    "basic": [],
+    "oauth2": [
+        "clientId",
+        "clientSecret",
+        "redirectUris",
+        "tokenEndpointAuthMethod",
+        "scope",
+        "frontchannelLogoutUri",
+        "skipConsent",
+    ],
+    "lti11": [
+        "key",
+        "secret",
+        "lti_message_type",
+        "launch_presentation_locale",
+        "privacy_permission"
+    ]
+}
+
+const removeUnusedConfigParams = (body) => {
+    const configType = body.config.type;
+
+    const baseConfigParams = ['baseUrl', 'type'];
+    const configParamsToKeep = baseConfigParams.concat(configParameterKeys[configType] ?? []);
+
+    Object.keys(body.config).forEach((key) => {
+        if (!configParamsToKeep.includes(key)) {
+            delete body.config[key];
+        }
+    });
+}
+
 const transformToolInputs = (id, body) => {
     body.id = id;
 
@@ -53,7 +86,7 @@ const transformToolInputs = (id, body) => {
     body.medium = body.hasMedium ? body.medium : undefined;
     delete body.hasMedium;
 
-    transformConfigParameters(body);
+    removeUnusedConfigParams(body);
 
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
@@ -71,21 +104,6 @@ const transformToolInputs = (id, body) => {
 
     return body;
 };
-
-const transformConfigParameters = (body) => {
-    const configType = body.config.type;
-    if (configType !== 'basic' && body.config[configType] !== undefined) {
-        const keys = Object.keys(body.config[configType]);
-        keys.forEach((key) => body.config[key] = body.config[configType][key]);
-    }
-
-    toolTypes.forEach((type) => {
-        if (type.value === 'basic' || !(type.value in body.config)) {
-            return;
-        }
-        delete body.config[type.value]
-    });
-}
 
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
