@@ -53,6 +53,8 @@ const transformToolInputs = (id, body) => {
     body.medium = body.hasMedium ? body.medium : undefined;
     delete body.hasMedium;
 
+    transformConfigParameters(body);
+
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
         body.config.redirectUris = body.config.redirectUris.split(';');
@@ -69,6 +71,21 @@ const transformToolInputs = (id, body) => {
 
     return body;
 };
+
+const transformConfigParameters = (body) => {
+    const configType = body.config.type;
+    if (configType !== 'basic' && body.config[configType] !== undefined) {
+        const keys = Object.keys(body.config[configType]);
+        keys.forEach((key) => body.config[key] = body.config[configType][key]);
+    }
+
+    toolTypes.forEach((type) => {
+        if (type.value === 'basic' || !(type.value in body.config)) {
+            return;
+        }
+        delete body.config[type.value]
+    });
+}
 
 const getUpdateHandler = (req, res, next) => {
     req.body = transformToolInputs(req.params.id, req.body);
