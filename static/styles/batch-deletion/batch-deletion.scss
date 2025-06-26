@@ -1,6 +1,10 @@
 @import "../lib/colors.scss";
 @import "../lib/bootstrap/scss/bootstrap-flex";
 
+#batch-file-input {
+	display: none;
+}
+
 .file-input-container {
   display: flex;
   flex-direction: column;

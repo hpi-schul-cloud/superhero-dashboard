@@ -126,8 +126,6 @@ $(document).ready(function () {
     const $modalForms = $('.add-modal, .edit-modal').find('.modal-form');
 
     $modalForms.on('submit', function () {
-        $('.tab-pane').not('.active').remove();
-
         $(this).find('.custom-parameter-container').each(function (index) {
             $(this).find('.parameters-is-optional').attr('name', `parameters[${index}][isOptional]`);
             $(this).find('.parameters-is-protected').attr('name', `parameters[${index}][isProtected]`);
