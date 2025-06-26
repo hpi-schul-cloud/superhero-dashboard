@@ -1,0 +1,66 @@
+  {{#embed "lib/components/modal" class="details-modal" title=""}}
+    {{#content "body"}}
+      <div class="modal-body">
+        <div class="id-container">
+          <div>
+            Pending
+            <button
+              class="btn btn-sm copy-btn"
+              data-text-id="pending-ids"
+            >
+              <i class="fa fa-copy"></i>
+            </button>
+          </div>
+          <div id="pending-ids-section"></div>
+        </div>
+        <div class="id-container">
+          <div>
+            Successful
+            <button
+              class="btn btn-sm copy-btn"
+              data-text-id="deleted-ids"
+            >
+              <i class="fa fa-copy"></i>
+            </button>
+          </div>
+          <div id="deleted-ids-section"></div>
+        </div>
+        <div class="id-container">
+          <div>
+            Failed
+            <button
+              class="btn btn-sm copy-btn"
+              data-text-id="failed-ids"
+            >
+              <i class="fa fa-copy"></i>
+            </button>
+          </div>
+          <div id="failed-ids-section"></div>
+        </div>
+        <div class="id-container">
+          <div>
+            Skipped
+            <button
+              class="btn btn-sm copy-btn"
+              data-text-id="skipped-ids"
+            >
+              <i class="fa fa-copy"></i>
+            </button>
+          </div>
+          <div id="skipped-ids-section"></div>
+        </div>
+        <div class="id-container">
+          <div>
+            Invalid IDs
+            <button
+              class="btn btn-sm copy-btn"
+              data-text-id="invalid-ids"
+            >
+              <i class="fa fa-copy"></i>
+            </button>
+          </div>
+          <div id="invalid-ids-section"></div>
+        </div> 
+      </div>
+    {{/content}}
+  {{/embed}}

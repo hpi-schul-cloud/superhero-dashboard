@@ -41,6 +41,39 @@ const clearEmptyInputs = (object) => {
     });
 }
 
+const configParameterKeys = {
+    "basic": [],
+    "oauth2": [
+        "clientId",
+        "clientSecret",
+        "redirectUris",
+        "tokenEndpointAuthMethod",
+        "scope",
+        "frontchannelLogoutUri",
+        "skipConsent",
+    ],
+    "lti11": [
+        "key",
+        "secret",
+        "lti_message_type",
+        "launch_presentation_locale",
+        "privacy_permission"
+    ]
+}
+
+const removeUnusedConfigParams = (body) => {
+    const configType = body.config.type;
+
+    const baseConfigParams = ['baseUrl', 'type'];
+    const configParamsToKeep = baseConfigParams.concat(configParameterKeys[configType] ?? []);
+
+    Object.keys(body.config).forEach((key) => {
+        if (!configParamsToKeep.includes(key)) {
+            delete body.config[key];
+        }
+    });
+}
+
 const transformToolInputs = (id, body) => {
     body.id = id;
 
@@ -52,6 +85,8 @@ const transformToolInputs = (id, body) => {
 
     body.medium = body.hasMedium ? body.medium : undefined;
     delete body.hasMedium;
+
+    removeUnusedConfigParams(body);
 
     if (body.config.type === 'oauth2') {
         body.config.skipConsent = !!body.config.skipConsent;
@@ -207,6 +242,7 @@ const customParameterLocations = [
     { label: 'Path-Parameter', value: 'path' },
     { label: 'Query-Parameter', value: 'query' },
     { label: 'Body-Parameter', value: 'body' },
+    { label: 'Anchor-Parameter', value: 'fragment' },
 ];
 
 const customParameterScopes = [

@@ -5,7 +5,7 @@
 const express = require("express");
 const router = express.Router();
 const authHelper = require("../../helpers/authentication");
-const apiRequests = require("./api-requests");
+const apiRequests = require("./batchdeletionLogic");
 
 router.use(authHelper.authChecker);
 

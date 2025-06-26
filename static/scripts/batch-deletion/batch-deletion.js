@@ -70,7 +70,7 @@ $(document).ready(() => {
       });
   }
 
-  function sendDeletionRequest(batchId) {
+  function executeBatch(batchId) {
     fetch(`/batch-deletion/${batchId}/execute`, { method: "POST" })
       .then((res) => {
         if (res.ok) {
@@ -84,7 +84,7 @@ $(document).ready(() => {
       });
   }
 
-  document.querySelectorAll(".details-toggle").forEach((button) => {
+  document.querySelectorAll(".show-batch-details-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const title = this.getAttribute("data-title");
       const batchId = this.getAttribute("data-batch-id");
@@ -97,18 +97,28 @@ $(document).ready(() => {
 
   document.querySelectorAll(".delete-batch-btn").forEach((button) => {
     button.addEventListener("click", function () {
+      if (!confirm("Soll der Batch wirklich gelöscht werden?")) {
+        this.blur(); // Remove focus from the button
+        return;
+      }
+
       const batchId = this.getAttribute("data-batch-id");
 
       deleteBatch(batchId);
     });
   });
 
-  document.querySelectorAll(".start-deletion-btn").forEach((button) => {
+  document.querySelectorAll(".execute-batch-btn").forEach((button) => {
     button.addEventListener("click", function () {
+      if (!confirm("Soll der Batch wirklich gestartet werden?")) {
+        this.blur(); // Remove focus from the button
+        return;
+      }
+
       const batchId = this.getAttribute("data-batch-id");
       this.setAttribute("disabled", true);
 
-      sendDeletionRequest(batchId);
+      executeBatch(batchId);
     });
   });
 });
