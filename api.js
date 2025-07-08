@@ -1,71 +1,143 @@
-const { URL } = require("url");
-
 const api = (
-    req,
-    {
-        json = true,
-        version = "v1",
-        adminApi = false,
-        filesStorageApi = false,
-    } = {}
+  req,
+  {
+    // The `useCallback` option is deprecated as native fetch is promise-based.
+    // The returned client will always be promise-based.
+    useCallback = false,
+    json = true,
+    version = "v1",
+    adminApi = false,
+    filesStorageApi = false,
+  } = {}
 ) => {
-    let baseUrl = process.env.BACKEND_URL || "http://localhost:3030/api/";
+  let baseUrl = process.env.BACKEND_URL || "http://localhost:3030/api/";
 
-    const headers = {};
+  const headers = {};
 
-    if (adminApi) {
-        baseUrl = process.env.ADMIN_API_URL || "http://localhost:4030/admin/api/";
-        headers["x-api-key"] =
-            process.env.ADMIN_API_KEY ||
-            "thisisasupersecureapikeythatisabsolutelysave";
-    } else if (filesStorageApi) {
-        baseUrl = process.env.FILES_STORAGE_API_URL || "http://localhost:4444/api/";
-        headers["Authorization"] =
-            (req?.cookies?.jwt?.startsWith("Bearer ") ? "" : "Bearer ") +
-            req?.cookies?.jwt;
-    } else if (req?.cookies?.jwt) {
-        headers["Authorization"] =
-            (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
-            req.cookies.jwt;
+  if (adminApi) {
+    baseUrl = process.env.ADMIN_API_URL || "http://localhost:4030/admin/api/";
+    headers["x-api-key"] =
+      process.env.ADMIN_API_KEY ||
+      "thisisasupersecureapikeythatisabsolutelysave";
+  } else if (filesStorageApi) {
+    baseUrl = process.env.FILES_STORAGE_API_URL || "http://localhost:4444/api/";
+    if (req && req.cookies && req.cookies.jwt) {
+      headers["Authorization"] =
+        (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
+        req.cookies.jwt;
+    }
+  } else if (req && req.cookies && req.cookies.jwt) {
+    headers["Authorization"] =
+      (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
+      req.cookies.jwt;
+  }
+
+  const urlJoin = (base, p) => {
+    const newBase = base.endsWith("/") ? base : base + "/";
+    const newPath = p.startsWith("/") ? p.substring(1) : p;
+    return newBase + newPath;
+  };
+
+  const fetchWithDefaults = async (method, uri, options = {}) => {
+    let path;
+    let mergedOptions = { ...options };
+
+    if (typeof uri === "object") {
+      mergedOptions = { ...uri, ...options };
+      path = mergedOptions.uri;
+      delete mergedOptions.uri;
+    } else {
+      path = uri;
     }
 
-    const baseApiUrl = new URL(version + "/", baseUrl).href;
+    const baseApiUrl = new URL(version, baseUrl).href;
 
-    const fetchWithDefaults = async (path, options = {}) => {
-        const finalUrl = new URL(
-            path.startsWith("/") ? path.slice(1) : path,
-            baseApiUrl
-        ).href;
+    let url = urlJoin(baseApiUrl, path || '');
 
-        const finalHeaders = { ...headers, ...(options.headers || {}) };
-
-        if (options.body && !finalHeaders["Content-Type"]) {
-            finalHeaders["Content-Type"] = "application/json";
-        }
-
-        const response = await fetch(finalUrl, {
-            method: options.method || "GET",
-            headers: finalHeaders,
-            body: options.body ? JSON.stringify(options.body) : undefined,
-        });
-
-        if (!response.ok) {
-            const text = await response.text();
-            const error = new Error(`Request failed: ${response.status} ${text}`);
-            error.status = response.status;
-            throw error;
-        }
-
-        return json ? response.json() : response.text();
+    const fetchOptions = {
+      method,
+      headers: { ...headers, ...mergedOptions.headers },
+      ...mergedOptions,
     };
 
-    return {
-        get: (path, options = {}) => fetchWithDefaults(path, { ...options, method: "GET" }),
-        post: (path, options = {}) => fetchWithDefaults(path, { ...options, method: "POST" }),
-        put: (path, options = {}) => fetchWithDefaults(path, { ...options, method: "PUT" }),
-        patch: (path, options = {}) => fetchWithDefaults(path, { ...options, method: "PATCH" }),
-        delete: (path, options = {}) => fetchWithDefaults(path, { ...options, method: "DELETE" }),
-    };
+    if (mergedOptions.body) {
+      if (
+        json &&
+        typeof mergedOptions.body === "object" &&
+        !(mergedOptions.body instanceof FormData) &&
+        !(mergedOptions.body instanceof URLSearchParams)
+      ) {
+        fetchOptions.body = JSON.stringify(mergedOptions.body);
+        if (!fetchOptions.headers["Content-Type"]) {
+          fetchOptions.headers["Content-Type"] = "application/json";
+        }
+      }
+    } else if (mergedOptions.json && typeof mergedOptions.json === 'object') {
+        fetchOptions.body = JSON.stringify(mergedOptions.json);
+        if (!fetchOptions.headers["Content-Type"]) {
+            fetchOptions.headers["Content-Type"] = "application/json";
+        }
+    } else if (mergedOptions.form) {
+      fetchOptions.body = new URLSearchParams(mergedOptions.form);
+      if (!fetchOptions.headers["Content-Type"]) {
+        fetchOptions.headers["Content-Type"] =
+          "application/x-www-form-urlencoded";
+      }
+    } else if (mergedOptions.formData) {
+      fetchOptions.body = mergedOptions.formData;
+    }
+
+    if (mergedOptions.qs) {
+      const params = new URLSearchParams(mergedOptions.qs);
+      url = `${url}?${params}`;
+    }
+
+    const response = await fetch(url, fetchOptions);
+
+    if (!response.ok) {
+      const error = new Error(
+        `Request failed with status code ${response.status}`
+      );
+      error.statusCode = response.status;
+      error.response = response;
+      try {
+        error.error = await response.json();
+      } catch (e) {
+        try {
+          error.error = await response.text();
+        } catch (e2) {
+          // ignore
+        }
+      }
+      throw error;
+    }
+
+    if (mergedOptions.resolveWithFullResponse) {
+      return response;
+    }
+
+    if (filesStorageApi) {
+      return response;
+    }
+
+    if (json) {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return response.json();
+      }
+    }
+
+    return response.text();
+  };
+
+  const client = {};
+  const methods = ["get", "post", "put", "delete", "patch", "head", "options"];
+  for (const method of methods) {
+    client[method] = (uri, options) =>
+      fetchWithDefaults(method.toUpperCase(), uri, options);
+  }
+
+  return client;
 };
 
 module.exports = { api };
