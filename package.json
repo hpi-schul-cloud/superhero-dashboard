@@ -32,8 +32,6 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "path.join": "^1.0.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6",
     "sanitize-html": "^2.15.0",
     "sass": "^1.58.3",
     "string-strip-html": "^8.4.0",
