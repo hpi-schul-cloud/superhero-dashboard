@@ -49,7 +49,7 @@
     "babel-preset-react": "^6.24.1",
     "chai": "^4.3.7",
     "eslint": "^8.35.0",
-    "gulp": "^4.0.2",
+    "gulp": "^5.0.1",
     "gulp-autoprefixer": "^8.0.0",
     "gulp-babel": "^7.0.0",
     "gulp-clean-css": "^4.3.0",
