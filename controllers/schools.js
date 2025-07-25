@@ -174,117 +174,105 @@ const separateSchoolFeatures = (data) => {
   return data;
 }
 
-const getCreateHandler = (service) => {
-  return function (req, res, next) {
+const createHandler = (req, res, next) => {
+  req.body.features = collectSchoolFeatures(req.body);
+
+  api(req)
+    .post('/schools/', {
+      // TODO: sanitize
+      json: req.body,
+    })
+    .then((data) => {
+      next();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const updateHandler = async (req, res, next) => {
+  try {
+    const configuration = await api(req, {version: 'v3'}).get(`/config/public`);
+
+    if (configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
+      await api(req, {version: 'v3'}).patch(`/school/${req.params.id}`, {
+        json: {
+          permissions: {
+            teacher: {
+              STUDENT_LIST: !!req.body.hasFeature_studentVisibility
+            }
+          }
+        },
+      })
+    }
+
     req.body.features = collectSchoolFeatures(req.body);
 
-    api(req)
-      .post('/' + service + '/', {
-        // TODO: sanitize
-        json: req.body,
-      })
-      .then((data) => {
-        next();
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
-};
+    await api(req).patch(`/schools/${req.params.id}`, {
+      // TODO: sanitize
+      json: req.body,
+    })
 
-const getUpdateHandler = (service) => {
-  return async function (req, res, next) {
-    try {
-      const configuration = await api(req, {version: 'v3'}).get(`/config/public`);
-
-      
-
-      if (configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
-        await api(req, {version: 'v3'}).patch(`/school/${req.params.id}`, {
-          json: {
-            permissions: {
-              teacher: {
-                STUDENT_LIST: !!req.body.hasFeature_studentVisibility
-              }
-            }
-          },
-        })
-      }
-
-      req.body.features = collectSchoolFeatures(req.body);
-
-      await api(req).patch('/' + service + '/' + req.params.id, {
-        // TODO: sanitize
-        json: req.body,
-      })
-
-      res.redirect(req.header('Referer'));
-    } catch (err) {
-      next(err);
-    }
-  };
-};
-
-const getDetailHandler = (service) => {
-  return async function (req, res, next) {
-    try {
-      const configuration = await api(req, { version: 'v3' }).get(`/config/public`);
-      const data = await api(req).get('/' + service + '/' + req.params.id)
-
-      // parse school features
-      separateSchoolFeatures(data);
-
-      if (!configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
-        data.hasFeature_studentVisibility_disabled = true;
-      }
-
-      data.hasFeature_studentVisibility = !!configuration.TEACHER_STUDENT_VISIBILITY__IS_ENABLED_BY_DEFAULT;
-
-      if (data.permissions && data.permissions.teacher && data.permissions.teacher.STUDENT_LIST !== undefined) {
-        data.hasFeature_studentVisibility = data.permissions.teacher.STUDENT_LIST;
-      }
-
-      if (data.county && data.county.name && data.county._id) {
-        data.county = data.county._id;
-      }
-
-      res.json(data);
-    } catch (err) {
-      next(err);
-    }
+    res.redirect(req.header('Referer'));
+  } catch (err) {
+    next(err);
   }
 };
 
-const getDeleteHandler = (service) => {
-  return function (req, res, next) {
-    api(req)
-      .delete('/' + service + '/' + req.params.id)
-      .then((_) => {
-        res.redirect(req.header('Referer'));
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
+const detailHandler = async (req, res, next) => {
+  try {
+    const configuration = await api(req, { version: 'v3' }).get(`/config/public`);
+    const data = await api(req).get(`/schools/${req.params.id}`);
+
+    // parse school features
+    separateSchoolFeatures(data);
+
+    if (!configuration.TEACHER_STUDENT_VISIBILITY__IS_CONFIGURABLE) {
+      data.hasFeature_studentVisibility_disabled = true;
+    }
+
+    data.hasFeature_studentVisibility = !!configuration.TEACHER_STUDENT_VISIBILITY__IS_ENABLED_BY_DEFAULT;
+
+    if (data.permissions && data.permissions.teacher && data.permissions.teacher.STUDENT_LIST !== undefined) {
+      data.hasFeature_studentVisibility = data.permissions.teacher.STUDENT_LIST;
+    }
+
+    if (data.county && data.county.name && data.county._id) {
+      data.county = data.county._id;
+    }
+
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const getDeleteFilesHandler = () => {
-  return function (req, res, next) {
-    api(req, { version: 'v3', filesStorageApi: true })
-      .delete('/admin/file/storage-location/school/' + req.params.id)
-      .then((result) => {
-        res.render('schools/after-files-delete', {
-          title: 'Alle Dateien der Schule wurden gelöscht',
-          data: result
-        });
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
+const deleteHandler = (req, res, next) => {
+  api(req)
+    .delete(`/schools/${req.params.id}`)
+    .then((_) => {
+      res.redirect(req.header('Referer'));
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
-const getHandler = async (req, res) => {
+const deleteFilesHandler = (req, res, next) => {
+  api(req, { version: 'v3', filesStorageApi: true })
+    .delete('/admin/file/storage-location/school/' + req.params.id)
+    .then((result) => {
+      res.render('schools/after-files-delete', {
+        title: 'Alle Dateien der Schule wurden gelöscht',
+        data: result
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+const findHandler = async (req, res) => {
   const itemsPerPage = req.query.limit || 10;
   const currentPage = parseInt(req.query.p) || 1;
   const sortCriteria = req.query.sort || '';
@@ -367,11 +355,11 @@ const getHandler = async (req, res) => {
 // secure routes
 router.use(authHelper.authChecker);
 
-router.patch('/:id', getUpdateHandler('schools'));
-router.get('/:id', getDetailHandler('schools'));
-router.delete('/:id', getDeleteHandler('schools'));
-router.post('/', getCreateHandler('schools'));
-router.all('/', getHandler);
-router.delete("/:id/delete-files", getDeleteFilesHandler());
+router.patch('/:id', updateHandler);
+router.get('/:id', detailHandler);
+router.delete('/:id', deleteHandler);
+router.post('/', createHandler);
+router.all('/', findHandler);
+router.delete("/:id/delete-files", deleteFilesHandler);
 
 module.exports = router;
