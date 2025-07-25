@@ -174,22 +174,20 @@ const separateSchoolFeatures = (data) => {
   return data;
 }
 
-const getCreateHandler = (service) => {
-  return function (req, res, next) {
-    req.body.features = collectSchoolFeatures(req.body);
+const createHandler = (req, res, next) => {
+  req.body.features = collectSchoolFeatures(req.body);
 
-    api(req)
-      .post('/' + service + '/', {
-        // TODO: sanitize
-        json: req.body,
-      })
-      .then((data) => {
-        next();
-      })
-      .catch((err) => {
-        next(err);
-      });
-  };
+  api(req)
+    .post('/schools/', {
+      // TODO: sanitize
+      json: req.body,
+    })
+    .then((data) => {
+      next();
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const updateHandler = async (req, res, next) => {
@@ -360,7 +358,7 @@ router.use(authHelper.authChecker);
 router.patch('/:id', updateHandler);
 router.get('/:id', detailHandler);
 router.delete('/:id', deleteHandler);
-router.post('/', getCreateHandler);
+router.post('/', createHandler);
 router.all('/', findHandler);
 router.delete("/:id/delete-files", deleteFilesHandler);
 
