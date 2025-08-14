@@ -48,7 +48,7 @@ function loadCsvFile() {
     }
 
     // Check file extension and type
-    if (!file.name.endsWith('.csv') || (file.type && file.type !== 'text/csv')) {
+    if (!file.name.endsWith('.csv')) {
         $.showNotification('nur CSV Dateien werden unterstützt', 'danger', true);
         resetFormFields();
         return;
