@@ -19,6 +19,7 @@ router.post("/login/", function (req, res, next) {
       .then((data) => {
         res.cookie("jwt", data.accessToken, {
           expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          httpOnly: true,
         });
         res.redirect("/login/success/");
       })
