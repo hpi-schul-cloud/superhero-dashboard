@@ -44,11 +44,11 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 const sessionStore = new session.MemoryStore;
 app.use(session({
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 60000, httpOnly: true },
     store: sessionStore,
     saveUninitialized: true,
     resave: 'true',
-    secret: 'secret'
+    secret: 'secret',
 }));
 // Custom flash middleware
 app.use(function(req, res, next){
