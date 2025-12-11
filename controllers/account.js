@@ -39,17 +39,6 @@ router.get('/', function (req, res, next) {
     });
 });
 
-// delete file
-router.delete('/settings/device', function (req, res, next) {
-    const {name, _id = ''} = req.body;
-
-    api(req).delete('/notification/devices/' + _id).then(_ => {
-        res.sendStatus(200);
-    }).catch(err => {
-        res.status((err.statusCode || 500)).send(err);
-    });
-});
-
 router.get('/user', function (req, res, next) {
     res.locals.currentUser.schoolName = res.locals.currentSchoolData.name;
     res.json(res.locals.currentUser);
