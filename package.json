@@ -4,7 +4,7 @@
   "scripts": {
     "build": "gulp",
     "start": "node ./bin/www",
-    "watch": "node --watch ./bin/www",
+    "watch": "node --env-file .env --watch ./bin/www",
     "debug": "node --inspect=0.0.0.0:9311 --watch ./bin/www",
     "lint": "eslint ./bin ./controllers ./helpers ./test ./api.js ./app.js --ext .js --fix",
     "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
@@ -32,8 +32,6 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "path.join": "^1.0.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6",
     "sanitize-html": "^2.15.0",
     "sass": "^1.58.3",
     "string-strip-html": "^8.4.0",
