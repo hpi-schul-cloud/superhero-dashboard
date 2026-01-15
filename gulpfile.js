@@ -78,7 +78,7 @@ var loadPaths = path.resolve('./static/styles/');
 sassGrapher.init('./static/styles/', { loadPaths: loadPaths });
 function styles() {
     var themeFile = `./theme/${themeName()}/style.scss`;
-    // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled css is copied.
+    // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled bootstrap-flex.css is just copied.
     return beginPipe(['./static/styles/**/*.{css,sass,scss}', '!./static/styles/lib/bootstrap/scss/**/*'])
         .pipe(sassGrapher.ancestors())
         .pipe(header(fs.readFileSync(themeFile, 'utf8')))
