@@ -186,6 +186,13 @@ const getTableActions = (item, path) => {
             target: '_blank'
         },
         {
+            link: path + 'add-and-activate-for-all-schools/' + item.id,
+            class: 'btn-add-and-activate-tool-for-all-schools',
+            icon: 'plus-square-o',
+            title: 'für alle Schulen hinzufügen und aktivieren',
+            isSimpleButton: true
+        },
+        {
             link: path + item.id,
             class: 'btn-delete',
             icon: 'trash-o',
@@ -377,6 +384,13 @@ const getMediumMedataHandler = (req, res) => {
     });
 }
 
+const addAndActivateToolForAllSchools = (req, res) => {
+    const toolId = req.params.id;
+
+    api(req, { version: 'v3' }).patch(`/tools/add-and-activate-for-all-schools/${toolId}`)
+        .then(() => { res.redirect('/ctltools') });
+}
+
 router.use(authHelper.authChecker);
 
 router.get('/search', showTools);
@@ -386,6 +400,7 @@ router.get('/:id', getDetailHandler);
 router.delete('/:id', getDeleteHandler);
 router.post('/', getCreateHandler);
 router.get('/:id/datasheet', getDatasheet);
+router.patch('/add-and-activate-for-all-schools/:id', addAndActivateToolForAllSchools);
 
 router.all('/', showTools);
 

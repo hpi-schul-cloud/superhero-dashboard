@@ -5,6 +5,7 @@ $(document).ready(function () {
     const $editModal = $('.edit-modal');
     const $reglinkmodal = $('.reglink-modal');
     const $deleteModal = $('.delete-modal');
+    const $addAndActivateForAllSchoolsModal = $('.add-and-activate-for-all-schools-modal');
     const $customParameterTemplate = $('#custom-parameter-template');
     let customParameterId = 0;
 
@@ -82,6 +83,25 @@ $(document).ready(function () {
 
             $deleteModal.modal('show');
         });
+    });
+
+    $('.btn-add-and-activate-tool-for-all-schools').on('click', function (e) {
+        e.preventDefault();
+
+        const currentRow = $(this).parents('tr');
+        const toolId = currentRow.children().eq(0).text();
+        const toolName = currentRow.children().eq(1).text();
+        const action = `/ctltools/add-and-activate-for-all-schools/${toolId}`;
+
+        populateModalForm($addAndActivateForAllSchoolsModal, {
+            action,
+            title: 'Hinzufügen und aktivieren in allen Schulen',
+            closeLabel: 'Nein',
+            submitLabel: 'Ja',
+            fields: { name: toolName }
+        });
+
+        $addAndActivateForAllSchoolsModal.modal('show');
     });
 
     $('.parameters-regex').on('input', function (e) {

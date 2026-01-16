@@ -65,5 +65,10 @@
                 {{> "ctltools/forms/delete-form"}}
             {{/content}}
         {{/embed}}
+        {{#embed "lib/components/modal-form" roles=roles method="patch" class="add-and-activate-for-all-schools-modal"}}
+            {{#content "fields"}}
+                {{> "ctltools/forms/add-and-activate-for-all-schools"}}
+            {{/content}}
+        {{/embed}}
     {{/content}}
 {{/extend}}
