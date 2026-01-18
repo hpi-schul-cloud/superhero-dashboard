@@ -1,6 +1,7 @@
 const {src, dest, series, parallel, watch, lastRun} = require('gulp');
+const cached = require('gulp-cached');
+const newer = require('gulp-newer');
 const sass = require('gulp-sass')(require('sass'));
-const sassGrapher = require('gulp-sass-grapher');
 const path = require('path');
 const rimraf = require('gulp-rimraf');
 const uglify = require('gulp-uglify');
@@ -65,6 +66,7 @@ const beginPipeAll = path =>
 //minify images
 function images() {
     return beginPipe('./static/images/**/*.*')
+        .pipe(newer('./build/images'))
         .pipe(imagemin())
         .pipe(dest('./build/images'));
 }
@@ -75,12 +77,11 @@ function themeName(){
 }
 
 var loadPaths = path.resolve('./static/styles/');
-sassGrapher.init('./static/styles/', { loadPaths: loadPaths });
 function styles() {
     var themeFile = `./theme/${themeName()}/style.scss`;
     // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled bootstrap-flex.css is just copied.
     return beginPipe(['./static/styles/**/*.{css,sass,scss}', '!./static/styles/lib/bootstrap/scss/**/*'])
-        .pipe(sassGrapher.ancestors())
+        .pipe(cached('styles'))
         .pipe(header(fs.readFileSync(themeFile, 'utf8')))
         .pipe(sass({sourceMap: false}))
         .pipe(minify())
@@ -99,6 +100,7 @@ exports.fonts = fonts;
 //compile/transpile JSX and ES6 to ES5 and minify scripts
 function scripts() {
     return beginPipe(nonBaseScripts)
+        .pipe(cached('scripts'))
         .pipe(babel({
             presets: [["es2015", { modules: false }]],
             plugins: ["transform-react-jsx"]
@@ -165,7 +167,7 @@ function clear() {
 exports.clear = clear;
 
 //run all tasks, processing changed files
-const all = series(images, styles, fonts, scripts, base_scripts,
+const all = parallel(images, styles, fonts, scripts, base_scripts,
                     vendor_styles, vendor_scripts, vendor_assets);
 exports.all = all;
 
