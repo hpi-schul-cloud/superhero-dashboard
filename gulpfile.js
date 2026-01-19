@@ -158,7 +158,7 @@ function clear() {
 exports.clear = clear;
 
 //run all tasks, processing changed files
-const all = series(images, styles, fonts, scripts, base_scripts,
+const all = parallel(images, styles, fonts, scripts, base_scripts,
                     vendor_styles, vendor_scripts, vendor_assets);
 exports.all = all;
 
