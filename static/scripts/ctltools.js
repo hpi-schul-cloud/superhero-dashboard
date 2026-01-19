@@ -96,8 +96,8 @@ $(document).ready(function () {
         populateModalForm($addAndActivateForAllSchoolsModal, {
             action,
             title: 'Hinzufügen und aktivieren in allen Schulen',
-            closeLabel: 'Nein',
-            submitLabel: 'Ja',
+            closeLabel: 'Abbrechen',
+            submitLabel: 'Hinzufügen',
             fields: { name: toolName }
         });
 
