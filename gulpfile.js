@@ -6,7 +6,6 @@ const rimraf = require('gulp-rimraf');
 const uglify = require('gulp-uglify');
 const cleancss = require('clean-css');
 const map = require('vinyl-map');
-const imagemin = require('gulp-imagemin');
 const babel = require('gulp-babel');
 const filelog = require('gulp-filelog');
 const plumber = require('gulp-plumber');
@@ -65,7 +64,6 @@ const beginPipeAll = path =>
 //minify images
 function images() {
     return beginPipe('./static/images/**/*.*')
-        .pipe(imagemin())
         .pipe(dest('./build/images'));
 }
 exports.images = images;
