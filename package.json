@@ -61,7 +61,6 @@
     "gulp-plumber": "^1.2.1",
     "gulp-rimraf": "^1.0.0",
     "gulp-sass": "^5.1.0",
-    "gulp-sass-grapher": "^1.0.0",
     "gulp-uglify": "^3.0.2",
     "mocha": "^10.8.2",
     "sinon": "^15.0.1",
