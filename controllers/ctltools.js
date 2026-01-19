@@ -384,11 +384,12 @@ const getMediumMedataHandler = (req, res) => {
     });
 }
 
-const addAndActivateToolForAllSchools = (req, res) => {
+const addAndActivateToolForAllSchools = (req, res, next) => {
     const toolId = req.params.id;
 
     api(req, { version: 'v3' }).patch(`/tools/add-and-activate-for-all-schools/${toolId}`)
-        .then(() => { res.redirect('/ctltools') });
+        .then(() => { res.redirect('/ctltools') })
+        .catch(err => { next(err); });
 }
 
 router.use(authHelper.authChecker);
