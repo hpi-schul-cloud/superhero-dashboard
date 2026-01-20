@@ -1,12 +1,9 @@
 const {src, dest, series, parallel, watch, lastRun} = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
-const sassGrapher = require('gulp-sass-grapher');
-const path = require('path');
 const rimraf = require('gulp-rimraf');
 const uglify = require('gulp-uglify');
 const cleancss = require('clean-css');
 const map = require('vinyl-map');
-const imagemin = require('gulp-imagemin');
 const babel = require('gulp-babel');
 const filelog = require('gulp-filelog');
 const plumber = require('gulp-plumber');
@@ -65,7 +62,6 @@ const beginPipeAll = path =>
 //minify images
 function images() {
     return beginPipe('./static/images/**/*.*')
-        .pipe(imagemin())
         .pipe(dest('./build/images'));
 }
 exports.images = images;
@@ -74,12 +70,10 @@ function themeName(){
     return process.env.SC_THEME || 'default';
 }
 
-var loadPaths = path.resolve('./static/styles/');
-sassGrapher.init('./static/styles/', { loadPaths: loadPaths });
 function styles() {
     var themeFile = `./theme/${themeName()}/style.scss`;
-    return beginPipe('./static/styles/**/*.{css,sass,scss}')
-        .pipe(sassGrapher.ancestors())
+    // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled bootstrap-flex.css is just copied.
+    return beginPipe(['./static/styles/**/*.{css,sass,scss}', '!./static/styles/lib/bootstrap/scss/**/*'])
         .pipe(header(fs.readFileSync(themeFile, 'utf8')))
         .pipe(sass({sourceMap: false}))
         .pipe(minify())
@@ -164,7 +158,7 @@ function clear() {
 exports.clear = clear;
 
 //run all tasks, processing changed files
-const all = series(images, styles, fonts, scripts, base_scripts,
+const all = parallel(images, styles, fonts, scripts, base_scripts,
                     vendor_styles, vendor_scripts, vendor_assets);
 exports.all = all;
 

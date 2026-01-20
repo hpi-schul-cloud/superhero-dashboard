@@ -1,5 +1,6 @@
 @import './colors';
-@import './bootstrap/scss/bootstrap-flex';
+@import '../lib/bootstrap/scss/mixins/breakpoints';
+@import '../lib/bootstrap/scss/variables';
 @import "./editor";
 
 body {
