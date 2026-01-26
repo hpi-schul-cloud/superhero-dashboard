@@ -89,7 +89,7 @@ const getDeleteHandler = (service) => {
         try {
             const { id } = req.params;
             const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
-                .delete(`/${service}/${id}`);
+                .get(`/${service}/${id}`);
             const user = await api(req)
                 .get('/users/' + userId, { qs: { $populate: ['roles'] } });
             const roles = user.roles.map((role) => {
@@ -103,8 +103,14 @@ const getDeleteHandler = (service) => {
                 throw error;
             }
 
-            const data = await api(req)
-                .delete(`/users/v2/admin/${pathRole}/${userId}`);
+            if (user.ldapId) {
+                const error = new Error('Deletion is not supported for external users.');
+                error.status = 403;
+                throw error;
+            }
+
+            await api(req, { adminApi: true })
+                .post(`/deletionRequests`, { json: { targetRef: { domain: 'user', id: userId } } });
 
             res.redirect(req.header('Referer'));
         } catch (err) {
