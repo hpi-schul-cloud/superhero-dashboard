@@ -103,12 +103,6 @@ const getDeleteHandler = (service) => {
                 throw error;
             }
 
-            if (user.ldapId) {
-                const error = new Error('Deletion is not supported for external users.');
-                error.status = 403;
-                throw error;
-            }
-
             await api(req, { adminApi: true })
                 .post(`/deletionRequests`, { json: { targetRef: { domain: 'user', id: userId } } });
 

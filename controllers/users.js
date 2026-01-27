@@ -271,12 +271,6 @@ const getDeleteHandler = (service) => {
 				throw error;
 			}
 
-			if (user.ldapId !== undefined) {
-				const error = new Error('External users cannot be deleted via SHD.');
-				error.status = 403;
-				throw error;
-			}
-
 			await api(req, { adminApi: true }).post(`/deletionRequests`, {
 				json: { targetRef: { domain: 'user', id: userId } },
 			});
