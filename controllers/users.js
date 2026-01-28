@@ -272,7 +272,7 @@ const getDeleteHandler = (service) => {
 			}
 
 			await api(req, { adminApi: true }).post(`/deletionRequests`, {
-				json: { targetRef: { domain: 'user', id: userId } },
+				json: { targetRef: { domain: 'user', id: userId },  deleteAfterMinutes: 0 },
 			});
 
 			res.redirect(req.header('Referer'));
