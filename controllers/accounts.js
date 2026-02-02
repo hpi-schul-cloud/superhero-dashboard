@@ -88,23 +88,8 @@ const getDeleteHandler = (service) => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
-            const { userId } = await api(req, { useCallback: false, json: true, version: 'v3' })
-                .get(`/${service}/${id}`);
-            const user = await api(req)
-                .get('/users/' + userId, { qs: { $populate: ['roles'] } });
-            const roles = user.roles.map((role) => {
-                return role.name;
-            });
-            const pathRole = getMostSignificantRole(roles);
-
-            if (pathRole === undefined) {
-                const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
-                error.status = 403;
-                throw error;
-            }
-
-            await api(req, { adminApi: true })
-                .post(`/deletionRequests`, { json: { targetRef: { domain: 'user', id: userId }, deleteAfterMinutes: 0 } });
+            await api(req, { useCallback: false, json: true, version: 'v3' })
+                .delete(`/${service}/${id}`);
 
             res.redirect(req.header('Referer'));
         } catch (err) {
