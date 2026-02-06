@@ -257,35 +257,18 @@ const getMostSignificantRole = (roles) => {
 };
 
 const getDeleteHandler = (service) => {
-	let roles;
-	return function (req, res, next) {
-		api(req)
-			.get('/users/' + req.params.id, { qs: { $populate: ['roles'] } })
-			.then(async (user) => {
-				roles = user.roles.map((role) => {
-					return role.name;
-				});
-				return roles;
-			})
-			.then((roles) => {
-				const pathRole = getMostSignificantRole(roles);
-				if (pathRole === undefined) {
-					const error = new Error('Deletion is supported only for users with role student, teacher or administrator.');
-					error.status = 403;
-					throw error;
-				}
-				api(req)
-					.delete(`/users/v2/admin/${pathRole}/${req.params.id}`)
-					.then((data) => {
-						res.redirect(req.header('Referer'));
-					})
-					.catch((err) => {
-						next(err);
-					});
-			})
-			.catch((err) => {
-				next(err);
+	return async function (req, res, next) {
+		try {
+			const userId = req.params.id;
+
+			await api(req, { adminApi: true }).post(`/deletionRequests`, {
+				json: { targetRef: { domain: 'user', id: userId },  deleteAfterMinutes: 0 },
 			});
+
+			res.redirect(req.header('Referer'));
+		} catch (err) {
+			next(err);
+		}
 	};
 };
 // secure routes
