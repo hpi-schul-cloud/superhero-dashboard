@@ -85,8 +85,21 @@ $(document).ready(() => {
 		});
 		$addDeletionModal.appendTo('body').modal('show');
         resetFormFields();
-	})
+	});
 
     document.querySelector('#batch-file-input').addEventListener('change', loadCsvFile);
-})
 
+	$(document).on('click', '.add-modal--upload .btn-submit', (e) => {
+        $('#batch-upload-spinner').show();
+
+        if (!$('#batch-file-data').val()) {
+            $.showNotification('Bitte eine gültige CSV-Datei auswählen', 'danger', true);
+            return;
+        }
+
+        const $submitBtn = $(e.currentTarget);
+        setTimeout(() => {
+            $submitBtn.prop('disabled', true);
+        }, 0);
+    });
+});
