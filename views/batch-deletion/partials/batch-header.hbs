@@ -11,11 +11,7 @@
       </span>
     </div>
     <span>
-      {{this.overallCount}}
-      insgesamt -
-      {{#each this.usersByRole}}
-        <span>{{this.userCount}} {{this.roleName}}{{#unless @last}}<span>, </span>{{/unless}}</span>
-      {{/each}}
+      {{this.userStats}}
     </span>
   </div>
   <div class="actions">

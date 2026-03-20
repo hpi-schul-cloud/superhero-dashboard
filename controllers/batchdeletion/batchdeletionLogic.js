@@ -10,59 +10,25 @@ const getFormattedDate = (date) => {
   return formattedDate;
 };
 
-const germanRoleNames = {
-  student: "Schüler",
-  teacher: "Lehrer",
-  administrator: "Admin",
-  expert: "Experte",
-  superhero: "Superhero",
-  invalid: "Ungültig",
-};
-
-const mapUserIds = (batch) => {
-  const invalidUsersCount = batch.invalidUsers.length;
-  const invalidUsers = {
-    roleName: "invalid",
-    userCount: invalidUsersCount,
-  };
-
-  const usersByRole = batch.usersByRole.concat(
-    batch.skippedUsersByRole,
-    invalidUsers
-  );
-
-  return usersByRole
-    .sort((a, b) => b.userCount - a.userCount)
-    .map((role) => {
-      return {
-        roleName: germanRoleNames[role.roleName],
-        userCount: role.userCount,
-      };
-    });
-};
-
 const mapBatches = (batches) => {
   return batches.map((batch) => {
     const formattedDate = getFormattedDate(batch.createdAt);
     const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
 
-    const isValidBatch = batch.usersByRole.length > 0;
+    const isValidBatch = batch.validUsers > 0;
     const status = isValidBatch ? batch.status : "invalid";
     const canDeleteBatch = status === "created" || status === "invalid";
-    const canStartDeletion = canDeleteBatch && isValidBatch;
+    const canStartDeletion = isValidBatch && status === "created";
 
-    const ids = mapUserIds(batch);
-    const overallCount = ids.reduce((acc, role) => {
-      return acc + role.userCount;
-    }, 0);
+    const overallCount = batch.validUsers + batch.invalidUsers + batch.skippedUsers;
+    const userStats = `Gesamt: ${overallCount}, Gültig: ${batch.validUsers}, Ungültig: ${batch.invalidUsers}, Übersprungen: ${batch.skippedUsers}`;
 
     return {
       id: batch.id,
       status,
-      usersByRole: ids,
+      userStats,
       createdAt: formattedDate,
       batchTitle,
-      overallCount,
       canDeleteBatch,
       canStartDeletion,
     };
