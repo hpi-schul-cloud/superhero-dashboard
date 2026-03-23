@@ -13,7 +13,6 @@ const getFormattedDate = (date) => {
 const mapBatches = (batches) => {
   return batches.map((batch) => {
     const formattedDate = getFormattedDate(batch.createdAt);
-    const batchTitle = `${batch.name} - ${formattedDate} Uhr`;
 
     const isValidBatch = batch.validUsers > 0;
     const status = isValidBatch ? batch.status : "invalid";
@@ -23,12 +22,28 @@ const mapBatches = (batches) => {
     const overallCount = batch.validUsers + batch.invalidUsers + batch.skippedUsers;
     const userStats = `Gesamt: ${overallCount}, Gültig: ${batch.validUsers}, Ungültig: ${batch.invalidUsers}, Übersprungen: ${batch.skippedUsers}`;
 
+    let statusText;
+    switch (status) {
+      case "created":
+        statusText = "erstellt";
+        break;
+      case "deletion-requested":
+        statusText = "gestartet";
+        break;
+      case "invalid":
+        statusText = "ungültig";
+        break;
+      default:
+        statusText = status;
+    }
+
     return {
       id: batch.id,
       status,
+      statusText,
       userStats,
+      batchName: batch.name,
       createdAt: formattedDate,
-      batchTitle,
       canDeleteBatch,
       canStartDeletion,
     };

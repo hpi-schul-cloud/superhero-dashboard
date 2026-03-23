@@ -1,13 +1,9 @@
 <div class="batch-header">
   <div class="batch-info">
     <div class="batch-title">
-      <h5>{{batchTitle}}</h5>
+      <h5>{{this.batchName}} {{this.createdAt}}</h5>
       <span class="status-chip status-{{this.status}}">
-        {{#ifeq this.status "deletion-requested"}}
-            gesendet
-        {{else}}
-          {{../status}}
-        {{/ifeq}}
+        {{this.statusText}}
       </span>
     </div>
     <span>
@@ -24,7 +20,7 @@
       class="show-batch-details-btn btn btn-secondary btn-thin"
       data-toggle="modal"
       data-target=".details-modal"
-      data-title="{{this.batchTitle}}"
+      data-title="{{this.batchName}}"
       data-batch-id="{{this.id}}"
     >
       Details
