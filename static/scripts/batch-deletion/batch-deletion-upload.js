@@ -90,12 +90,13 @@ $(document).ready(() => {
     document.querySelector('#batch-file-input').addEventListener('change', loadCsvFile);
 
 	$(document).on('click', '.add-modal--upload .btn-submit', (e) => {
-        $('#batch-upload-spinner').show();
-
         if (!$('#batch-file-data').val()) {
-            $.showNotification('Bitte eine gültige CSV-Datei auswählen', 'danger', true);
+            $('#batch-file-error').show();
             return;
         }
+        $('#batch-file-error').hide();
+
+        $('#batch-upload-spinner').show();
 
         const $submitBtn = $(e.currentTarget);
         setTimeout(() => {
