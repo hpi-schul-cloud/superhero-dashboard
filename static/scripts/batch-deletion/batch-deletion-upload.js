@@ -85,8 +85,22 @@ $(document).ready(() => {
 		});
 		$addDeletionModal.appendTo('body').modal('show');
         resetFormFields();
-	})
+	});
 
     document.querySelector('#batch-file-input').addEventListener('change', loadCsvFile);
-})
 
+	$(document).on('click', '.add-modal--upload .btn-submit', (e) => {
+        if (!$('#batch-file-data').val()) {
+            $('#batch-file-error').show();
+            return;
+        }
+        $('#batch-file-error').hide();
+
+        $('#batch-upload-spinner').show();
+
+        const $submitBtn = $(e.currentTarget);
+        setTimeout(() => {
+            $submitBtn.prop('disabled', true);
+        }, 0);
+    });
+});

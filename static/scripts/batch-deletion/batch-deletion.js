@@ -3,7 +3,7 @@ $(document).ready(() => {
     const section = document.querySelector(`#${idType}-ids-section`);
 
     if (ids.length === 0) {
-      section.innerHTML = `<span class='no-ids-text'>Nothing ${idType}</span>`;
+      section.innerHTML = `<span class='no-ids-text'>leer</span>`;
       return;
     }
     const idsString = ids.join("\n");
@@ -38,14 +38,8 @@ $(document).ready(() => {
         setHTMLForIds(data.pendingDeletions, "pending");
         setHTMLForIds(data.successfulDeletions, "deleted");
         setHTMLForIds(data.failedDeletions, "failed");
-        setHTMLForIds(data.invalidIds, "invalid");
-
-        const mappedSkippedIds = data.skippedDeletions
-          .map((listItem) => {
-            return ["\n" + listItem.roleName, ...listItem.ids];
-          })
-          .flat();
-        setHTMLForIds(mappedSkippedIds.flat(), "skipped");
+        setHTMLForIds(data.invalidUsers, "invalid");
+        setHTMLForIds(data.skippedUsers, "skipped");
 
         document.querySelectorAll(".copy-btn").forEach((button) => {
           button.addEventListener("click", copyToClipboard);
@@ -89,7 +83,7 @@ $(document).ready(() => {
       const title = this.getAttribute("data-title");
       const batchId = this.getAttribute("data-batch-id");
 
-      document.querySelector(".modal-title").innerText = title;
+      document.querySelector(".details-modal .modal-title").innerText = title;
 
       fetchDeletionBatchDetails(batchId);
     });
