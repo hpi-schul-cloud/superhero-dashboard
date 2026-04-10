@@ -15,11 +15,11 @@ $(document).ready(function () {
             data: JSON.stringify({
                 value: $row.find('input, select').val()
             }),
-            success: function (_) {
+            success: function () {
                 $.showNotification('Konfiguration erfolgreich aktualisiert', 'success', 3000);
             },
-            error: function (_, _, error) {
-                $.showNotification('Fehler beim Aktualisieren der Konfiguration: ' + error, 'danger', 5000);
+            error: function () {
+                $.showNotification('Fehler beim Aktualisieren der Konfiguration.', 'danger', 5000);
             }
         });
     });
