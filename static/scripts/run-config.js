@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     $('.btn.btn-sm.save').on('click', function (e) {
         e.preventDefault();
         const $row = $(this).closest('tr');
@@ -22,6 +21,13 @@ $(document).ready(function () {
                 $.showNotification('Fehler beim Aktualisieren der Konfiguration.', 'danger', 5000);
             }
         });
+    });
+
+    $('.toggle input').on('click', function (e) {
+        e.preventDefault();
+        const target = e.currentTarget;
+        const value = $(target).val() === '1';
+        $(target).val(value ? '0' : '1');
     });
 
 });

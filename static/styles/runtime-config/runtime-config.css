@@ -9,6 +9,11 @@ table td.value-column {
     vertical-align: middle;
 }
 
+table td.action-column {
+    text-align: center;
+    vertical-align: middle;
+}
+
 .config-name {
     font-weight: bold;
 }
