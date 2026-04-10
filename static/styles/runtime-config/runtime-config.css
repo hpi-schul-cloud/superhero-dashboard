@@ -23,13 +23,10 @@ table td.action-column {
     margin-top: 4px;
 }
 
-.fullwidth-input {
+input[type="text"], input[type="number"] {
     width: 100%;
 }
 
-.toggle {
-    vertical-align: middle;
-}
-.toggle input {
-    width: 2em;
+input[type="checkbox"] {
+    transform: scale(1.5);
 }

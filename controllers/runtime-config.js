@@ -18,7 +18,7 @@ const updateHandler = (req, res, next) => {
     const config = runtimeConfig.find(c => c.key === req.params.key);
     if (config) {
         if (config.type === 'boolean') {
-            value = req.body.value === '1' || req.body.value === 'true';
+            value = req.body.value === 'checked' || false;
         } else if (config.type === 'number') {
             value = Number(req.body.value);
         }

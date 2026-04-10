@@ -6,13 +6,18 @@ $(document).ready(function () {
 
         const url = new URL(window.location.href);
         url.pathname = `${url.pathname}${key}`;
+
+        const isCheckbox = $row.find('input[type="checkbox"]').length > 0;
+        const checkboxValue =  $row.find('input[type="checkbox"]').is(':checked') ? 'checked' : 'unchecked';
+        const textValue = $row.find('input[type="number"], input[type="text"]').val();
+        const value = isCheckbox ? checkboxValue : textValue;
     
         $.ajax({
             url: url.toString(),
             type: 'PATCH',
             contentType: 'application/json',
             data: JSON.stringify({
-                value: $row.find('input, select').val()
+                value: value
             }),
             success: function () {
                 $.showNotification('Konfiguration erfolgreich aktualisiert', 'success', 3000);
@@ -21,13 +26,6 @@ $(document).ready(function () {
                 $.showNotification('Fehler beim Aktualisieren der Konfiguration.', 'danger', 5000);
             }
         });
-    });
-
-    $('.toggle input').on('click', function (e) {
-        e.preventDefault();
-        const target = e.currentTarget;
-        const value = $(target).val() === '1';
-        $(target).val(value ? '0' : '1');
     });
 
 });

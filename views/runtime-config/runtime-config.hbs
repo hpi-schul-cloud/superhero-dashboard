@@ -34,11 +34,11 @@
                                         </td>
                                         <td class="value-column">
                                             {{#if isString}}
-                                                <input class="fullwidth-input" name="{{this.key}}" type="text" value="{{this.value}}">
+                                                <input name="{{this.key}}" type="text" value="{{this.value}}">
                                             {{else if isNumber}}
-                                                <input class="fullwidth-input" name="{{this.key}}" type="number" value="{{this.value}}">
+                                                <input name="{{this.key}}" type="number" value="{{this.value}}">
                                             {{else if isBoolean}}
-                                                <div class="toggle">aus <input name="{{this.key}}" type="range" min="0" max="1" value="{{#if this.value}}1{{else}}0{{/if}}"> an</div>
+                                                <input type="checkbox" name="{{this.key}}" value="checked" {{#if this.value}}checked{{/if}}>
                                             {{else}}
                                                 <pre>unbekannter typ: {{this.type}} - aktueller Wert: {{this.value}}</pre>
                                             {{/if}}
