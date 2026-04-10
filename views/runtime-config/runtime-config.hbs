@@ -33,7 +33,7 @@
                                                 {{#if isString}}
                                                     <input style="width: 100%;" name="{{this.key}}" type="text" value="{{this.value}}">
                                                 {{else if isNumber}}
-                                                    <input style="width: 100%;" name="{{this.key}}" type="text" inputmode="numeric" pattern="\d*" value="{{this.value}}">
+                                                    <input style="width: 100%;" name="{{this.key}}" type="number" value="{{this.value}}">
                                                 {{else if isBoolean}}
                                                     <div>aus <input style="width: 2em" name="{{this.key}}" type="range" min="0" max="1" value="{{#if this.value}}1{{else}}0{{/if}}"> an</div>
                                                 {{else}}
