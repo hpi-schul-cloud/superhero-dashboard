@@ -4,53 +4,55 @@
         <script src="/scripts/run-config.js" type="text/javascript" defer></script>
     {{/content}}
 
+     {{#content "styles" mode="append"}}
+        <link rel="stylesheet" href="/styles/runtime-config/runtime-config.css"/>
+    {{/content}}
+
     {{#content "page"}}
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12 no-padding">
-                    <div class="table-wrapper {{#unless class}}table table-hover table-bordered{{/unless}}">
-                        <table class="{{#if class}}{{class}}{{else}}table table-hover table-bordered{{/if}}">
-                            {{#if head}}
-                                <thead>
-                                    <tr>
-                                        {{#each head}}
-                                            <th>{{this}}</th>
-                                        {{/each}}
-                                    </tr>
-                                </thead>
-                            {{/if}}
-
-
-                            {{#if values}}
-                                <tbody>
-                                    {{#each values}}
-                                        <tr data-key="{{this.key}}">
-                                            <td style="max-width: 40%; overflow-wrap: break-word;">
-                                                <strong>{{this.key}}</strong><br />
-                                                <div style="font-size: 0.8em;">{{this.description}}</div>
-                                            </td>
-                                            <td style="width: 50%; overflow-wrap: break-word;">
-                                                {{#if isString}}
-                                                    <input style="width: 100%;" name="{{this.key}}" type="text" value="{{this.value}}">
-                                                {{else if isNumber}}
-                                                    <input style="width: 100%;" name="{{this.key}}" type="number" value="{{this.value}}">
-                                                {{else if isBoolean}}
-                                                    <div>aus <input style="width: 2em" name="{{this.key}}" type="range" min="0" max="1" value="{{#if this.value}}1{{else}}0{{/if}}"> an</div>
-                                                {{else}}
-                                                    <pre>unbekannter typ: {{this.type}} - aktueller Wert: {{this.value}}</pre>
-                                                {{/if}}
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-secondary btn-sm save" title="Speichern">
-                                                    <i class="fa fa-save"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+            <div class="row col-sm-12 no-padding">
+                <div class="table-wrapper {{#unless class}}table table-hover table-bordered{{/unless}}">
+                    <table class="{{#if class}}{{class}}{{else}}table table-hover table-bordered{{/if}}">
+                        {{#if head}}
+                            <thead>
+                                <tr>
+                                    {{#each head}}
+                                        <th>{{this}}</th>
                                     {{/each}}
-                                </tbody>
-                            {{/if}}
-                        </table>
-                    </div>
+                                </tr>
+                            </thead>
+                        {{/if}}
+
+
+                        {{#if values}}
+                            <tbody>
+                                {{#each values}}
+                                    <tr data-key="{{this.key}}">
+                                        <td class="description-column">
+                                            <div class="config-name">{{this.key}}</div>
+                                            <div class="config-description">{{this.description}}</div>
+                                        </td>
+                                        <td class="value-column">
+                                            {{#if isString}}
+                                                <input class="fullwidth-input" name="{{this.key}}" type="text" value="{{this.value}}">
+                                            {{else if isNumber}}
+                                                <input class="fullwidth-input" name="{{this.key}}" type="number" value="{{this.value}}">
+                                            {{else if isBoolean}}
+                                                <div class="toggle">aus <input name="{{this.key}}" type="range" min="0" max="1" value="{{#if this.value}}1{{else}}0{{/if}}"> an</div>
+                                            {{else}}
+                                                <pre>unbekannter typ: {{this.type}} - aktueller Wert: {{this.value}}</pre>
+                                            {{/if}}
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary btn-sm save" title="Speichern">
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        {{/if}}
+                    </table>
                 </div>
             </div>
             {{!-- <div class="row">

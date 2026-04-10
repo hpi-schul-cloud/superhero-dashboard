@@ -1,0 +1,30 @@
+.description-column {
+    max-width: 40%; 
+    overflow-wrap: break-word;
+}
+
+table td.value-column {
+    width: 50%; 
+    overflow-wrap: break-word; 
+    vertical-align: middle;
+}
+
+.config-name {
+    font-weight: bold;
+}
+
+.config-description {
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+.fullwidth-input {
+    width: 100%;
+}
+
+.toggle {
+    vertical-align: middle;
+}
+.toggle input {
+    width: 2em;
+}
