@@ -37,7 +37,7 @@
                                                 {{else if isBoolean}}
                                                     <div>aus <input style="width: 2em" name="{{this.key}}" type="range" min="0" max="1" value="{{#if this.value}}1{{else}}0{{/if}}"> an</div>
                                                 {{else}}
-                                                    <pre>{{this.value}}</pre>
+                                                    <pre>unbekannter typ: {{this.type}} - aktueller Wert: {{this.value}}</pre>
                                                 {{/if}}
                                             </td>
                                             <td>
