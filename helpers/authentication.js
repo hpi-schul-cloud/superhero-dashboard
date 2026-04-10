@@ -31,7 +31,7 @@ const authChecker = (req, res, next) => {
                         return restrictSidebar(req, res);
                     })
                     .then(_ => {
-                            next();
+                        next();
                     });
             } else {
                 res.redirect('/login/');
