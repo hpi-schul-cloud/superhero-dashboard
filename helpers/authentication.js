@@ -31,7 +31,7 @@ const authChecker = (req, res, next) => {
                         return restrictSidebar(req, res);
                     })
                     .then(_ => {
-                        next();
+                            next();
                     });
             } else {
                 res.redirect('/login/');
@@ -115,6 +115,11 @@ const restrictSidebar = (req, res) => {
             name: 'CTL Tools',
             icon: 'window-maximize',
             link: '/ctltools/',
+        },
+        {
+            name: 'Konfiguration',
+            icon: 'gear',
+            link: '/runtime-config/',
         },
         {
             name: 'Datenspeicher',
