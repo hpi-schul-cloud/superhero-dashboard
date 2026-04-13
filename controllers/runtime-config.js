@@ -27,8 +27,8 @@ const updateHandler = (req, res, next) => {
 
     api(req, { version: 'v3' }).patch(`/runtime-config/${req.params.key}`, {
         json: { value: value }
-    }).then(() => {
-        res.status(200).json({ message: 'Konfiguration erfolgreich aktualisiert' });
+    }).then(({ value }) => {
+        res.status(200).json({ value });
     }).catch(err => {
         next(err);
     });

@@ -19,7 +19,11 @@ $(document).ready(function () {
             data: JSON.stringify({
                 value: value
             }),
-            success: function () {
+            success: function ({ value}) {
+                // ensure that sanitzed value is updated
+                if (value) {
+                    $row.find('input[type="text"]').val(value);
+                }
                 $.showNotification('Konfiguration erfolgreich aktualisiert', 'success', 3000);
             },
             error: function () {
