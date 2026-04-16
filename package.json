@@ -10,8 +10,8 @@
     "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
   },
   "engines": {
-    "node": "22",
-    "npm": ">=9"
+    "node": "24",
+    "npm": "11"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
