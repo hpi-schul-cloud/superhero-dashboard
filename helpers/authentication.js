@@ -117,6 +117,11 @@ const restrictSidebar = (req, res) => {
             link: '/ctltools/',
         },
         {
+            name: 'Konfiguration',
+            icon: 'gear',
+            link: '/runtime-config/',
+        },
+        {
             name: 'Datenspeicher',
             icon: 'server',
             link: '/storageproviders/'

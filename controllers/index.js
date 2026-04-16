@@ -6,6 +6,7 @@ const handlebarsHelper = require('../helpers/handlebars');
 //router.use(handlebarsHelper.middleware);
 
 router.use(require('./login'));
+router.use(express.json());
 router.use('/dashboard/', require('./dashboard'));
 router.use('/schools/', require('./schools'));
 router.use('/users/', require('./users'));
@@ -17,6 +18,7 @@ router.use('/accounts', require('./accounts'));
 router.use('/account', require('./account'));
 router.use('/statistics', require('./statistics'));
 router.use('/ctltools', require('./ctltools'));
+router.use('/runtime-config', require('./runtime-config'));
 router.use('/storageproviders', require('./storageproviders'));
 router.use('/base64files/', require('./base64files'));
 router.use('/batch-deletion/', require('./batchdeletion'));

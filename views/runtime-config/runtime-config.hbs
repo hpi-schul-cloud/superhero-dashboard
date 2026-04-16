@@ -1,0 +1,60 @@
+{{#extend "lib/loggedin"}}
+
+    {{#content "scripts" mode="append"}}
+        <script src="/scripts/run-config.js" type="text/javascript" defer></script>
+    {{/content}}
+
+     {{#content "styles" mode="append"}}
+        <link rel="stylesheet" href="/styles/runtime-config/runtime-config.css"/>
+    {{/content}}
+
+    {{#content "page"}}
+        <div class="container-fluid">
+            <div class="row col-sm-12 no-padding">
+                <div class="table-wrapper {{#unless class}}table table-hover table-bordered{{/unless}}">
+                    <table class="{{#if class}}{{class}}{{else}}table table-hover table-bordered{{/if}}">
+                        {{#if head}}
+                            <thead>
+                                <tr>
+                                    {{#each head}}
+                                        <th>{{this}}</th>
+                                    {{/each}}
+                                </tr>
+                            </thead>
+                        {{/if}}
+
+
+                        {{#if values}}
+                            <tbody>
+                                {{#each values}}
+                                    <tr data-key="{{this.key}}">
+                                        <td class="description-column">
+                                            <div class="config-name">{{this.key}}</div>
+                                            <div class="config-description">{{this.description}}</div>
+                                        </td>
+                                        <td class="value-column">
+                                            {{#if isString}}
+                                                <input name="{{this.key}}" type="text" value="{{this.value}}">
+                                            {{else if isNumber}}
+                                                <input name="{{this.key}}" type="number" value="{{this.value}}">
+                                            {{else if isBoolean}}
+                                                <input type="checkbox" name="{{this.key}}" value="checked" {{#if this.value}}checked{{/if}}>
+                                            {{else}}
+                                                <pre>unbekannter typ: {{this.type}} - aktueller Wert: {{this.value}}</pre>
+                                            {{/if}}
+                                        </td>
+                                        <td class="action-column">
+                                            <button type="button" class="btn btn-secondary btn-sm save" title="Speichern">
+                                                <i class="fa fa-save"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        {{/if}}
+                    </table>
+                </div>
+            </div>
+        </div>
+    {{/content}}
+{{/extend}}

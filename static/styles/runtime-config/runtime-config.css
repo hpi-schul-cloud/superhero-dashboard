@@ -1,0 +1,32 @@
+.description-column {
+    max-width: 40%; 
+    overflow-wrap: break-word;
+}
+
+table td.value-column {
+    width: 50%; 
+    overflow-wrap: break-word; 
+    vertical-align: middle;
+}
+
+table td.action-column {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.config-name {
+    font-weight: bold;
+}
+
+.config-description {
+    font-size: 0.8em;
+    margin-top: 4px;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+}
