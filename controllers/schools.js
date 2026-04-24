@@ -14,7 +14,6 @@ const moment = require('moment-timezone');
 moment.locale('de');
 
 const SCHOOL_FEATURES = [
-  'rocketChat',
   'videoconference',
   'messenger',
   // 'studentVisibility', // is now handled instead with env vars / permission in school combination
