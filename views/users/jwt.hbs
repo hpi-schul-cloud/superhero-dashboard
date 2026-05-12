@@ -1,20 +1,8 @@
 {{#extend "lib/loggedin"}}
 
-    {{#content "styles" mode="append"}}
-        <link rel="stylesheet" href="/styles/events/events.css"/>
-    {{/content}}
-
-    {{#content "scripts" mode="append"}}
-        <script>
-            function copyToClipboard(element) {
-                var $temp = $("<input>");
-                $("body").append($temp);
-                $temp.val($(element).text()).select();
-                document.execCommand("copy");
-                $temp.remove();
-            }
-        </script>
-    {{/content}}
+        {{#content "scripts" mode="append"}}
+                <script src="/scripts/jwt.js" type="text/javascript" defer></script>
+        {{/content}}
 
     {{#content "page"}}
         <div class="container-fluid">
@@ -25,12 +13,12 @@
                             <div class="card-block">
                                 <h5 class="card-title"><i class="fa fa-user"></i> JWT kopieren und selbst einfügen</h5>
                                 <div class="card-text">
-                                    <input value="{{jwt}}" style="width: 100%;">
+                                    <input value="{{jwt}}" class="jwt-input">
                                     <p id="jwt" hidden>{{jwt}}</p>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <button class="btn btn-primary btn-block" title="JWT in die Zwischenablage kopieren" onclick="copyToClipboard('#jwt')">
+                                <button class="btn btn-primary btn-block btn-copy-jwt" title="JWT in die Zwischenablage kopieren">
                                     <i class="fa fa-clipboard" aria-hidden="true"></i>
                                 </button>
                             </div>
