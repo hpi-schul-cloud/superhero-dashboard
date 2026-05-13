@@ -1,4 +1,3 @@
-
 @import './colors';
 @import '../lib/bootstrap/scss/mixins/breakpoints';
 @import '../lib/bootstrap/scss/variables';
@@ -606,4 +605,10 @@ footer {
         background-color: $colorGrey;
         height: 12px;
     }
+}
+
+.table-limit-select {
+  float: right;
+  padding-bottom: 10px;
+  padding-right: 0 !important;
 }
