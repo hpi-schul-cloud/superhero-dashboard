@@ -612,3 +612,8 @@ footer {
   padding-bottom: 10px;
   padding-right: 0 !important;
 }
+
+.table-cell-wrap {
+  max-width: 25vw;
+  overflow-wrap: break-word;
+}
