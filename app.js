@@ -38,7 +38,7 @@ app.set('views', viewDirs);
 app.engine("hbs", wax.engine);
 app.set("view engine", "hbs");
 
-app.set('view cache', false);
+app.set('view cache', true);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
