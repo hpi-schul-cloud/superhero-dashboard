@@ -20,6 +20,7 @@ app.set('trust proxy', true);
 //    res.setHeader('Content-Security-Policy', "default-src 'self'");
 //    next();
 //});
+console.log('csl is not activated, dashboard is running in development mode');
 const themeName = process.env.SC_THEME || 'default';
 // view engine setup
 const handlebarsHelper = require('./helpers/handlebars');
