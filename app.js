@@ -16,10 +16,10 @@ const app = express();
 app.use(compression());
 app.set('trust proxy', true);
 
-app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
-    next();
-});
+//app.use((req, res, next) => {
+//    res.setHeader('Content-Security-Policy', "default-src 'self'");
+//    next();
+//});
 const themeName = process.env.SC_THEME || 'default';
 // view engine setup
 const handlebarsHelper = require('./helpers/handlebars');
@@ -37,7 +37,7 @@ app.set('views', viewDirs);
 app.engine("hbs", wax.engine);
 app.set("view engine", "hbs");
 
-app.set('view cache', true);
+app.set('view cache', false);
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

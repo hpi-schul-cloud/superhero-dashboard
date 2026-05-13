@@ -14,14 +14,14 @@
 <div class="form-group">
     <label class="control-label" for="logoUrl">Logo-URL</label>
     <input type="text" name="logoUrl" id="logoUrl" class="form-control">
-    <p class="text-danger" style="font-size:0.75rem;">
+    <p class="text-danger ctltool-hint">
         Maximale Dateigröße 300 kByte; Zulässige Formate: jpg, png, svg, gif
     </p>
 </div>
 <div class="form-group">
     <label class="control-label" for="thumbnailUrl">Vorschau-URL</label>
     <input type="text" name="thumbnailUrl" id="thumbnailUrl" class="form-control">
-    <p class="text-danger" style="font-size:0.75rem;">
+    <p class="text-danger ctltool-hint">
         Zulässige Formate: jpeg, png, svg, pdf, bmp, webp, gif, heic, heif, tiff
     </p>
 </div>
@@ -30,30 +30,30 @@
 <hr/>
 <div class="form-group">
     <label class="control-label">Mit einem externen Medium verknüpfen?</label>
-    <label  style="width: 100%">
-        <input type="checkbox" id="hasMedium" name="hasMedium" value="1" class="form-control" style="width:10%;display:inline-block;">
+    <label class="ctltool-label-fullwidth">
+        <input type="checkbox" id="hasMedium" name="hasMedium" value="1" class="form-control ctltool-checkbox-inline">
         Ja, es soll verknüpft werden
     </label>
 </div>
 
-<div class="form-group" style="display: flex; flex-direction: column;">
+<div class="form-group ctltool-flex-col">
     <label class="control-label">Medienverwaltung</label>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <select name="medium[mediaSourceId]" id="mediaSource" style="flex: 70%; max-width: 70%;">
+    <div class="ctltool-flex-row">
+        <select name="medium[mediaSourceId]" id="mediaSource" class="ctltool-select-70">
             {{#each mediaSources}}
                 <option value="{{this.sourceId}}" data-media-format="{{this.format}}">{{this.label}}</option>
             {{/each}}
         </select>
-        <button type="button" class="btn btn-secondary ml-1" id="btn-load-media-metadata" style="flex: 30%; max-width: 30%;">
+        <button type="button" class="btn btn-secondary ml-1 ctltool-btn-30" id="btn-load-media-metadata">
             Metadaten laden
         </button>
     </div>
     <p class="text-danger mt-1 mb-0" id="load-media-metadata-error"></p>
 </div>
 
-<div class="form-group" style="display: flex; flex-direction: column;">
+<div class="form-group ctltool-flex-col">
     <label class="control-label">Automatisierte Medienprovisionierung</label>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div class="ctltool-flex-row">
         <select name="medium[status]" id="mediumStatus" type="text">
             {{#each mediumStatuses}}
                 <option value="{{this.status}}" data-medium-status="{{this.status}}">{{this.label}}</option>
@@ -78,34 +78,34 @@
 <hr/>
 <div class="form-group">
     <label class="control-label">Direkt in neuem Tab öffnen?</label>
-    <label  style="width: 100%">
-        <input type="checkbox" name="openNewTab" value="1" class="form-control" style="width:10%;display:inline-block;">
+    <label class="ctltool-label-fullwidth">
+        <input type="checkbox" name="openNewTab" value="1" class="form-control ctltool-checkbox-inline">
         Ja, direkt in neuem Tab öffnen
     </label>
 </div>
 <div class="form-group">
     <label class="control-label">In der Schulcloud ausblenden?</label>
-    <label  style="width: 100%">
-        <input type="checkbox" name="isHidden" value="1" class="form-control" style="width:10%;display:inline-block;">
+    <label class="ctltool-label-fullwidth">
+        <input type="checkbox" name="isHidden" value="1" class="form-control ctltool-checkbox-inline">
         Ja, es soll ausgeblendet werden
     </label>
 </div>
 <div class="form-group">
     <label class="control-label">In der Schulcloud deaktivieren?</label>
-    <label  style="width: 100%">
-        <input type="checkbox" name="isDeactivated" value="1" class="form-control" style="width:10%;display:inline-block;">
+    <label class="ctltool-label-fullwidth">
+        <input type="checkbox" name="isDeactivated" value="1" class="form-control ctltool-checkbox-inline">
         Ja, es soll deaktiviert werden
     </label>
 </div>
 <div class="form-group">
     <label class="control-label">Als "bevorzugtes Tool" markieren?</label>
-    <label  style="width: 100%">
-        <input type="checkbox" name="isPreferred" value="1" class="form-control" style="width:10%;display:inline-block;">
+    <label class="ctltool-label-fullwidth">
+        <input type="checkbox" name="isPreferred" value="1" class="form-control ctltool-checkbox-inline">
         Ja, es soll markiert werden
     </label>
-    <label  style="width: 100%; display: flex; padding-left: 10.5%;">
-        <span style="flex-basis: 25%; align-content: center">Icon-Name:</span>
-        <input type="text" name="iconName" class="form-control" style="flex-basis: auto">
+    <label class="ctltool-icon-label">
+        <span class="ctltool-icon-label-text">Icon-Name:</span>
+        <input type="text" name="iconName" class="form-control ctltool-icon-input">
     </label>
 </div>
 <div class="form-group">
@@ -167,8 +167,8 @@
         </div>
         <div class="form-group">
             <label class="control-label" for="skip-consent">Consent skippen? (Zustimmung liegt in anderer Form vor)</label>
-            <label  style="width: 100%">
-                <input type="checkbox" name="config[skipConsent]" id="skip-consent" value="1" class="form-control" style="width:10%;display:inline-block;">
+            <label class="ctltool-label-fullwidth">
+                <input type="checkbox" name="config[skipConsent]" id="skip-consent" value="1" class="form-control ctltool-checkbox-inline">
                 Ja, skippen
             </label>
         </div>
@@ -218,15 +218,15 @@
 <div id="custom-parameter-template" style="display:none;">
     <div class="form-group">
         <label class="control-label parameters-is-optional-label">Optionaler Parameter?</label>
-        <label  style="width: 100%">
-            <input type="checkbox" name="isOptional" value="1" class="form-control parameters-is-optional" style="width:10%;display:inline-block;">
+        <label class="ctltool-label-fullwidth">
+            <input type="checkbox" name="isOptional" value="1" class="form-control parameters-is-optional ctltool-checkbox-inline">
             Ja, optional.
         </label>
     </div>
     <div class="form-group">
         <label class="control-label parameters-is-protected-label">Geschützter Parameter?</label>
-        <label  style="width: 100%">
-            <input type="checkbox" name="isProtected" value="1" class="form-control parameters-is-protected" style="width:10%;display:inline-block;">
+        <label class="ctltool-label-fullwidth">
+            <input type="checkbox" name="isProtected" value="1" class="form-control parameters-is-protected ctltool-checkbox-inline">
             Ja, geschützt.
         </label>
     </div>
@@ -269,7 +269,7 @@
     <div class="form-group">
         <label class="control-label parameters-default-label">Default</label>
         <input type="text" class="form-control parameters-default" placeholder="Default">
-        <p class="boolean-type-text text-danger" style="display:none; font-size:0.75rem;">Mögliche Werte: "true" oder "false"</p>
+        <p class="boolean-type-text text-danger ctltool-hint" style="display:none;">Mögliche Werte: "true" oder "false"</p>
     </div>
     <div class="form-group">
         <label class="control-label parameters-regex-label">Regex (nur für Strings relevant)</label>
