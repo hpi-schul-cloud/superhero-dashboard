@@ -1,21 +1,28 @@
-// jwt.js
-// Nur für die JWT-Ansicht zuständig (CSP-konform, kein Inline-Handler)
 
-document.addEventListener('DOMContentLoaded', function () {
-    var btn = document.querySelector('.btn-copy-jwt');
-    if (btn) {
-        btn.addEventListener('click', function () {
-            var el = document.querySelector('#jwt');
-            if (!el) return;
-            var value = el.value || el.textContent;
-            var tempInput = document.createElement('input');
-            tempInput.style.position = 'absolute';
-            tempInput.style.left = '-9999px';
-            tempInput.value = value;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-        });
+const copyToClipboard = async (text) => {
+	try {
+		await navigator.clipboard.writeText(text);
+	} catch (error) {
+		// in case browser doesn't support navigator.clipboard
+		const tempInput = document.createElement('input');
+		tempInput.value = text;
+		tempInput.style.position = 'absolute';
+		tempInput.style.left = '-9999px';
+		document.body.appendChild(tempInput);
+		tempInput.select();
+		document.execCommand('copy');
+		document.body.removeChild(tempInput);
+	}
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.querySelector('.btn-copy-jwt');
+    const el = document.querySelector('#jwt');
+    if (!btn || !el) {
+        return;
     }
+    btn.addEventListener('click', async () => {
+        const value = el.value ? el.value.trim() : el.textContent.trim();
+        await copyToClipboard(value);
+    });
 });
