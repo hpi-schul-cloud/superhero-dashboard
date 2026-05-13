@@ -1,7 +1,6 @@
 {{#extend "lib/loggedin"}}
 
     {{#content "styles" mode="append"}}
-        <link rel="stylesheet" href="/styles/events/events.css"/>
         <link rel="stylesheet" href="/styles/schools/schools.css"/>
     {{/content}}
 
@@ -13,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-9"></div>
-                    <div class="col-sm-3" style="padding-bottom: 20px">
+                    <div class="col-sm-3 search-column">
                         <form class="search-wrapper" action="/schools/" method="get">
                             <div class="input-group input-group-sm">
                                 <input type="text" class="form-control search-field" placeholder="Suche nach Schulen... (Name)" name="q" />
