@@ -17,7 +17,14 @@ app.use(compression());
 app.set('trust proxy', true);
 
 app.use((req, res, next) => {
-    res.setHeader('Content-Security-Policy', "default-src 'self'");
+    res.setHeader(
+        'Content-Security-Policy',
+        [
+            "default-src 'self'",
+            "style-src 'self'",
+            "style-src-attr 'unsafe-inline'",
+        ].join('; ')
+    );
     next();
 });
 console.log('csl is not activated, dashboard is running in development mode');
