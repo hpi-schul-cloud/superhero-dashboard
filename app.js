@@ -16,10 +16,10 @@ const app = express();
 app.use(compression());
 app.set('trust proxy', true);
 
-//app.use((req, res, next) => {
-//    res.setHeader('Content-Security-Policy', "default-src 'self'");
-//    next();
-//});
+app.use((req, res, next) => {
+    res.setHeader('Content-Security-Policy', "default-src 'self'");
+    next();
+});
 console.log('csl is not activated, dashboard is running in development mode');
 const themeName = process.env.SC_THEME || 'default';
 // view engine setup
