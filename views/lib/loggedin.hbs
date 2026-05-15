@@ -6,18 +6,6 @@
 
     {{#content "scripts" mode="append"}}
         <script src="/scripts/loggedin.js" type="text/javascript" defer></script>
-
-        <script type="text/javascript">
-        window.addEventListener('DOMContentLoaded', function() {
-            $('.sidebar-list').css({"height": window.innerHeight});
-            if (!/^((?!chrome).)*safari/i.test(navigator.userAgent)) {
-                setupFirebasePush();
-            }
-        });
-        window.addEventListener("resize", function () {
-            $('.sidebar-list').css({"height": window.innerHeight});
-        });
-        </script>
     {{/content}}
 
     {{#content "body"}}
@@ -34,7 +22,7 @@
                     {{#each sidebarItems}}
                         <li>
                             <a class="{{this.class}}" href="{{this.link}}"
-                                data-container=".navtooltips" data-toggle="tooltip" data-placement="right" data-title="{{this.name}}">
+                                data-container=".navtooltips" data-placement="right" data-title="{{this.name}}">
                                 <i class="fa fa-{{this.icon}}" aria-hidden="true"></i>
                                 <span class="link-name">{{this.name}}</span>
                             </a>
@@ -45,7 +33,7 @@
                                         {{#each this.children}}
                                             <li>
                                                 <a class="subitem {{this.class}}" href="{{this.link}}"
-                                                    data-container=".navtooltips" data-toggle="tooltip" data-placement="right" data-title="{{this.name}}">
+                                                    data-container=".navtooltips" data-placement="right" data-title="{{this.name}}">
                                                     <i class="fa fa-{{this.icon}}" aria-hidden="true"></i>
                                                     <span class="link-name">{{this.name}}</span>
                                                 </a>
