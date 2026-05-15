@@ -27,7 +27,6 @@ app.use((req, res, next) => {
     );
     next();
 });
-console.log('csl is not activated, dashboard is running in development mode');
 const themeName = process.env.SC_THEME || 'default';
 // view engine setup
 const handlebarsHelper = require('./helpers/handlebars');
