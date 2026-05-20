@@ -21,6 +21,7 @@ app.use((req, res, next) => {
         'Content-Security-Policy',
         [
             "default-src 'self'",
+            "img-src 'self' https://upload.wikimedia.org",
             "style-src 'self'",
             "style-src-attr 'unsafe-inline'",
         ].join('; ')
