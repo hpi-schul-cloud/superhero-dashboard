@@ -1,10 +1,10 @@
 const navigateBackOrHome = () => {
-	if (window.history.length > 1) {
-		window.history.back();
+	if (globalThis.history.length > 1) {
+		globalThis.history.back();
 		return;
 	}
 
-	window.location.assign('/');
+	globalThis.location.assign('/');
 };
 
 document.addEventListener('DOMContentLoaded', function() {
