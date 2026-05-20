@@ -7,12 +7,12 @@ const navigateBackOrHome = () => {
 	globalThis.location.assign('/');
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
 
     const backButtons = document.querySelectorAll('.js-back-button');
 
-    backButtons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
+    backButtons.forEach((button) => {
+        button.addEventListener('click', (event) => {
             event.preventDefault();
             navigateBackOrHome();
         });
