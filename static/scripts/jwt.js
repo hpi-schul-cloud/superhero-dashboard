@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!btn || !el) {
         return;
     }
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', () => {
         const value = el.value ? el.value.trim() : el.textContent.trim();
-        await navigator.clipboard.writeText(value);
+        navigator.clipboard.writeText(value);
     });
 });
