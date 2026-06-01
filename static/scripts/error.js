@@ -4,6 +4,7 @@ const navigateBackOrHome = () => {
 		return;
 	}
 
+	
 	globalThis.location.assign('/');
 };
 
