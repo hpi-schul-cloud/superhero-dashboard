@@ -15,6 +15,19 @@ const handlebarsWax = require('handlebars-wax');
 const app = express();
 app.use(compression());
 app.set('trust proxy', true);
+
+app.use((req, res, next) => {
+    res.setHeader(
+        'Content-Security-Policy',
+        [
+            "default-src 'self'",
+            "img-src 'self' https://upload.wikimedia.org",
+            "style-src 'self'",
+            "style-src-attr 'unsafe-inline'",
+        ].join('; ')
+    );
+    next();
+});
 const themeName = process.env.SC_THEME || 'default';
 // view engine setup
 const handlebarsHelper = require('./helpers/handlebars');

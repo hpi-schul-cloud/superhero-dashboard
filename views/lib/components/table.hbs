@@ -1,5 +1,5 @@
 {{#if limit}}
-    <div class="col-md-4" style="float:right;padding-bottom: 10px;padding-right:0px !important;">
+    <div class="col-md-4 table-limit-select">
     <select id="limit">
         <option value="">Anzahl der Einträge</option>
         <option value="10">10</option>
@@ -55,7 +55,7 @@
                                         <img src="{{this.url}}" alt="{{this.alt}}" height="{{this.height}}" width="{{this.width}}" class="{{this.class}}">
                                     </td>
                                 {{else}}
-                                    <td style="max-width: 25vw; overflow-wrap: break-word;">{{this}}</td>
+                                    <td class="table-cell-wrap">{{this}}</td>
                                 {{/if}}
                             {{/ifArray}}
                         {{/each}}
