@@ -33,48 +33,27 @@ const baseScripts = [
 const nonBaseScripts = ['./static/scripts/**/*.js']
     .concat(baseScripts.map(script => '!' + script));
 
-//used by all gulp tasks instead of src(...)
-//plumber prevents pipes from stopping when errors occur
-//changed only passes on files that were modified since last time
-//filelog logs and counts all processed files
-
-function withTheme(path){
-    if(typeof path == "string"){
-        return [path, `./theme/${themeName()}/${path.slice(2)}`];
-    }else{
-        return path.concat(path.map(e => {
-            return `./theme/${themeName()}/${e.slice(2)}`;
-        }));
-    }
-}
 
 const beginPipe = function(path) {
-    return src(withTheme(path), { allowEmpty: true, since: lastRun(all) })
+    return src(path, { allowEmpty: true, since: lastRun(all) })
         .pipe(plumber())
         .pipe(filelog());
 };
 
 const beginPipeAll = path =>
-    src(withTheme(path), { allowEmpty: true, since: lastRun(all) })
+    src(path, { allowEmpty: true, since: lastRun(all) })
         .pipe(plumber())
         .pipe(filelog());
 
-//minify images
 function images() {
     return beginPipe('./static/images/**/*.*')
         .pipe(dest('./build/images'));
 }
 exports.images = images;
 
-function themeName(){
-    return process.env.SC_THEME || 'default';
-}
-
 function styles() {
-    var themeFile = `./theme/${themeName()}/style.scss`;
     // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled bootstrap-flex.css is just copied.
     return beginPipe(['./static/styles/**/*.{css,sass,scss}', '!./static/styles/lib/bootstrap/scss/**/*'])
-        .pipe(header(fs.readFileSync(themeFile, 'utf8')))
         .pipe(sass({sourceMap: false}))
         .pipe(minify())
         .pipe(autoprefixer())
@@ -164,13 +143,13 @@ exports.all = all;
 
 //watch and run corresponding task on change, process changed files only
 exports.watch = series(all, (done) => {
-    watch(withTheme('./static/images/**/*.*'), images);
-    watch(withTheme('./static/styles/**/*.{css,sass,scss}'), styles);
-    watch(withTheme('./static/fonts/**/*.*'), fonts);
-    watch(withTheme(nonBaseScripts), scripts);
-    watch(withTheme(baseScripts), base_scripts);
-    watch(withTheme('./static/vendor/**/*.{css,sass,scss}'), vendor_styles);
-    watch(withTheme('./static/vendor/**/*.js'), vendor_scripts);
+    watch('./static/images/**/*.*', images);
+    watch('./static/styles/**/*.{css,sass,scss}', styles);
+    watch('./static/fonts/**/*.*', fonts);
+    watch(nonBaseScripts, scripts);
+    watch(baseScripts, base_scripts);
+    watch('./static/vendor/**/*.{css,sass,scss}', vendor_styles);
+    watch('./static/vendor/**/*.js', vendor_scripts);
     watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
                 '!./static/vendor/**/*.{css,sass,scss}'], vendor_assets);
     done();
