@@ -11,7 +11,6 @@ const optimizejs = require('gulp-optimize-js');
 const concat = require('gulp-concat');
 const count = require('gulp-count');
 const autoprefixer = require('gulp-autoprefixer');
-const header = require('gulp-header');
 const cCSS = new cleancss();
 const fs = require('fs');
 //wrapped in a function so it works with watch (+consistency)
