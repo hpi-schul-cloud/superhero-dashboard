@@ -71,13 +71,7 @@ function populateModalForm(modal, data) {
                     $(this).attr("placeholder", value);
                     break;
                 default:
-                    if ($(this).prop('nodeName') == "TEXTAREA" && $(this).hasClass("customckeditor")) {
-                        if (CKEDITOR.instances.description) {
-                            CKEDITOR.instances.description.setData(value);
-                        }
-                    } else {
-                        $(this).val(value).trigger("chosen:updated");
-                    }
+                    $(this).val(value).trigger("chosen:updated");
             }
             $(this).change().trigger("input");
         });
