@@ -67,12 +67,11 @@ function fonts() {
 }
 exports.fonts = fonts;
 
-//compile/transpile JSX and ES6 to ES5 and minify scripts
+//compile/transpile ES6 to ES5 and minify scripts
 function scripts() {
     return beginPipe(nonBaseScripts)
         .pipe(babel({
             presets: [["es2015", { modules: false }]],
-            plugins: ["transform-react-jsx"]
         }))
         .pipe(optimizejs())
         .pipe(uglify())
@@ -81,13 +80,12 @@ function scripts() {
 exports.scripts = scripts;
 
 
-//compile/transpile JSX and ES6 to ES5, minify and concatenate base scripts into all.js
+//compile/transpile ES6 to ES5, minify and concatenate base scripts into all.js
 function base_scripts() {
     return beginPipeAll(baseScripts)
         .pipe(count('## js-files selected'))
         .pipe(babel({
             presets: [["es2015", { modules: false }]],
-            plugins: ["transform-react-jsx"]
         }))
         .pipe(optimizejs())
         .pipe(uglify())
@@ -106,13 +104,12 @@ function vendor_styles() {
 }
 exports.vendor_styles = vendor_styles;
 
-//compile/transpile vendor JSX and ES6 to ES5 and minify scripts
+//compile/transpile vendor ES6 to ES5 and minify scripts
 function vendor_scripts() {
     return beginPipe('./static/vendor/**/*.js')
         .pipe(babel({
             compact: false,
             presets: [["es2015", { modules: false }]],
-            plugins: ["transform-react-jsx"]
         }))
         .pipe(optimizejs())
         .pipe(uglify())
