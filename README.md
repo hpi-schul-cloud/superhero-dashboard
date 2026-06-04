@@ -1,17 +1,15 @@
-# SuperHero-Dashboard
+# superhero-dashboard
+
+The superhero-dashboard is the UI for instance-wide configuration in the [Schulcloud](https://github.com/hpi-schul-cloud) ecosystem. It is a client-server application based on [Handlebars](https://handlebarsjs.com/) and [Express.js](https://expressjs.com/en/). It communicates with the [schulcloud-server](https://github.com/hpi-schul-cloud/schulcloud-server) via HTTP.
 
 ## Requirements
 
-* Node.js must be installed in the version specified in package.json.
+* Node.js and npm must be installed in the versions specified in package.json.
 
-## Setup
+## Installation and start
 
-1. Clone the repository.
-2. Go into the cloned folder and run `npm install`.
-
-## Run
-
+1. Run `npm install`.
 1. Run `npm run build` to build static files.
-2. Run `npm run watch` (or another start script from package.json) to start the application.
+1. Run `npm run watch` (or another start script from package.json) to start the application.
 
-
+For a full walkthrough of the local development environment, see the [Getting Started guide](https://documentation.dbildungscloud.dev/docs/getting-started).
