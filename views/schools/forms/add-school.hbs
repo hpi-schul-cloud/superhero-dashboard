@@ -9,7 +9,7 @@
             <option value="{{this._id}}">{{this.name}}</option>
         {{/each}}
     </select>
-    <p class="text-danger" style="font-size:0.75rem;">
+    <p class="text-danger school-form-hint">
         Required
     </p>
 </div>
@@ -20,7 +20,7 @@
             <option value="{{this._id}}">{{this.name}}</option>
         {{/each}}
     </select>
-    <p class="text-danger" style="font-size:0.75rem;">
+    <p class="text-danger school-form-hint">
         Warning: all counties/kreis from all states/bundesland are listed here
     </p>
 </div>
@@ -43,7 +43,7 @@
 <div class="form-group">
     <label class="control-label" for="officialSchoolNumber">Official School Number</label>
         <input type="text" name="officialSchoolNumber" id="officialSchoolNumber" class="form-control" >
-    <p class="text-danger" style="font-size:0.75rem;">
+    <p class="text-danger school-form-hint">
         Allowed characters: A-Z, a-z, digits and hyphens as separators, e.g. 12345 or AB-12345-1
     </p>
 </div>

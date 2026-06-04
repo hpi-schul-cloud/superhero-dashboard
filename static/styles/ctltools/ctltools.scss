@@ -1,3 +1,51 @@
+.ctltool-hint {
+  font-size: 0.75rem;
+}
+
+.ctltool-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.ctltool-flex-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ctltool-select-70 {
+  flex: 70%;
+  max-width: 70%;
+}
+
+.ctltool-btn-30 {
+  flex: 30%;
+  max-width: 30%;
+}
+
+.ctltool-checkbox-inline {
+  width: 10%;
+  display: inline-block;
+}
+
+.ctltool-icon-label {
+  width: 100%;
+  display: flex;
+  padding-left: 10.5%;
+}
+
+.ctltool-icon-label-text {
+  flex-basis: 25%;
+  align-content: center;
+}
+
+.ctltool-icon-input {
+  flex-basis: auto;
+}
+
+.ctltool-label-fullwidth {
+  width: 100%;
+}
 select {
   display: block;
   width: 100%;
