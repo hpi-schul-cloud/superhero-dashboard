@@ -112,7 +112,6 @@ app.use(function (err, req, res, next) {
     res.status(status);
     res.render('lib/error', {
             loggedin: res.locals.loggedin,
-            inline: !res.locals.loggedin
         });
 });
 module.exports = app;

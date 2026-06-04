@@ -303,26 +303,6 @@ body.fullscreen{
     }
 }
 
-footer {
-    width: 100%;
-    position: inherit;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    clear: both;
-    padding: 30px 0px;
-
-    @include media-breakpoint-down(xs) {
-        background: $colorBeige;
-
-        img {
-            clear: both;
-            display: block;
-            margin: 0 auto 10px;
-        }
-    }
-}
-
 .imprint {
     .center {
         text-align: center;
