@@ -92,11 +92,6 @@ const restrictSidebar = (req, res) => {
             link: '/roles/'
         },
         {
-            name: 'Helpdesk',
-            icon: 'handshake-o',
-            link: '/helpdesk/'
-        },
-        {
             name: 'Bundesländer',
             icon: 'globe',
             link: '/federalstates/'

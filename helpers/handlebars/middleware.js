@@ -43,9 +43,6 @@ module.exports = (req, res, next) => {
     // teacher views
     res.locals.sidebarItems.push();
 
-    // helpdesk views
-    res.locals.sidebarItems.push();
-
     // admin views
     res.locals.sidebarItems.push();
 
