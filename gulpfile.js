@@ -13,7 +13,8 @@ const count = require('gulp-count');
 const autoprefixer = require('gulp-autoprefixer');
 const cCSS = new cleancss();
 const fs = require('fs');
-//wrapped in a function so it works with watch (+consistency)
+
+// wrapped in a function so it works with watch (+consistency)
 const minify = () => map((buff, filename) =>
     cCSS.minify(buff.toString()).styles);
 
@@ -32,7 +33,6 @@ function images() {
     return beginPipe('./static/images/**/*.*')
         .pipe(dest('./build/images'));
 }
-exports.images = images;
 
 function styles() {
     // Bootstrap is excluded from compilation because it slows down the build. Instead the compiled bootstrap-flex.css is just copied.
@@ -42,16 +42,12 @@ function styles() {
         .pipe(autoprefixer())
         .pipe(dest('./build/styles'));
 }
-exports.styles = styles;
 
-//copy fonts
 function fonts() {
     return beginPipe('./static/fonts/**/*.*')
         .pipe(dest('./build/fonts'));
 }
-exports.fonts = fonts;
 
-//compile/transpile ES6 to ES5 and minify scripts
 function scripts() {
     return beginPipe('./static/scripts/**/*.js')
         .pipe(babel({
@@ -61,9 +57,7 @@ function scripts() {
         .pipe(uglify())
         .pipe(dest('./build/scripts'));
 }
-exports.scripts = scripts;
 
-//compile vendor SASS/SCSS to CSS and minify it
 function vendor_styles() {
     return beginPipe('./static/vendor/**/*.{css,sass,scss}')
         .pipe(sass())
@@ -71,7 +65,6 @@ function vendor_styles() {
         .pipe(autoprefixer())
         .pipe(dest('./build/vendor'));
 }
-exports.vendor_styles = vendor_styles;
 
 // The vendor scripts must be concatenated in certain order, e.g. jquery must come before bootstrap.
 function vendor_scripts() {
@@ -92,29 +85,25 @@ function vendor_scripts() {
         .pipe(concat('all_vendor.js'))
         .pipe(dest('./build/scripts'));
 }
-exports.vendor_scripts = vendor_scripts;
 
-//copy other vendor files
 function vendor_assets() {
-    return beginPipe(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
-        '!./static/vendor/**/*.{css,sass,scss}'])
+    return beginPipe([
+            './static/vendor/**/*.*', 
+            '!./static/vendor/**/*.js',
+            '!./static/vendor/**/*.{css,sass,scss}'
+        ])
         .pipe(dest('./build/vendor'));
 }
-exports.vendor_assets = vendor_assets;
 
-//clear build folder
 function clear() {
     return src(['./build/*'], { read: false })
         .pipe(rimraf());
 }
-exports.clear = clear;
 
-//run all tasks, processing changed files
 const all = series(clear, images, styles, fonts, scripts,
                     vendor_styles, vendor_scripts, vendor_assets);
-exports.all = all;
 
-//watch and run corresponding task on change, process changed files only
+// watch and run corresponding task on change, process changed files only
 exports.watch = series(all, (done) => {
     watch('./static/images/**/*.*', images);
     watch('./static/styles/**/*.{css,sass,scss}', styles);
@@ -127,5 +116,5 @@ exports.watch = series(all, (done) => {
     done();
 });
 
-//run this if only "gulp" is run on the commandline with no task specified
+// run this if only "gulp" is run on the commandline with no task specified
 exports.default = all;
