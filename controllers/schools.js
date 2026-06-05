@@ -130,7 +130,7 @@ const customSort = (a, b, sortCriteria) => {
 
   // Compare values, localeCompare will handle null and strings correctly
   return direction * String(valueA).localeCompare(String(valueB));
-}
+};
 
 const sortSchools = (schools, sortCriteria) => {
   return schools.sort((a, b) => {
@@ -159,7 +159,7 @@ const collectSchoolFeatures = (data) => {
     }
   }
   return features;
-}
+};
 
 const separateSchoolFeatures = (data) => {
   for (let feature of SCHOOL_FEATURES) {
@@ -171,7 +171,7 @@ const separateSchoolFeatures = (data) => {
     }
   }
   return data;
-}
+};
 
 const createHandler = (req, res, next) => {
   req.body.features = collectSchoolFeatures(req.body);
@@ -202,7 +202,7 @@ const updateHandler = async (req, res, next) => {
             }
           }
         },
-      })
+      });
     }
 
     req.body.features = collectSchoolFeatures(req.body);
@@ -210,7 +210,7 @@ const updateHandler = async (req, res, next) => {
     await api(req).patch(`/schools/${req.params.id}`, {
       // TODO: sanitize
       json: req.body,
-    })
+    });
 
     res.redirect(req.header('Referer'));
   } catch (err) {
