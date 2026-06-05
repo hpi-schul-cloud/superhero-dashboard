@@ -58,14 +58,6 @@ function scripts() {
         .pipe(dest('./build/scripts'));
 }
 
-function vendor_styles() {
-    return beginPipe('./static/vendor/**/*.{css,sass,scss}')
-        .pipe(sass())
-        .pipe(minify())
-        .pipe(autoprefixer())
-        .pipe(dest('./build/vendor'));
-}
-
 // The vendor scripts must be concatenated in certain order, e.g. jquery must come before bootstrap.
 function vendor_scripts() {
     return beginPipe([
@@ -90,7 +82,7 @@ function vendor_assets() {
     return beginPipe([
             './static/vendor/**/*.*', 
             '!./static/vendor/**/*.js',
-            '!./static/vendor/**/*.{css,sass,scss}'
+            '!./static/vendor/**/*.{sass,scss}'
         ])
         .pipe(dest('./build/vendor'));
 }
@@ -100,8 +92,7 @@ function clear() {
         .pipe(rimraf());
 }
 
-const all = series(clear, images, styles, fonts, scripts,
-                    vendor_styles, vendor_scripts, vendor_assets);
+const all = series(clear, images, styles, fonts, scripts, vendor_scripts, vendor_assets);
 
 // watch and run corresponding task on change, process changed files only
 exports.watch = series(all, (done) => {
@@ -109,10 +100,9 @@ exports.watch = series(all, (done) => {
     watch('./static/styles/**/*.{css,sass,scss}', styles);
     watch('./static/fonts/**/*.*', fonts);
     watch('./static/scripts/**/*.js', scripts);
-    watch('./static/vendor/**/*.{css,sass,scss}', vendor_styles);
     watch('./static/vendor/**/*.js', vendor_scripts);
     watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
-                '!./static/vendor/**/*.{css,sass,scss}'], vendor_assets);
+                '!./static/vendor/**/*.{sass,scss}'], vendor_assets);
     done();
 });
 
