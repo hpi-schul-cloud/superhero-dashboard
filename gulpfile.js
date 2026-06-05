@@ -17,22 +17,6 @@ const fs = require('fs');
 const minify = () => map((buff, filename) =>
     cCSS.minify(buff.toString()).styles);
 
-const baseScripts = [
-    './static/scripts/jquery/jquery.min.js',
-    './static/scripts/jquery/jquery.serialize-object.js',
-    './static/scripts/tether/tether.min.js',
-    './static/scripts/bootstrap/bootstrap.min.js',
-    './static/scripts/chosen/chosen.jquery.min.js',
-    './static/scripts/base.js',
-    './static/scripts/toggle/bootstrap-toggle.min.js',
-    './static/scripts/mailchimp/mailchimp.js',
-    './static/scripts/qrcode/kjua-0.1.1.min.js'
-];
-
-const nonBaseScripts = ['./static/scripts/**/*.js']
-    .concat(baseScripts.map(script => '!' + script));
-
-
 const beginPipe = function(path) {
     return src(path, { allowEmpty: true, since: lastRun(all) })
         .pipe(plumber())
@@ -69,7 +53,7 @@ exports.fonts = fonts;
 
 //compile/transpile ES6 to ES5 and minify scripts
 function scripts() {
-    return beginPipe(nonBaseScripts)
+    return beginPipe('./static/scripts/**/*.js')
         .pipe(babel({
             presets: [["es2015", { modules: false }]],
         }))
@@ -78,21 +62,6 @@ function scripts() {
         .pipe(dest('./build/scripts'));
 }
 exports.scripts = scripts;
-
-
-//compile/transpile ES6 to ES5, minify and concatenate base scripts into all.js
-function base_scripts() {
-    return beginPipeAll(baseScripts)
-        .pipe(count('## js-files selected'))
-        .pipe(babel({
-            presets: [["es2015", { modules: false }]],
-        }))
-        .pipe(optimizejs())
-        .pipe(uglify())
-        .pipe(concat('all.js'))
-        .pipe(dest('./build/scripts'));
-}
-exports.base_scripts = base_scripts;
 
 //compile vendor SASS/SCSS to CSS and minify it
 function vendor_styles() {
@@ -104,16 +73,24 @@ function vendor_styles() {
 }
 exports.vendor_styles = vendor_styles;
 
-//compile/transpile vendor ES6 to ES5 and minify scripts
+// The vendor scripts must be concatenated in certain order, e.g. jquery must come before bootstrap.
 function vendor_scripts() {
-    return beginPipe('./static/vendor/**/*.js')
+    return beginPipe([
+            './static/vendor/jquery/jquery.min.js',
+            './static/vendor/jquery/jquery.serialize-object.js',
+            './static/vendor/tether/tether.min.js',
+            './static/vendor/bootstrap/bootstrap.min.js',
+            './static/vendor/chosen/chosen.jquery.min.js',
+            './static/vendor/toggle/bootstrap-toggle.min.js',
+        ])
         .pipe(babel({
             compact: false,
             presets: [["es2015", { modules: false }]],
         }))
         .pipe(optimizejs())
         .pipe(uglify())
-        .pipe(dest('./build/vendor'));
+        .pipe(concat('all_vendor.js'))
+        .pipe(dest('./build/scripts'));
 }
 exports.vendor_scripts = vendor_scripts;
 
@@ -133,7 +110,7 @@ function clear() {
 exports.clear = clear;
 
 //run all tasks, processing changed files
-const all = parallel(images, styles, fonts, scripts, base_scripts,
+const all = series(clear, images, styles, fonts, scripts,
                     vendor_styles, vendor_scripts, vendor_assets);
 exports.all = all;
 
@@ -142,8 +119,7 @@ exports.watch = series(all, (done) => {
     watch('./static/images/**/*.*', images);
     watch('./static/styles/**/*.{css,sass,scss}', styles);
     watch('./static/fonts/**/*.*', fonts);
-    watch(nonBaseScripts, scripts);
-    watch(baseScripts, base_scripts);
+    watch('./static/scripts/**/*.js', scripts);
     watch('./static/vendor/**/*.{css,sass,scss}', vendor_styles);
     watch('./static/vendor/**/*.js', vendor_scripts);
     watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
