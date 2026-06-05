@@ -1,6 +1,8 @@
 # superhero-dashboard
 
-The superhero-dashboard is the UI for instance-wide configuration and data manipulation in the [Schulcloud](https://github.com/hpi-schul-cloud) ecosystem. It is a client-server application based on [Handlebars](https://handlebarsjs.com/) and [Express.js](https://expressjs.com/en/). It communicates with the [schulcloud-server](https://github.com/hpi-schul-cloud/schulcloud-server) via HTTP.
+The superhero-dashboard is the UI for instance-wide configuration and data manipulation in the [Schulcloud](https://github.com/hpi-schul-cloud) ecosystem. It is used by so called superheros.
+
+It is a client-server application based on [Handlebars](https://handlebarsjs.com/) and [Express.js](https://expressjs.com/en/). It communicates with the [schulcloud-server](https://github.com/hpi-schul-cloud/schulcloud-server) via HTTP.
 
 ## Requirements
 
