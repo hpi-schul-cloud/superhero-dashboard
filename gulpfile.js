@@ -1,4 +1,4 @@
-const {src, dest, series, parallel, watch, lastRun} = require('gulp');
+const {src, dest, series, watch, lastRun} = require('gulp');
 const sass = require('gulp-sass')(require('sass'));
 const rimraf = require('gulp-rimraf');
 const uglify = require('gulp-uglify');
@@ -9,10 +9,8 @@ const filelog = require('gulp-filelog');
 const plumber = require('gulp-plumber');
 const optimizejs = require('gulp-optimize-js');
 const concat = require('gulp-concat');
-const count = require('gulp-count');
 const autoprefixer = require('gulp-autoprefixer');
 const cCSS = new cleancss();
-const fs = require('fs');
 
 // wrapped in a function so it works with watch (+consistency)
 const minify = () => map((buff, filename) =>
