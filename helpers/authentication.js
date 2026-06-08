@@ -13,9 +13,9 @@ const isAuthenticated = (req) => {
     return api(req).post('/authentication', {json: {
         strategy: 'jwt',
         accessToken: req.cookies.jwt
-    }}).then(_ => {
+    }}).then(() => {
         return true;
-    }).catch(_ => {
+    }).catch(() => {
         return false;
     });
 };
@@ -27,10 +27,10 @@ const authChecker = (req, res, next) => {
 
                 // fetch user profile
                 populateCurrentUser(req, res)
-                    .then(_ => {
+                    .then(() => {
                         return restrictSidebar(req, res);
                     })
-                    .then(_ => {
+                    .then(() => {
                         next();
                     });
             } else {

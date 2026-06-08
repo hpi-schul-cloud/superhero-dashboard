@@ -181,7 +181,7 @@ const createHandler = (req, res, next) => {
       // TODO: sanitize
       json: req.body,
     })
-    .then((data) => {
+    .then(() => {
       next();
     })
     .catch((err) => {
@@ -249,7 +249,7 @@ const detailHandler = async (req, res, next) => {
 const deleteHandler = (req, res, next) => {
   api(req)
     .delete(`/schools/${req.params.id}`)
-    .then((_) => {
+    .then(() => {
       res.redirect(req.header('Referer'));
     })
     .catch((err) => {

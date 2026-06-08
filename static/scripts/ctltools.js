@@ -104,7 +104,7 @@ $(document).ready(function () {
         $addAndActivateForAllSchoolsModal.modal('show');
     });
 
-    $('.parameters-regex').on('input', function (e) {
+    $('.parameters-regex').on('input', function () {
         const splitId = $(this).attr('id').split('-');
         const customIdIndex = splitId[splitId.length - 1];
         const regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
@@ -189,7 +189,7 @@ $(document).ready(function () {
         newCustomParamContainer.attr('id', `custom-parameter-${customParameterId}`);
         newCustomParamContainer.attr('style', null);
 
-        newCustomParamContainer.find('select').each(function (e) {
+        newCustomParamContainer.find('select').each(function () {
             $(this).attr('style', null);
             $(this).siblings('div').remove();
         });

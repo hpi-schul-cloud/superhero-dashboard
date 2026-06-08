@@ -33,7 +33,7 @@ const getCreateHandler = (service) => {
         api(req).post('/' + service + '/', {
             // TODO: sanitize
             json: req.body
-        }).then(data => {
+        }).then(() => {
             next();
         }).catch(err => {
             next(err);
@@ -49,7 +49,7 @@ const getUpdateHandler = (service) => {
         api(req).patch('/' + service + '/' + req.params.id, {
             // TODO: sanitize
             json: req.body
-        }).then(data => {
+        }).then(() => {
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -81,7 +81,7 @@ const getDetailHandler = (service) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(_ => {
+        api(req).delete('/' + service + '/' + req.params.id).then(() => {
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -97,7 +97,7 @@ router.patch('/:id', getUpdateHandler('roles'));
 router.get('/:id', getDetailHandler('roles'));
 router.delete('/:id', getDeleteHandler('roles'));
 router.post('/', getCreateHandler('roles'));
-router.all('/', function (req, res, next) {
+router.all('/', function (req, res) {
 
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;

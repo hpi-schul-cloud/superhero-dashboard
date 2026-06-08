@@ -2,7 +2,6 @@
  * One Controller per layout view
  */
 
-const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
@@ -33,7 +32,7 @@ const getCreateHandler = (service) => {
         api(req).post('/' + service + '/', {
             // TODO: sanitize
             json: req.body
-        }).then(data => {
+        }).then(() => {
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -46,7 +45,7 @@ const getUpdateHandler = (service) => {
         api(req).patch('/' + service + '/' + req.params.id, {
             // TODO: sanitize
             json: req.body
-        }).then(data => {
+        }).then(() => {
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -68,7 +67,7 @@ const getDetailHandler = (service) => {
 
 const getDeleteHandler = (service) => {
     return function (req, res, next) {
-        api(req).delete('/' + service + '/' + req.params.id).then(_ => {
+        api(req).delete('/' + service + '/' + req.params.id).then(() => {
             res.redirect(req.header('Referer'));
         }).catch(err => {
             next(err);
@@ -82,7 +81,7 @@ router.patch('/:id', getUpdateHandler('federalStates'));
 router.get('/:id', getDetailHandler('federalStates'));
 router.delete('/:id', getDeleteHandler('federalStates'));
 router.post('/', getCreateHandler('federalStates'));
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
 
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;

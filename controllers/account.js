@@ -32,14 +32,14 @@ router.post('/', async function (req, res) {
     }
 });
 
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
     res.render('account/settings', {
         title: 'Dein Account',
         userId: res.locals.currentUser._id
     });
 });
 
-router.get('/user', function (req, res, next) {
+router.get('/user', function (req, res) {
     res.locals.currentUser.schoolName = res.locals.currentSchoolData.name;
     res.json(res.locals.currentUser);
 });

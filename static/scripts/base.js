@@ -1,26 +1,4 @@
-function getQueryParameterByName(name, url) {
-    if (!url) {
-        url = window.location.href;
-    }
-    name = name.replace(/[\[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
-
-function updateQueryStringParameter(uri, key, value) {
-    var re = new RegExp("([?&])" + key + "=[^&#]*", "i");
-    if (re.test(uri)) {
-        return uri.replace(re, '$1' + key + "=" + value);
-    } else {
-        var matchData = uri.match(/^([^#]*)(#.*)?$/);
-        var separator = /\?/.test(uri) ? "&" : "?";
-        return matchData[0] + separator + key + "=" + value + (matchData[1] || '');
-    }
-}
-
+// eslint-disable-next-line no-unused-vars
 function populateModalForm(modal, data) {
     var $title = modal.find('.modal-title');
     var $btnSubmit = modal.find('.btn-submit');
@@ -116,7 +94,7 @@ $(document).ready(function () {
     });
 
     // collapse toggle
-    $('.collapse-toggle').click(function (e) {
+    $('.collapse-toggle').click(function () {
         var $collapseToggle = $(this);
         var isCollapsed = $($collapseToggle.attr("href")).attr("aria-expanded");
         if (!isCollapsed || isCollapsed === 'false') {
@@ -130,11 +108,11 @@ $(document).ready(function () {
 
 
     // Init mobile nav
-    $('.mobile-nav-toggle').click(function (e) {
+    $('.mobile-nav-toggle').click(function () {
         $('aside.nav-sidebar nav:first-child').toggleClass('active');
     });
 
-    $('.mobile-search-toggle').click(function (e) {
+    $('.mobile-search-toggle').click(function () {
         $('.search-wrapper .input-group').toggleClass('active');
         $('.search-wrapper .mobile-search-toggle .fa').toggleClass('fa-search').toggleClass('fa-times');
     });
@@ -185,7 +163,7 @@ $(document).ready(function () {
                 url: $buttonContext.attr('href'),
                 type: 'DELETE',
                 error: showAJAXError,
-                success: function(result) {
+                success: function() {
                     nextPage($buttonContext.attr('redirect'));
                 },
             });

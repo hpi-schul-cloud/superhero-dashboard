@@ -66,7 +66,7 @@ app.use(function(req, res, next){
 
 const methodOverride = require('method-override');
 app.use(methodOverride('_method')); // for GET requests
-app.use(methodOverride((req, res, next) => { // for POST requests
+app.use(methodOverride((req) => { // for POST requests
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         var method = req.body._method;
         delete req.body._method;
@@ -78,7 +78,7 @@ app.use(methodOverride((req, res, next) => { // for POST requests
 // Initialize the modules and their routes
 app.use(require('./controllers/'));
 
-app.get('/', (req,res,next) => {
+app.get('/', (req, res) => {
     res.redirect('/login/');
 });
 
@@ -90,7 +90,7 @@ app.use(function (req, res, next) {
 });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     // set locals, only providing error in development
     let status = err.status || err.statusCode;
     if (err.statusCode) {

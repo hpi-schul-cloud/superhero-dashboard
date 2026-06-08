@@ -11,7 +11,7 @@ const loadPolicyFile = () => {
 	const file = document.querySelector('#policy-input').files[0];
 	toBase64(file).then((base64file) => {
 		const reader = new FileReader();
-		reader.addEventListener('load', (evt) => {
+		reader.addEventListener('load', () => {
 			if (!file.type.match('application/pdf')) {
 				$.showNotification('nur PDF Dateien werden unterstützt', 'danger', true);
 				document.querySelector('#policy-input').value = '';

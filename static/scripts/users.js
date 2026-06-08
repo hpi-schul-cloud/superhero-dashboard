@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     toggleSilentArea(false);
     const silentToggle = document.querySelector('#create-silent');
     if(silentToggle){
-        silentToggle.addEventListener("input", (event) => {
+        silentToggle.addEventListener("input", () => {
             toggleSilentArea(silentToggle.checked);
         });
     }

@@ -23,7 +23,7 @@ router.post("/login/", function (req, res, next) {
         });
         res.redirect("/login/success/");
       })
-      .catch((_) => {
+      .catch(() => {
         res.locals.notification = {
           type: "danger",
           message: "Login fehlgeschlagen.",
@@ -35,7 +35,7 @@ router.post("/login/", function (req, res, next) {
   return login({ strategy: "local", username, password });
 });
 
-router.all("/login/", function (req, res, next) {
+router.all("/login/", function (req, res) {
   authHelper.isAuthenticated(req).then((isAuthenticated) => {
     if (isAuthenticated) {
       return res.redirect("/login/success/");
@@ -48,18 +48,18 @@ router.all("/login/", function (req, res, next) {
 });
 
 // so we can do proper redirecting and stuff :)
-router.get("/login/success", authHelper.authChecker, function (req, res, next) {
+router.get("/login/success", authHelper.authChecker, function (req, res) {
   res.redirect("/dashboard/");
 });
 
-router.get("/logout/", function (req, res, next) {
+router.get("/logout/", function (req, res) {
   api(req)
     .del("/authentication")
-    .then((_) => {
+    .then(() => {
       res.clearCookie("jwt");
       return res.redirect("/login/");
     })
-    .catch((_) => {
+    .catch(() => {
       return res.redirect("/login/");
     });
 });

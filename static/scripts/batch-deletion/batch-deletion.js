@@ -12,7 +12,7 @@ $(document).ready(() => {
     section.innerHTML = textAreaString;
   };
 
-  function copyToClipboard(event) {
+  function copyToClipboard() {
     const id = this.getAttribute("data-text-id");
     const text = document.getElementById(id).innerHTML;
 

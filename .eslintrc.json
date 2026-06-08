@@ -13,8 +13,5 @@
     "describe": true,
     "it": true
   },
-  "extends": "eslint:recommended",
-  "rules": {
-    "no-unused-vars": 0
-  }
+  "extends": "eslint:recommended"
 }

@@ -24,7 +24,7 @@ $(document).ready(function () {
       const schoolIdInput = $('.delete-files-modal').find('#schoolId');
       const repeatSchoolIdInput = $('.delete-files-modal').find('#repeatSchoolId');
     
-      repeatSchoolIdInput.on('input change', function (e) {
+      repeatSchoolIdInput.on('input change', function () {
         if ($(this).val() !== $(schoolIdInput).val()) {
           $(submitButton).prop('disabled', true);
         } else {
@@ -170,7 +170,7 @@ $(document).ready(function () {
   };
 
     $('tr th').each(function(i,j) {
-        $(j).on('click', function (e) {
+        $(j).on('click', function () {
 
             let location = window.location.search.split('&');
       let contained = false;

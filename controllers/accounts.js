@@ -2,19 +2,12 @@
  * One Controller per layout view
  */
 
-const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
-
-const getMostSignificantRole = (roles) => {
-	return roles.find((role) => role === 'administrator') ||
-		roles.find((role) => role === 'teacher') ||
-		roles.find((role) => role === 'student');
-};
 
 const getTableActions = (item, path) => {
     let tableActions = [
@@ -84,7 +77,6 @@ const getDetailHandler = (service) => {
 };
 
 const getDeleteHandler = (service) => {
-    let roles;
     return async function (req, res, next) {
         try {
             const { id } = req.params;
@@ -101,7 +93,7 @@ const getDeleteHandler = (service) => {
 // secure routes
 router.use(authHelper.authChecker);
 
-router.get('/search' , function (req, res, next) {
+router.get('/search' , function (req, res) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
@@ -156,7 +148,7 @@ router.patch('/:id', getUpdateHandler('account'));
 router.get('/:id', getDetailHandler('account'));
 router.delete('/:id', getDeleteHandler('account'));
 
-router.get('/account/:id' , function (req, res, next) {
+router.get('/account/:id' , function (req, res) {
     const itemsPerPage = 100;
     const currentPage = parseInt(req.query.p) || 1;
 
@@ -195,7 +187,7 @@ router.get('/account/:id' , function (req, res, next) {
         });
 });
 
-router.get('/' , function (req, res, next) {
+router.get('/' , function (req, res) {
         res.render('accounts/search', {
             title: 'Account suchen',
             user: res.locals.currentUser,

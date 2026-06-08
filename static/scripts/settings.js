@@ -41,7 +41,7 @@ $(document).ready(function() {
                     name: $buttonContext.data('device-name'),
                     _id: $buttonContext.data('device-id')
                 },
-                success: function(result) {
+                success: function() {
                     reloadSite();
                 }
             });

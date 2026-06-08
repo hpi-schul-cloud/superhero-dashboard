@@ -13,7 +13,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const cCSS = new cleancss();
 
 // wrapped in a function so it works with watch (+consistency)
-const minify = () => map((buff, filename) =>
+const minify = () => map((buff) =>
     cCSS.minify(buff.toString()).styles);
 
 const beginPipe = function(path) {
@@ -21,11 +21,6 @@ const beginPipe = function(path) {
         .pipe(plumber())
         .pipe(filelog());
 };
-
-const beginPipeAll = path =>
-    src(path, { allowEmpty: true, since: lastRun(all) })
-        .pipe(plumber())
-        .pipe(filelog());
 
 function images() {
     return beginPipe('./static/images/**/*.*')
