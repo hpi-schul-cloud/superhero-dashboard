@@ -54,6 +54,7 @@ $(document).ready(function() {
 
     $('.submit-pwrecovery').on('click', function(e) {
         e.preventDefault();
+        // eslint-disable-next-line no-undef
         populateModalForm($pwRecoveryModal, {
             title: 'Passwort Zurücksetzen',
             closeLabel: 'Abbrechen',

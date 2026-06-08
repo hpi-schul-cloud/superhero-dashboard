@@ -43,6 +43,7 @@ $(document).ready(() => {
 
 	$('.btn-add-modal--policy').on('click', (e) => {
 		e.preventDefault();
+		// eslint-disable-next-line no-undef
 		populateModalForm($addConsentModal, {
 			title: "Rechtliches Dokument hinzufügen",
 			closeLabel: "Abbrechen",

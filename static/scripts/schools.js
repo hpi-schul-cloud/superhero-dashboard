@@ -8,6 +8,7 @@ $(document).ready(function () {
         e.preventDefault();
         const entry = $(this).parent().attr('action');
         $.getJSON(entry, function (result) {
+          // eslint-disable-next-line no-undef
           populateModalForm($deleteFilesModal, {
             action: `${entry}/delete-files`,
             title: 'Alle Dateien der Schule löschen',
@@ -34,6 +35,7 @@ $(document).ready(function () {
 
     $('.btn-create-school').click(function () {
         let $createSchoolModal = $('.add-modal');
+        // eslint-disable-next-line no-undef
         populateModalForm($createSchoolModal, {
             title: 'Neues Element hinzufügen',
             closeLabel: 'Schließen',
@@ -54,6 +56,7 @@ $(document).ready(function () {
           return role.name;
         });
       }
+      // eslint-disable-next-line no-undef
       populateModalForm($editModal, {
         action: entry,
                 title: 'Bearbeiten',
@@ -70,6 +73,7 @@ $(document).ready(function () {
     e.preventDefault();
         var entry = $(this).attr('href');
     $.getJSON(entry, function (result) {
+      // eslint-disable-next-line no-undef
       populateModalForm($reglinkmodal, {
         action: entry,
                 title: 'Registrierungslink',
@@ -86,6 +90,7 @@ $(document).ready(function () {
     e.preventDefault();
         var entry = $(this).parent().attr('action');
     $.getJSON(entry, function (result) {
+      // eslint-disable-next-line no-undef
       populateModalForm($deleteModal, {
         action: entry,
                 title: 'Löschen',
