@@ -3,6 +3,14 @@ FROM docker.io/node:24-alpine
 ENV TZ=Europe/Berlin
 EXPOSE 3033
 
+RUN apk add --no-cache \
+    autoconf \
+    automake \
+    build-base \
+    make \
+    nasm \
+    python3
+
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts && npm cache clean --force
