@@ -31,7 +31,7 @@
     "morgan": "^1.10.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "sanitize-html": "^2.15.0",
+    "sanitize-html": "^2.17.4",
     "string-strip-html": "^8.4.0",
     "truncate-html": "^1.2.1",
     "url": "^0.11.0"
