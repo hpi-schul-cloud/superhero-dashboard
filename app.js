@@ -36,12 +36,9 @@ const wax = handlebarsWax(handlebars)
     .helpers(layouts)
     .helpers(handlebarsHelper.helpers);
 
-
-const viewDirs = [path.join(__dirname, 'views')];
-
-app.set('views', viewDirs);
-app.engine("hbs", wax.engine);
-app.set("view engine", "hbs");
+app.engine('hbs', wax.engine);
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.set('view cache', true);
 
