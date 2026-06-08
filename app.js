@@ -108,6 +108,7 @@ app.use(function (err, req, res, next) {
     res.status(status);
     res.render('lib/error', {
             loggedin: res.locals.loggedin,
+            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
 });
 module.exports = app;
