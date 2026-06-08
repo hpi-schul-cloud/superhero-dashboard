@@ -437,7 +437,7 @@ router.get('/jwt/:id', async (req, res, next) => {
 
 router.patch('/:id', getUpdateHandler('users'));
 router.get('/:id', getDetailHandler('users', { $populate: 'roles' }));
-router.delete('/:id', getDeleteHandler('users'));
+router.delete('/:id', getDeleteHandler());
 router.post('/', getCreateHandler('users'));
 
 router.get('/', function (req, res) {
