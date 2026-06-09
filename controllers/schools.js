@@ -336,7 +336,6 @@ const findHandler = async (req, res) => {
       timeZones: getTimezones(),
       storageProvider,
       limit: true,
-      themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
       SHOW_OUTDATED_USERS,
       ENABLE_LDAP_SYNC_DURING_MIGRATION,
     });

@@ -40,9 +40,7 @@ router.all("/login/", function (req, res) {
     if (isAuthenticated) {
       return res.redirect("/login/success/");
     } else {
-      res.render("authentication/login", {
-        themeTitle: process.env.SC_NAV_TITLE || "Schul-Cloud",
-      });
+      res.render("authentication/login", {});
     }
   });
 });

@@ -59,7 +59,6 @@ const listHandler = (req, res) => {
             head,
             values: runtimeConfig,
             user: res.locals.currentUser ||"",
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
     });
 };

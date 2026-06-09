@@ -15,7 +15,6 @@ router.get('/', function (req, res) {
     res.render('dashboard/dashboard', {
         title: 'Übersicht',
         user: res.locals.currentUser,
-        themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
     });
 });
 

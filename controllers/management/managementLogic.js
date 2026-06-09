@@ -15,7 +15,6 @@ const fetchReleases = (req, res, next) => {
             res.render('management/management', {
                 title: 'Allgemeine Verwaltung',
                 user: res.locals.currentUser,
-                themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
             });
         })
         .catch(next);
@@ -57,7 +56,6 @@ const mainRoute = async function (req, res, next) {
 		res.render('management/management', {
 			title: 'Allgemeine Verwaltung',
 			user: res.locals.currentUser,
-			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 			policiesHead,
 			policiesBody,
 		});

@@ -74,6 +74,7 @@ app.use(methodOverride((req) => { // for POST requests
     }
 }));
 
+app.locals.themeTitle = process.env.SC_NAV_TITLE || 'Schul-Cloud';
 
 // Initialize the modules and their routes
 app.use(require('./controllers/'));
@@ -104,11 +105,10 @@ app.use(function (err, req, res, next) {
 
     if (res.locals.currentUser)
         res.locals.loggedin = true;
-    // render the error page
-    res.status(status);
+    // // render the error page
+    // res.status(status);
     res.render('lib/error', {
             loggedin: res.locals.loggedin,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
 });
 module.exports = app;

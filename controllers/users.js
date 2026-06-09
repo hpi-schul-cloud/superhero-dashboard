@@ -317,7 +317,6 @@ router.get('/user/:id', function (req, res, next) {
 				user: res.locals.currentUser || '',
 				schoolId: req.query.schoolId || '',
 				limit: true,
-				themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 			});
 		})
 		.catch((err) => {
@@ -428,7 +427,6 @@ router.get('/jwt/:id', async (req, res, next) => {
 			title: `JWT für ${user.displayName}`,
 			jwt: jwt.accessToken || '',
 			user: user,
-			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 		});
 	} catch (err) {
 		next(err);
@@ -508,7 +506,6 @@ router.get('/', function (req, res) {
 									user: res.locals.currentUser,
 									school: schoolData,
 									limit: true,
-									themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 								});
 							});
 					});
@@ -521,7 +518,6 @@ router.get('/', function (req, res) {
 					title: 'Users',
 					user: res.locals.currentUser,
 					schools: schools.data,
-					themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 				});
 			});
 	}

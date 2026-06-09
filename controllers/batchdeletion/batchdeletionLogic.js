@@ -61,7 +61,6 @@ const getDeletionBatches = async (req, res, next) => {
     res.render("batch-deletion/batch-deletion", {
       title: "Sammellöschung von Nutzern",
       user: res.locals.currentUser,
-      themeTitle: process.env.SC_NAV_TITLE || "Schul-Cloud",
       batches: formattedBatches,
     });
   } catch (error) {

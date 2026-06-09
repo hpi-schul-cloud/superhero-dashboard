@@ -348,7 +348,6 @@ const showTools = (req, res) => {
             pagination,
             user: res.locals.currentUser,
             limit: true,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
             messageTypes,
             privacies,
             authMethods,

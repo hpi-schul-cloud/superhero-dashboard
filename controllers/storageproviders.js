@@ -9,8 +9,6 @@ const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
 
-const themeTitle = process.env.SC_NAV_TITLE || 'Schul-Cloud';
-
 const PASSWORD = "******";
 
 const types = [
@@ -137,7 +135,6 @@ const getHandler = (req, res) => {
       pagination,
       user: res.locals.currentUser || "",
       limit: true,
-      themeTitle,
       types
     });
   });
