@@ -48,7 +48,7 @@ const getUpdateHandler = (service) => {
         try {
             const { id } = req.params;
             const { username, password, activated } = req.body;
-            await api(req, { useCallback: false, json: true, version: 'v3' })
+            await api(req, { json: true, version: 'v3' })
                 .patch(`/${service}/${id}`, {
                     json: {
                         username,
@@ -67,7 +67,7 @@ const getDetailHandler = (service) => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
-            const data = await api(req, { useCallback: false, json: true, version: 'v3' })
+            const data = await api(req, { json: true, version: 'v3' })
                 .get(`/${service}/${id}`);
             res.json(data);
         } catch (err) {
@@ -80,7 +80,7 @@ const getDeleteHandler = (service) => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
-            await api(req, { useCallback: false, json: true, version: 'v3' })
+            await api(req, { json: true, version: 'v3' })
                 .delete(`/${service}/${id}`);
 
             res.redirect(req.header('Referer'));
@@ -97,7 +97,7 @@ router.get('/search' , function (req, res) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req, { useCallback: false, json: true, version: 'v3' })
+    api(req, { json: true, version: 'v3' })
         .get('/account', {
             qs: {
                 type: 'username',
@@ -151,7 +151,7 @@ router.get('/account/:id' , function (req, res) {
     const itemsPerPage = 100;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req, { useCallback: false, json: true, version: 'v3' })
+    api(req, { json: true, version: 'v3' })
         .get('/account', {
             qs: {
                 type: 'userId',
