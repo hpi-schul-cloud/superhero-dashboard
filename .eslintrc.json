@@ -2,8 +2,8 @@
   "env": {
     "browser": true,
     "es2020": true,
-	  "node": true,
-	  "mocha": true
+    "node": true,
+    "mocha": true
   },
   "globals": {
     "_": true,
