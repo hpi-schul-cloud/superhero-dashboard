@@ -93,22 +93,23 @@ app.use(function (req, res, next) {
 // error handler
 // eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    let status = err.status || err.statusCode;
+    let status = err.status || err.statusCode || 500;
+
     if (err.statusCode) {
         res.setHeader("error-message", err.message);
         res.locals.message = err.message;
     }else {
         res.locals.message = err.message;
     }
+    
     res.locals.error = req.app.get('env') === 'development' ? err : {status};
 
     if (res.locals.currentUser)
         res.locals.loggedin = true;
-    // // render the error page
-    // res.status(status);
-    res.render('lib/error', {
+
+    res.status(status).render('lib/error', {
             loggedin: res.locals.loggedin,
         });
 });
+
 module.exports = app;
