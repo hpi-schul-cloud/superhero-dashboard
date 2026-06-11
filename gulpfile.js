@@ -17,7 +17,7 @@ const minify = () => map((buff) =>
     cCSS.minify(buff.toString()).styles);
 
 const beginPipe = function(path) {
-    return src(path, { allowEmpty: true, since: lastRun(all) })
+    return src(path, { allowEmpty: true })
         .pipe(plumber())
         .pipe(filelog());
 };

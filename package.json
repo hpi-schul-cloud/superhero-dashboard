@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "gulp",
+    "watch:assets": "gulp watch",
     "start": "node ./bin/www",
     "watch": "node --watch ./bin/www",
     "debug": "node --inspect=0.0.0.0:9311 --watch ./bin/www",
