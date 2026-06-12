@@ -87,7 +87,7 @@ function clear() {
 
 const all = series(clear, images, styles, fonts, scripts, vendor_scripts, vendor_assets);
 
-// watch and run corresponding task on change, process changed files only
+// watch and run corresponding task on change
 exports.watch = series(all, (done) => {
     watch('./static/images/**/*.*', images);
     watch('./static/styles/**/*.{css,sass,scss}', styles);
