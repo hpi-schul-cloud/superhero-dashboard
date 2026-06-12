@@ -115,7 +115,7 @@ const inviteWithMail = async (user, req) => {
 				content: content,
 			},
 		})
-		.then((_) => {
+		.then(() => {
 			return;
 		});
 };
@@ -228,7 +228,7 @@ const getUpdateHandler = (service) => {
 				// TODO: sanitize
 				json: req.body,
 			})
-			.then((data) => {
+			.then(() => {
 				res.redirect(req.header('Referer'));
 			})
 			.catch((err) => {
@@ -250,13 +250,7 @@ const getDetailHandler = (service, query) => {
 	};
 };
 
-const getMostSignificantRole = (roles) => {
-	return roles.find((role) => role === 'administrator') ||
-		roles.find((role) => role === 'teacher') ||
-		roles.find((role) => role === 'student');
-};
-
-const getDeleteHandler = (service) => {
+const getDeleteHandler = () => {
 	return async function (req, res, next) {
 		try {
 			const userId = req.params.id;
@@ -323,7 +317,6 @@ router.get('/user/:id', function (req, res, next) {
 				user: res.locals.currentUser || '',
 				schoolId: req.query.schoolId || '',
 				limit: true,
-				themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 			});
 		})
 		.catch((err) => {
@@ -331,7 +324,7 @@ router.get('/user/:id', function (req, res, next) {
 		});
 });
 
-router.get('/search', function (req, res, next) {
+router.get('/search', function (req, res) {
 	const itemsPerPage = req.query.limit || 10;
 	const currentPage = parseInt(req.query.p) || 1;
 
@@ -434,7 +427,6 @@ router.get('/jwt/:id', async (req, res, next) => {
 			title: `JWT für ${user.displayName}`,
 			jwt: jwt.accessToken || '',
 			user: user,
-			themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 		});
 	} catch (err) {
 		next(err);
@@ -443,10 +435,10 @@ router.get('/jwt/:id', async (req, res, next) => {
 
 router.patch('/:id', getUpdateHandler('users'));
 router.get('/:id', getDetailHandler('users', { $populate: 'roles' }));
-router.delete('/:id', getDeleteHandler('users'));
+router.delete('/:id', getDeleteHandler());
 router.post('/', getCreateHandler('users'));
 
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
 	if (res.req.query.schoolId) {
 		const itemsPerPage = req.query.limit || 10;
 		const currentPage = parseInt(req.query.p) || 1;
@@ -514,7 +506,6 @@ router.get('/', function (req, res, next) {
 									user: res.locals.currentUser,
 									school: schoolData,
 									limit: true,
-									themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 								});
 							});
 					});
@@ -527,7 +518,6 @@ router.get('/', function (req, res, next) {
 					title: 'Users',
 					user: res.locals.currentUser,
 					schools: schools.data,
-					themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
 				});
 			});
 	}

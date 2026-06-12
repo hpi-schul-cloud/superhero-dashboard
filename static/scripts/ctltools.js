@@ -16,6 +16,7 @@ $(document).ready(function () {
         $addModal.find('#hasMedium').prop('checked', false);
         resetMediumForms($addModal);
 
+        // eslint-disable-next-line no-undef
         populateModalForm($addModal, {
             title: 'Neues Tool hinzufügen',
             closeLabel: 'Schließen',
@@ -32,6 +33,7 @@ $(document).ready(function () {
         e.preventDefault();
         const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            // eslint-disable-next-line no-undef
             populateModalForm($editModal, {
                 action: entry,
                 title: 'Bearbeiten',
@@ -51,6 +53,7 @@ $(document).ready(function () {
         e.preventDefault();
         const entry = $(this).attr('href');
         $.getJSON(entry, function (result) {
+            // eslint-disable-next-line no-undef
             populateModalForm($reglinkmodal, {
                 action: entry,
                 title: 'Registrierungslink',
@@ -73,6 +76,7 @@ $(document).ready(function () {
                 $('#media-board-label').show();
             }
 
+            // eslint-disable-next-line no-undef
             populateModalForm($deleteModal, {
                 action: entry,
                 title: 'Tool wirklich löschen?',
@@ -93,6 +97,7 @@ $(document).ready(function () {
         const toolName = currentRow.children().eq(1).text();
         const action = `/ctltools/add-and-activate-for-all-schools/${toolId}`;
 
+        // eslint-disable-next-line no-undef
         populateModalForm($addAndActivateForAllSchoolsModal, {
             action,
             title: 'Hinzufügen und aktivieren in allen Schulen',
@@ -104,7 +109,7 @@ $(document).ready(function () {
         $addAndActivateForAllSchoolsModal.modal('show');
     });
 
-    $('.parameters-regex').on('input', function (e) {
+    $('.parameters-regex').on('input', function () {
         const splitId = $(this).attr('id').split('-');
         const customIdIndex = splitId[splitId.length - 1];
         const regexComment = $(`#parameters-regex-comment-${customIdIndex}`);
@@ -189,7 +194,7 @@ $(document).ready(function () {
         newCustomParamContainer.attr('id', `custom-parameter-${customParameterId}`);
         newCustomParamContainer.attr('style', null);
 
-        newCustomParamContainer.find('select').each(function (e) {
+        newCustomParamContainer.find('select').each(function () {
             $(this).attr('style', null);
             $(this).siblings('div').remove();
         });

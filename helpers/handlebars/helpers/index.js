@@ -105,10 +105,10 @@ module.exports = {
             return options.inverse(this);
         }
     },
-    timeFromNow: (date, opts) => {
+    timeFromNow: (date) => {
         return moment(date).fromNow();
     },
-    timeToString: (date, opts) => {
+    timeToString: (date) => {
         let now = moment();
         let d = moment(date);
         if (d.diff(now) < 0 || d.diff(now, 'days') > 5) {

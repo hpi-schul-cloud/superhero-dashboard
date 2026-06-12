@@ -3,10 +3,11 @@
   "private": true,
   "scripts": {
     "build": "gulp",
+    "watch:assets": "gulp watch",
     "start": "node ./bin/www",
     "watch": "node --watch ./bin/www",
     "debug": "node --inspect=0.0.0.0:9311 --watch ./bin/www",
-    "lint": "eslint ./bin ./controllers ./helpers ./test ./api.js ./app.js --ext .js --fix",
+    "lint": "eslint ./controllers ./helpers ./test ./api.js ./app.js ./static/scripts --ext .js --fix",
     "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
   },
   "engines": {
@@ -15,7 +16,6 @@
   },
   "dependencies": {
     "body-parser": "^1.20.2",
-    "braces": "^3.0.3",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "express": "^4.21.2",
@@ -30,23 +30,17 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.41",
     "morgan": "^1.10.1",
-    "multer": "^2.0.2",
-    "path.join": "^1.0.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "sanitize-html": "^2.17.4",
-    "sass": "^1.58.3",
     "string-strip-html": "^8.4.0",
     "truncate-html": "^1.2.1",
     "url": "^0.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
-    "ajv": "^6.12.6",
     "babel-core": "^6.26.3",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
     "chai": "^4.3.7",
     "eslint": "^8.35.0",
     "gulp": "^4.0.2",
@@ -54,15 +48,14 @@
     "gulp-babel": "^7.0.0",
     "gulp-clean-css": "^4.3.0",
     "gulp-concat": "^2.6.1",
-    "gulp-count": "^1.0.0",
     "gulp-filelog": "^0.4.1",
-    "gulp-header": "^2.0.9",
     "gulp-optimize-js": "^1.1.0",
     "gulp-plumber": "^1.2.1",
     "gulp-rimraf": "^1.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-uglify": "^3.0.2",
     "mocha": "^10.8.2",
+    "sass": "^1.58.3",
     "sinon": "^15.0.1",
     "vinyl-map": "^1.0.2"
   }

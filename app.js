@@ -28,7 +28,7 @@ app.use((req, res, next) => {
     );
     next();
 });
-const themeName = process.env.SC_THEME || 'default';
+
 // view engine setup
 const handlebarsHelper = require('./helpers/handlebars');
 const wax = handlebarsWax(handlebars)
@@ -36,19 +36,12 @@ const wax = handlebarsWax(handlebars)
     .helpers(layouts)
     .helpers(handlebarsHelper.helpers);
 
-wax.partials(path.join(__dirname, `theme/${themeName}/views/**/*.{hbs,js}`))
-
-const viewDirs = [path.join(__dirname, 'views')];
-viewDirs.unshift(path.join(__dirname, `theme/${themeName}/views/`))
-
-app.set('views', viewDirs);
-app.engine("hbs", wax.engine);
-app.set("view engine", "hbs");
+app.engine('hbs', wax.engine);
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.set('view cache', true);
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json({limit: process.env.BODYPARSER_LIMIT || '4mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: process.env.BODYPARSER_LIMIT || '4mb'}));
@@ -73,7 +66,7 @@ app.use(function(req, res, next){
 
 const methodOverride = require('method-override');
 app.use(methodOverride('_method')); // for GET requests
-app.use(methodOverride((req, res, next) => { // for POST requests
+app.use(methodOverride((req) => { // for POST requests
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         var method = req.body._method;
         delete req.body._method;
@@ -81,11 +74,12 @@ app.use(methodOverride((req, res, next) => { // for POST requests
     }
 }));
 
+app.locals.themeTitle = process.env.SC_NAV_TITLE || 'Schul-Cloud';
 
 // Initialize the modules and their routes
 app.use(require('./controllers/'));
 
-app.get('/', (req,res,next) => {
+app.get('/', (req, res) => {
     res.redirect('/login/');
 });
 
@@ -97,24 +91,25 @@ app.use(function (req, res, next) {
 });
 
 // error handler
+// eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    let status = err.status || err.statusCode;
+    let status = err.status || err.statusCode || 500;
+
     if (err.statusCode) {
         res.setHeader("error-message", err.message);
         res.locals.message = err.message;
     }else {
         res.locals.message = err.message;
     }
+    
     res.locals.error = req.app.get('env') === 'development' ? err : {status};
 
     if (res.locals.currentUser)
         res.locals.loggedin = true;
-    // render the error page
-    res.status(status);
-    res.render('lib/error', {
+
+    res.status(status).render('lib/error', {
             loggedin: res.locals.loggedin,
-            inline: !res.locals.loggedin
         });
 });
+
 module.exports = app;

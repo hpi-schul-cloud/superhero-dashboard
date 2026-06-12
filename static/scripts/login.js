@@ -7,7 +7,6 @@ $(document).ready(function() {
     var $systems = $('.system');
     var $modals = $('.modal');
     var $pwRecoveryModal = $('.pwrecovery-modal');
-    var $modalForm = $('.modal-form');
 
     var loadSystems = function(schoolId) {
         $systems.empty();
@@ -40,7 +39,7 @@ $(document).ready(function() {
         $systems.trigger('chosen:updated');
     });
 
-    $btnLogin.on('click', function(e) {
+    $btnLogin.on('click', function() {
         localStorage.setItem('loginSchool', $school.val());
         localStorage.setItem('loginSystem', $systems.val());
     });
@@ -55,6 +54,7 @@ $(document).ready(function() {
 
     $('.submit-pwrecovery').on('click', function(e) {
         e.preventDefault();
+        // eslint-disable-next-line no-undef
         populateModalForm($pwRecoveryModal, {
             title: 'Passwort Zurücksetzen',
             closeLabel: 'Abbrechen',

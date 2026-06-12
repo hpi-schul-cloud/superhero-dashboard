@@ -8,6 +8,7 @@ $(document).ready(function () {
 
         const url = $(this).attr('href');
         $.getJSON(url, function (user) {
+            // eslint-disable-next-line no-undef
             populateModalForm($rollbackModal, {
                 action: url + '/rollback-migration',
                 title: 'Migration rückgängig machen',
@@ -43,7 +44,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
     toggleSilentArea(false);
     const silentToggle = document.querySelector('#create-silent');
     if(silentToggle){
-        silentToggle.addEventListener("input", (event) => {
+        silentToggle.addEventListener("input", () => {
             toggleSilentArea(silentToggle.checked);
         });
     }

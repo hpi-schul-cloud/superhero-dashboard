@@ -78,6 +78,7 @@ $(document).ready(() => {
 
 	$('.btn-add-modal--upload').on('click', (e) => {
 		e.preventDefault();
+		// eslint-disable-next-line no-undef
 		populateModalForm($addDeletionModal, {
 			title: "Sammellöschung hinzufügen",
 			closeLabel: "Abbrechen",

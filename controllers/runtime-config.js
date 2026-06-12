@@ -34,7 +34,7 @@ const updateHandler = (req, res, next) => {
     });
 };
 
-const listHandler = (req, res, next) => {
+const listHandler = (req, res) => {
     api(req, { version: 'v3' }).get(`/runtime-config`).then(data => {
         const head = [
             'Name',
@@ -59,7 +59,6 @@ const listHandler = (req, res, next) => {
             head,
             values: runtimeConfig,
             user: res.locals.currentUser ||"",
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud'
         });
     });
 };

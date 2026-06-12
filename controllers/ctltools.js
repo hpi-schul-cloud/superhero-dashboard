@@ -10,7 +10,7 @@ const moment = require('moment');
 const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
 
-const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED)
+const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED);
 
 const clearEmptyInputs = (object) => {
     Object.keys(object).forEach((key) => {
@@ -39,7 +39,7 @@ const clearEmptyInputs = (object) => {
                 break;
         }
     });
-}
+};
 
 const configParameterKeys = {
     "basic": [],
@@ -59,7 +59,7 @@ const configParameterKeys = {
         "launch_presentation_locale",
         "privacy_permission"
     ]
-}
+};
 
 const removeUnusedConfigParams = (body) => {
     const configType = body.config.type;
@@ -72,7 +72,7 @@ const removeUnusedConfigParams = (body) => {
             delete body.config[key];
         }
     });
-}
+};
 
 const transformToolInputs = (id, body) => {
     body.id = id;
@@ -125,7 +125,7 @@ const convertZerosToString = (obj) => {
             obj[key] = '0';
         }
     });
-}
+};
 
 const getDetailHandler = (req, res, next) => {
     Promise.all([
@@ -348,7 +348,6 @@ const showTools = (req, res) => {
             pagination,
             user: res.locals.currentUser,
             limit: true,
-            themeTitle: process.env.SC_NAV_TITLE || 'Schul-Cloud',
             messageTypes,
             privacies,
             authMethods,
@@ -371,7 +370,7 @@ const getDatasheet = (req, res, next) => {
     } catch (e) {
         next(e);
     }
-}
+};
 
 const getMediumMedataHandler = (req, res) => {
     const mediaSourceId = encodeURIComponent(req.query.sourceId);
@@ -382,15 +381,15 @@ const getMediumMedataHandler = (req, res) => {
     }).catch(err => {
         res.status(err.statusCode).json({ error: err.error });
     });
-}
+};
 
 const addAndActivateToolForAllSchools = (req, res, next) => {
     const toolId = req.params.id;
 
     api(req, { version: 'v3' }).patch(`/tools/add-and-activate-for-all-schools/${toolId}`)
-        .then(() => { res.redirect('/ctltools') })
+        .then(() => { res.redirect('/ctltools'); })
         .catch(err => { next(err); });
-}
+};
 
 router.use(authHelper.authChecker);
 

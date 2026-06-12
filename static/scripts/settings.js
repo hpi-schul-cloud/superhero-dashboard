@@ -21,10 +21,6 @@ $(document).ready(function() {
         window.location.reload();
     };
 
-    var cookies = getCookiesMap(document.cookie);
-    if (cookies["notificationPermission"])
-        $(".btn-device").prop("disabled", true);
-
     $('a[data-method="delete"]').on('click', function(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -41,7 +37,7 @@ $(document).ready(function() {
                     name: $buttonContext.data('device-name'),
                     _id: $buttonContext.data('device-id')
                 },
-                success: function(result) {
+                success: function() {
                     reloadSite();
                 }
             });

@@ -2,15 +2,12 @@
  * One Controller per layout view
  */
 
-const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
 moment.locale('de');
-
-const themeTitle = process.env.SC_NAV_TITLE || 'Schul-Cloud';
 
 const PASSWORD = "******";
 
@@ -51,7 +48,7 @@ const createHandler = (req, res, next) => {
     const body = sanitize(req.body, true);
     api(req).post(servicePath, {
         json: body
-    }).then(data => {
+    }).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
         next(err);
@@ -62,7 +59,7 @@ const updateHandler = (req, res, next) => {
     const body = sanitize(req.body);
     api(req).patch(servicePath + req.params.id, {
         json: body
-    }).then(data => {
+    }).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
         next(err);
@@ -81,14 +78,14 @@ const detailHandler = (req, res, next) => {
 
 
 const deleteHandler = (req, res, next) => {
-    api(req).delete(servicePath + req.params.id).then(_ => {
+    api(req).delete(servicePath + req.params.id).then(() => {
         res.redirect(req.header('Referer'));
     }).catch(err => {
         next(err);
     });
 };
 
-const getHandler = (req, res, next) => {
+const getHandler = (req, res) => {
 
   const itemsPerPage = (req.query.limit || 10);
   const currentPage = parseInt(req.query.p) || 1;
@@ -138,7 +135,6 @@ const getHandler = (req, res, next) => {
       pagination,
       user: res.locals.currentUser || "",
       limit: true,
-      themeTitle,
       types
     });
   });

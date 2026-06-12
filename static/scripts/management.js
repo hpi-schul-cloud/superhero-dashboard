@@ -11,7 +11,7 @@ const loadPolicyFile = () => {
 	const file = document.querySelector('#policy-input').files[0];
 	toBase64(file).then((base64file) => {
 		const reader = new FileReader();
-		reader.addEventListener('load', (evt) => {
+		reader.addEventListener('load', () => {
 			if (!file.type.match('application/pdf')) {
 				$.showNotification('nur PDF Dateien werden unterstützt', 'danger', true);
 				document.querySelector('#policy-input').value = '';
@@ -43,13 +43,14 @@ $(document).ready(() => {
 
 	$('.btn-add-modal--policy').on('click', (e) => {
 		e.preventDefault();
+		// eslint-disable-next-line no-undef
 		populateModalForm($addConsentModal, {
 			title: "Rechtliches Dokument hinzufügen",
 			closeLabel: "Abbrechen",
 			submitLabel: "Hinzufügen",
 		});
 		$addConsentModal.appendTo('body').modal('show');
-	})
+	});
 
 	document.querySelector('#policy-input').addEventListener('change', loadPolicyFile, false);
-})
+});

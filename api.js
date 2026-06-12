@@ -1,10 +1,8 @@
-const request = require("request");
 const rp = require("request-promise");
 
 const api = (
   req,
   {
-    useCallback = false,
     json = true,
     version = "v1",
     adminApi = false,
@@ -31,15 +29,13 @@ const api = (
       req.cookies.jwt;
   }
 
-  const handler = useCallback ? request : rp;
-
   const apiRequest = {
     baseUrl: new URL(version, baseUrl).href,
     json,
     headers,
   };
 
-  return handler.defaults(apiRequest);
+  return rp.defaults(apiRequest);
 };
 
 module.exports = { api };
