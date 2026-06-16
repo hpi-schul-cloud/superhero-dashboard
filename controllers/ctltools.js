@@ -257,7 +257,7 @@ const getMediaSources = (data) => {
     return mediaSources.concat(mediaSourceList);
 };
 
-const showTools = (req, res) => {
+const showTools = (req, res, next) => {
     const itemsPerPage = (req.query.limit || 10);
     const currentPage = parseInt(req.query.p) || 1;
 
