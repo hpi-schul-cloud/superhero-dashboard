@@ -7,10 +7,7 @@ const router = express.Router();
 const authHelper = require('../helpers/authentication');
 const { api } = require('../api');
 const moment = require('moment');
-const { isFeatureFlagTrue } = require('../helpers/featureFlagHelper');
 moment.locale('de');
-
-const MEDIA_SHELF_ENABLED = isFeatureFlagTrue(process.env.FEATURE_MEDIA_SHELF_ENABLED);
 
 const clearEmptyInputs = (object) => {
     Object.keys(object).forEach((key) => {
@@ -117,34 +114,15 @@ const getUpdateHandler = (req, res, next) => {
     });
 };
 
-const convertZerosToString = (obj) => {
-    Object.keys(obj).forEach(key => {
-        if (typeof obj[key] === 'object') {
-            convertZerosToString(obj[key]);
-        } else if (obj[key] === 0) {
-            obj[key] = '0';
-        }
-    });
-};
-
 const getDetailHandler = (req, res, next) => {
-    Promise.all([
-        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`),
-        api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}/metadata`)
-    ]).then(([toolData, toolMetaData]) => {
+    api(req, { version: 'v3' }).get(`/tools/external-tools/${req.params.id}`).then((toolData) => {
         if (toolData.config.type === 'oauth2') {
             toolData.config.redirectUris = toolData.config.redirectUris.join(';');
         }
 
-        const showMediaShelfCount = !MEDIA_SHELF_ENABLED && toolMetaData.contextExternalToolCountPerContext.mediaBoard === 0;
-        if (showMediaShelfCount) {
-            delete toolMetaData.contextExternalToolCountPerContext.mediaBoard;
-        }
-
         toolData.hasMedium = !!toolData.medium;
 
-        convertZerosToString(toolMetaData);
-        res.json({ ...toolData, ...toolMetaData });
+        res.json(toolData);
     }).catch(err => {
         next(err);
     });
