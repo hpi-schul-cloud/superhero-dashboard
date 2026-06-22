@@ -1,5 +1,6 @@
 $(document).ready(() => {
   let selectedBatchId = null;
+  const resetFailedButton = document.querySelector(".reset-failed-btn");
 
   const setHTMLForIds = (ids, idType) => {
     const section = document.querySelector(`#${idType}-ids-section`);
@@ -42,6 +43,10 @@ $(document).ready(() => {
         setHTMLForIds(data.failedDeletions, "failed");
         setHTMLForIds(data.invalidUsers, "invalid");
         setHTMLForIds(data.skippedUsers, "skipped");
+
+        if (resetFailedButton) {
+          resetFailedButton.hidden = data.failedDeletions.length === 0;
+        }
 
         document.querySelectorAll(".copy-btn").forEach((button) => {
           button.addEventListener("click", copyToClipboard);
@@ -128,7 +133,6 @@ $(document).ready(() => {
     });
   });
 
-  const resetFailedButton = document.querySelector(".reset-failed-btn");
   if (resetFailedButton) {
     resetFailedButton.addEventListener("click", () => {
       if (!selectedBatchId) {
