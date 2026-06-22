@@ -104,6 +104,24 @@ const sendDeletionRequest = async (req, res, next) => {
   }
 };
 
+const resetFailed = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { targetRefIds, batchId } = req.body;
+
+    await api(req, { adminApi: true }).post(`/deletion-batches/${id}/reset-failed`, {
+      json: {
+        batchId,
+        targetRefIds,
+      },
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const isMongoId = (str) => typeof str === 'string' && /^[a-f\d]{24}$/i.test(str);
 
 const sendFile = async (req, res, next) => {
@@ -145,5 +163,6 @@ module.exports = {
   getDeletionBatchDetails,
   deleteBatch,
   sendDeletionRequest,
+  resetFailed,
   sendFile,
 };
