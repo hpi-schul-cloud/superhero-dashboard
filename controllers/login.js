@@ -15,7 +15,7 @@ router.post("/login/", function (req, res, next) {
 
   const login = (data) => {
     return api(req, { version: 'v3' })
-      .post("/authentication/local", { json: data })
+      .post("/authentication/local-service-account", { json: data })
       .then((data) => {
         res.cookie("jwt", data.accessToken, {
           expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
