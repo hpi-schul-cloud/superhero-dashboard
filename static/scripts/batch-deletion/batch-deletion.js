@@ -88,14 +88,16 @@ $(document).ready(() => {
   function getFailedIdsFromTextarea() {
     const failedIdsField = document.getElementById("failed-ids");
 
-    if (!failedIdsField || !failedIdsField.value) {
+    if (!failedIdsField?.value) {
       return [];
     }
 
-    return failedIdsField.value
+    const parsedIds = failedIdsField.value
       .split("\n")
       .map((id) => id.trim())
       .filter(Boolean);
+
+    return parsedIds;
   }
 
   function resetFailedIds(batchId, targetRefIds) {
