@@ -1,4 +1,7 @@
 $(document).ready(() => {
+  let selectedBatchId = null;
+  const resetFailedButton = document.querySelector(".reset-failed-btn");
+
   const setHTMLForIds = (ids, idType) => {
     const section = document.querySelector(`#${idType}-ids-section`);
 
@@ -41,6 +44,10 @@ $(document).ready(() => {
         setHTMLForIds(data.invalidUsers, "invalid");
         setHTMLForIds(data.skippedUsers, "skipped");
 
+        if (resetFailedButton) {
+          resetFailedButton.hidden = data.failedDeletions.length === 0;
+        }
+
         document.querySelectorAll(".copy-btn").forEach((button) => {
           button.addEventListener("click", copyToClipboard);
         });
@@ -78,16 +85,72 @@ $(document).ready(() => {
       });
   }
 
+  function getFailedIdsFromTextarea() {
+    const failedIdsField = document.getElementById("failed-ids");
+
+    if (!failedIdsField?.value) {
+      return [];
+    }
+
+    const parsedIds = failedIdsField.value
+      .split("\n")
+      .map((id) => id.trim())
+      .filter(Boolean);
+
+    return parsedIds;
+  }
+
+  function resetFailedIds(batchId, targetRefIds) {
+    fetch(`/batch-deletion/${batchId}/reset-failed`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        batchId,
+        targetRefIds,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          fetchDeletionBatchDetails(batchId);
+          return;
+        }
+        console.error("Error:", res.statusText);
+      })
+      .catch((error) => {
+        console.error("error", error);
+      });
+  }
+
   document.querySelectorAll(".show-batch-details-btn").forEach((button) => {
     button.addEventListener("click", function () {
       const title = this.getAttribute("data-title");
       const batchId = this.getAttribute("data-batch-id");
+      selectedBatchId = batchId;
 
       document.querySelector(".details-modal .modal-title").innerText = title;
 
       fetchDeletionBatchDetails(batchId);
     });
   });
+
+  if (resetFailedButton) {
+    resetFailedButton.addEventListener("click", () => {
+      if (!selectedBatchId) {
+        console.error("No batch selected for reset-failed action.");
+        return;
+      }
+
+      const targetRefIds = getFailedIdsFromTextarea();
+      if (targetRefIds.length === 0) {
+        alert("Keine fehlgeschlagenen IDs vorhanden.");
+        return;
+      }
+
+      resetFailedIds(selectedBatchId, targetRefIds);
+    });
+  }
 
   document.querySelectorAll(".delete-batch-btn").forEach((button) => {
     button.addEventListener("click", function () {

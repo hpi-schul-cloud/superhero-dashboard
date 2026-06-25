@@ -19,4 +19,6 @@ router.delete("/:id", apiRequests.deleteBatch);
 
 router.post("/:id/execute", apiRequests.sendDeletionRequest);
 
+router.post("/:id/reset-failed", apiRequests.resetFailed);
+
 module.exports = router;
