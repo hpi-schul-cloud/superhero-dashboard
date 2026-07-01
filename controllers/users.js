@@ -414,7 +414,7 @@ router.get('/search', function (req, res) {
 
 router.get('/jwt/:id', async (req, res, next) => {
 	try {
-		const getJWT = api(req, {version: 'v3'}).post('/shd/supportJwt', {
+		const getJWT = api(req, {version: 'v3'}).post('/authentication/support-jwt', {
 			json: {
 				userId: req.params.id,
 			},
