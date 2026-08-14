@@ -88,7 +88,7 @@ $(document).ready(() => {
   function getFailedIdsFromTextarea() {
     const failedIdsField = document.getElementById("failed-ids");
 
-    if (!failedIdsField?.value) {
+    if (!failedIdsField || !failedIdsField.value) {
       return [];
     }
 
