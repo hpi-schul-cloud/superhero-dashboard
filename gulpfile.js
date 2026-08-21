@@ -44,7 +44,7 @@ function fonts() {
 function scripts() {
     return beginPipe('./static/scripts/**/*.js')
         .pipe(babel({
-            presets: [["es2015", { modules: false }]],
+            presets: [["@babel/preset-env", { modules: false }]],
         }))
         .pipe(optimizejs())
         .pipe(uglify())
@@ -63,7 +63,7 @@ function vendor_scripts() {
         ])
         .pipe(babel({
             compact: false,
-            presets: [["es2015", { modules: false }]],
+            presets: [["@babel/preset-env", { modules: false }]],
         }))
         .pipe(optimizejs())
         .pipe(uglify())
