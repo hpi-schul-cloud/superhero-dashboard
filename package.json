@@ -25,7 +25,7 @@
     "handlebars-layouts": "^3.1.4",
     "handlebars-wax": "^6.1.0",
     "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "method-override": "^3.0.0",
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.41",
