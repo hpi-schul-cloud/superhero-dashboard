@@ -171,25 +171,52 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
   };
 
   const createRequest = (method) => (path, options = {}) => {
-    const promise = execute(method, path, options);
-
     if (method === "GET") {
-      promise.pipe = (destination) => {
-        createStreamRequest(path, options)
-          .then((stream) => {
-            stream.pipe(destination);
-          })
-          .catch((error) => {
-            if (typeof destination.destroy === "function") {
-              destination.destroy(error);
-            }
-          });
+      // For GET requests, defer the fetch until we know if it's for pipe or then
+      let fetchStarted = false;
+      let actualPromise = null;
 
-        return destination;
+      return {
+        pipe: (destination) => {
+          if (!fetchStarted) {
+            fetchStarted = true;
+            createStreamRequest(path, options)
+              .then((stream) => {
+                stream.pipe(destination);
+              })
+              .catch((error) => {
+                if (typeof destination.destroy === "function") {
+                  destination.destroy(error);
+                }
+              });
+          }
+          return destination;
+        },
+        then: (onFulfilled, onRejected) => {
+          if (!fetchStarted) {
+            fetchStarted = true;
+            actualPromise = execute(method, path, options);
+          }
+          return actualPromise.then(onFulfilled, onRejected);
+        },
+        catch: (onRejected) => {
+          if (!fetchStarted) {
+            fetchStarted = true;
+            actualPromise = execute(method, path, options);
+          }
+          return actualPromise.catch(onRejected);
+        },
+        finally: (onFinally) => {
+          if (!fetchStarted) {
+            fetchStarted = true;
+            actualPromise = execute(method, path, options);
+          }
+          return actualPromise.finally(onFinally);
+        }
       };
     }
 
-    return promise;
+    return execute(method, path, options);
   };
 
   return {
