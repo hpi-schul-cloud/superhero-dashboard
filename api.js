@@ -198,6 +198,7 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     put: createRequest("PUT"),
     patch: createRequest("PATCH"),
     delete: createRequest("DELETE"),
+    del: createRequest("DELETE"),
   };
 };
 
