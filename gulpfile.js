@@ -7,7 +7,7 @@ const map = require('vinyl-map');
 const babel = require('gulp-babel');
 const plumber = require('gulp-plumber');
 const concat = require('gulp-concat');
-const autoprefixer = require('gulp-autoprefixer');
+const autoprefixer = require('gulp-autoprefixer').default;
 const cCSS = new cleancss();
 
 // wrapped in a function so it works with watch (+consistency)
