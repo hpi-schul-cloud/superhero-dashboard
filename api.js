@@ -115,6 +115,7 @@ const serializeBody = (payload, headers) => {
 const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
   const execute = async (method, path, options = {}) => {
     const { qs, json, body, headers: requestHeaders, ...unsupportedOptions } = options;
+    const expectsJson = defaultJson || json !== undefined;
 
     if (Object.keys(unsupportedOptions).length > 0) {
       throw new Error(
@@ -126,6 +127,11 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
       ...defaultHeaders,
       ...(requestHeaders || {}),
     });
+
+    if (expectsJson && !headers.has("accept")) {
+      headers.set("accept", "application/json");
+    }
+
     const payload = json !== undefined ? json : body;
     const response = await fetch(buildUrl(baseUrl, path, qs), {
       method,
@@ -134,10 +140,10 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     });
 
     if (!response.ok) {
-      throw await createHttpError(response, defaultJson || json !== undefined);
+      throw await createHttpError(response, expectsJson);
     }
 
-    return parseResponseBody(response, defaultJson || json !== undefined);
+    return parseResponseBody(response, expectsJson);
   };
 
   const createStreamRequest = async (path, options = {}) => {
