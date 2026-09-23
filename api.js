@@ -182,6 +182,11 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
             fetchStarted = true;
             createStreamRequest(path, options)
               .then((stream) => {
+                stream.on("error", (error) => {
+                  if (typeof destination.destroy === "function") {
+                    destination.destroy(error);
+                  }
+                });
                 stream.pipe(destination);
               })
               .catch((error) => {

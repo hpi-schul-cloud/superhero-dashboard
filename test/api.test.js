@@ -1,5 +1,6 @@
 const http = require('node:http');
 const { expect } = require('chai');
+const { Writable } = require('node:stream');
 
 const { api } = require('../api');
 
@@ -77,6 +78,74 @@ describe('api helper', () => {
     expect(requests[0].headers.accept).to.equal('application/json');
     expect(requests[0].headers['content-type']).to.include('application/json');
     expect(requests[0].body).to.equal(JSON.stringify({ hello: 'world' }));
+  });
+
+  it('GET request with pipe() successfully streams response', async () => {
+    process.env.BACKEND_URL = `http://127.0.0.1:${port}/api/`;
+    const req = { cookies: { jwt: 'test-token' } };
+
+    const destination = new Writable({
+      write(chunk, encoding, callback) {
+        callback();
+      },
+    });
+
+    await new Promise((resolve, reject) => {
+      api(req).get('/data').pipe(destination);
+      destination.on('finish', resolve);
+      destination.on('error', reject);
+    });
+
+    expect(requests).to.have.length(1);
+    expect(requests[0].method).to.equal('GET');
+  });
+
+  it('GET request pipe() destroys destination on stream error', async () => {
+    process.env.BACKEND_URL = `http://127.0.0.1:${port}/api/`;
+    const req = { cookies: { jwt: 'test-token' } };
+
+    // Create a server that emits data and then closes (simulating a stream error)
+    server.close();
+    server = http.createServer((req, res) => {
+      res.setHeader('content-type', 'application/octet-stream');
+      res.write('chunk1');
+      res.destroy(); // Forcefully close the connection
+    });
+
+    await new Promise((resolve) => {
+      server.listen(port, resolve);
+    });
+
+    const destination = new Writable({
+      write(chunk, encoding, callback) {
+        callback();
+      },
+    });
+
+    let destroyError;
+    destination.destroy = function (error) {
+      destroyError = error;
+      Writable.prototype.destroy.call(this, error);
+    };
+
+    await new Promise((resolve) => {
+      api(req).get('/data').pipe(destination);
+      destination.on('error', () => resolve());
+      setTimeout(resolve, 500);
+    });
+
+    expect(destroyError).to.exist;
+  });
+
+  it('GET request with then() uses non-streaming fetch', async () => {
+    process.env.BACKEND_URL = `http://127.0.0.1:${port}/api/`;
+    const req = { cookies: { jwt: 'test-token' } };
+
+    const result = await api(req).get('/data');
+
+    expect(requests).to.have.length(1);
+    expect(requests[0].method).to.equal('GET');
+    expect(result).to.deep.equal({ ok: true, data: [] });
   });
 });
 
