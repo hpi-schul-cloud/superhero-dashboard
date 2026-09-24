@@ -18,6 +18,17 @@ module.exports = [
     },
   },
   {
+    files: ['test/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.mocha,
+      },
+    },
+  },
+  {
     files: ['static/scripts/**/*.js'],
     languageOptions: {
       globals: {

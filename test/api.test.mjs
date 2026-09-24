@@ -1,8 +1,7 @@
-const http = require('node:http');
-const { expect } = require('chai');
-const { Writable } = require('node:stream');
-
-const { api } = require('../api');
+import http from 'node:http';
+import { expect } from 'chai';
+import { Writable } from 'node:stream';
+import { api } from '../api.js';
 
 describe('api helper', () => {
   let server;

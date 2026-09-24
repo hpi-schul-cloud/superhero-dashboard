@@ -1,7 +1,7 @@
-const { createPoliciesBody } = require('../../../controllers/management/helpers');
-const moment = require('moment');
-const sinon = require('sinon');
-const { expect } = require('chai');
+import { createPoliciesBody } from '../../../controllers/management/helpers.js';
+import moment from 'moment';
+import sinon from 'sinon';
+import { expect } from 'chai';
 
 describe('Management controller helpers tests: ', () => {
 	describe("createPoliciesBody", () => {

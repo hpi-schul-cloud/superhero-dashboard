@@ -8,7 +8,7 @@
     "watch": "node --watch ./bin/www",
     "debug": "node --inspect=0.0.0.0:9311 --watch ./bin/www",
     "lint": "eslint ./controllers ./helpers ./test ./api.js ./app.js ./static/scripts --fix",
-    "test": "mocha 'test/**/*.js' --recursive --timeout 60000 --exit"
+    "test": "mocha 'test/**/*.{js,mjs}' --recursive --timeout 60000 --exit"
   },
   "engines": {
     "node": "24",

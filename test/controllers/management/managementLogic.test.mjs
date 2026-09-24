@@ -1,6 +1,10 @@
-const sinon = require('sinon');
-const { expect } = require('chai');
+import sinon from 'sinon';
+import { expect } from 'chai';
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
+
+// Import and stub the CommonJS modules that managementLogic uses
 const redirectHelper = require('../../../helpers/redirect');
 const managementHelpers = require('../../../controllers/management/helpers');
 const api = require('../../../api');
@@ -12,12 +16,14 @@ const rp = {
 const apiStub = sinon.stub(api, 'api').returns(rp);
 const createPoliciesBodyStub = sinon.stub(managementHelpers, 'createPoliciesBody');
 
-const { updateInstancePolicy, mainRoute } = require('../../../controllers/management/managementLogic');
+// Now import the module that uses those CommonJS dependencies
+const { updateInstancePolicy, mainRoute } = await import('../../../controllers/management/managementLogic.js');
 
 describe("Management controller logic tests: ", () => {
 	let req;
 	let res;
 	let rpStub;
+	let redirectHelperStub;
 
 	beforeEach(() => {
 		req = {
@@ -43,45 +49,49 @@ describe("Management controller logic tests: ", () => {
 	});
 
 	afterEach(() => {
-		rpStub.restore();
+		if (rpStub) {
+			rpStub.restore();
+			rpStub = null;
+		}
+		if (redirectHelperStub) {
+			redirectHelperStub.restore();
+			redirectHelperStub = null;
+		}
 	});
 
 	describe('/uploadConsent route: updatingInstancePolicy', () => {
 		it('should call safeBackRedirect helper function if api call is successful', async () => {
 			// given
 			rpStub = sinon.stub(rp, 'post');
-			const safeBackRedirectMock = sinon.mock(redirectHelper);
-
 			rpStub.resolves();
-			safeBackRedirectMock.expects('safeBackRedirect').withArgs(req, res).once();
+			redirectHelperStub = sinon.stub(redirectHelper, 'safeBackRedirect');
 
 			// when
 			await updateInstancePolicy(req, res);
 
 			// then
-			safeBackRedirectMock.verify();
-			safeBackRedirectMock.restore();
+			sinon.assert.calledOnce(redirectHelperStub);
+			sinon.assert.calledWithExactly(redirectHelperStub, req, res);
 		});
 
 		it('should call api under "/consentVersions" endpoint', async () => {
 			// given
 			rpStub = sinon.stub(rp, 'post');
 			rpStub.resolves();
-			const safeBackRedirectStub = sinon.stub(redirectHelper, 'safeBackRedirect');
+			redirectHelperStub = sinon.stub(redirectHelper, 'safeBackRedirect');
 
 			// when
 			await updateInstancePolicy(req, res);
 
 			// then
 			sinon.assert.calledWith(rpStub, '/consentVersions');
-			safeBackRedirectStub.restore();
 		});
 
 		it('should call api with proper parameters', async () => {
 			// given
 			rpStub = sinon.stub(rp, 'post');
 			rpStub.resolves();
-			const safeBackRedirectStub = sinon.stub(redirectHelper, 'safeBackRedirect');
+			redirectHelperStub = sinon.stub(redirectHelper, 'safeBackRedirect');
 			const requestParamesters = {
 				consentTitle: "Test title",
 				consentText: "Test text",
@@ -102,7 +112,6 @@ describe("Management controller logic tests: ", () => {
 					consentData: requestParamesters.consentData,
 				}
 			}));
-			safeBackRedirectStub.restore();
 		});
 	});
 
@@ -198,9 +207,6 @@ describe("Management controller logic tests: ", () => {
 
 			// then
 			expect(res.props.policiesBody).to.equal(policiesBody);
-			createPoliciesBodyStub.restore();
 		});
 	});
 });
-
-
