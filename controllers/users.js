@@ -83,7 +83,7 @@ const inviteWithMail = async (user, req) => {
 
 	// check raw link data
 	for (var k in rawData) {
-		if (Object.prototype.hasOwnProperty.call(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) return Promise.reject();
+		if (Object.hasOwn(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) return Promise.reject();
 	}
 
 	let linkData = await api(req).post('/registrationlink', { json: rawData });
@@ -547,7 +547,7 @@ const generateRegistrationLink = () => {
 
 			// check raw link data
 			for (var k in rawData) {
-				if (Object.prototype.hasOwnProperty.call(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) next();
+				if (Object.hasOwn(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) next();
 			}
 
 				let linkData = await api(req).post('/registrationlink', { json: rawData });

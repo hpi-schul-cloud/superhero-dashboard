@@ -3,116 +3,163 @@ const { Readable } = require("node:stream");
 const isPlainObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
-const appendQueryParams = (searchParams, key, value) => {
-  if (value === undefined) {
-    return;
-  }
 
-  if (value === null) {
-    searchParams.append(key, "");
-    return;
-  }
+const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
+  const appendQueryParams = (searchParams, key, value) => {
+    if (value === undefined) {
+      return;
+    }
 
-  if (Array.isArray(value)) {
-    value.forEach((entry, index) => {
-      appendQueryParams(searchParams, `${key}[${index}]`, entry);
-    });
-    return;
-  }
+    if (value === null) {
+      searchParams.append(key, "");
+      return;
+    }
 
-  if (isPlainObject(value)) {
-    Object.entries(value).forEach(([nestedKey, nestedValue]) => {
-      appendQueryParams(searchParams, `${key}[${nestedKey}]`, nestedValue);
-    });
-    return;
-  }
+    if (Array.isArray(value)) {
+      value.forEach((entry, index) => {
+        appendQueryParams(searchParams, `${key}[${index}]`, entry);
+      });
+      return;
+    }
 
-  searchParams.append(key, String(value));
-};
+    if (isPlainObject(value)) {
+      Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+        appendQueryParams(searchParams, `${key}[${nestedKey}]`, nestedValue);
+      });
+      return;
+    }
 
-const buildUrl = (baseUrl, path, qs) => {
-  const absoluteUrl = /^https?:\/\//i.test(path)
-    ? new URL(path)
-    : new URL(`${baseUrl.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`);
+    searchParams.append(key, String(value));
+  };
 
-  if (qs && isPlainObject(qs)) {
-    Object.entries(qs).forEach(([key, value]) => {
-      appendQueryParams(absoluteUrl.searchParams, key, value);
-    });
-  }
+  const buildUrl = (baseUrl, path, qs) => {
+    const absoluteUrl = /^https?:\/\//i.test(path)
+      ? new URL(path)
+      : new URL(`${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`);
 
-  return absoluteUrl;
-};
+    if (qs && isPlainObject(qs)) {
+      Object.entries(qs).forEach(([key, value]) => {
+        appendQueryParams(absoluteUrl.searchParams, key, value);
+      });
+    }
 
-const parseResponseBody = async (response, expectJson) => {
-  if (response.status === 204 || response.status === 205) {
-    return undefined;
-  }
+    return absoluteUrl;
+  };
 
-  const contentType = response.headers.get("content-type") || "";
-  const shouldParseJson =
-    expectJson || contentType.includes("application/json") || contentType.includes("+json");
-
-  if (shouldParseJson) {
-    const text = await response.text();
-
-    if (!text) {
+  const parseResponseBody = async (response, expectJson) => {
+    if (response.status === 204 || response.status === 205) {
       return undefined;
     }
 
-    return JSON.parse(text);
-  }
+    const contentType = response.headers.get("content-type") || "";
+    const shouldParseJson =
+      expectJson || contentType.includes("application/json") || contentType.includes("+json");
 
-  return response.text();
-};
+    if (shouldParseJson) {
+      const text = await response.text();
 
-const createHttpError = async (response, expectJson) => {
-  const errorBody = await parseResponseBody(response, expectJson).catch(() => undefined);
-  const error = new Error(
-    errorBody?.message || response.statusText || `Request failed with status code ${response.status}`
-  );
+      if (!text) {
+        return undefined;
+      }
 
-  error.name = "StatusCodeError";
-  error.status = response.status;
-  error.statusCode = response.status;
-  error.error = errorBody;
-  error.response = {
-    statusCode: response.status,
-    headers: Object.fromEntries(response.headers.entries()),
-    body: errorBody,
+      return JSON.parse(text);
+    }
+
+    return response.text();
   };
 
-  return error;
-};
+  const createHttpError = async (response, expectJson) => {
+    const errorBody = await parseResponseBody(response, expectJson).catch(() => undefined);
+    const error = new Error(
+      errorBody?.message || response.statusText || `Request failed with status code ${response.status}`
+    );
 
-const serializeBody = (payload, headers) => {
-  if (payload === undefined || payload === null) {
-    return undefined;
-  }
+    error.name = "StatusCodeError";
+    error.status = response.status;
+    error.statusCode = response.status;
+    error.error = errorBody;
+    error.response = {
+      statusCode: response.status,
+      headers: Object.fromEntries(response.headers.entries()),
+      body: errorBody,
+    };
 
-  if (
-    typeof payload === "string" ||
-    payload instanceof URLSearchParams ||
-    payload instanceof Buffer ||
-    ArrayBuffer.isView(payload) ||
-    payload instanceof ArrayBuffer ||
-    payload instanceof FormData
-  ) {
-    return payload;
-  }
+    return error;
+  };
 
-  if (!headers.has("content-type")) {
-    headers.set("content-type", "application/json");
-  }
+  const serializeBody = (payload, headers) => {
+    if (payload === undefined || payload === null) {
+      return undefined;
+    }
 
-  if (headers.get("content-type")?.includes("application/json")) {
-    return JSON.stringify(payload);
-  }
+    if (
+      typeof payload === "string" ||
+      payload instanceof URLSearchParams ||
+      payload instanceof Buffer ||
+      ArrayBuffer.isView(payload) ||
+      payload instanceof ArrayBuffer ||
+      payload instanceof FormData
+    ) {
+      return payload;
+    }
 
-  return String(payload);
-};
+    if (!headers.has("content-type")) {
+      headers.set("content-type", "application/json");
+    }
 
-const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
+    if (headers.get("content-type")?.includes("application/json")) {
+      return JSON.stringify(payload);
+    }
+
+    return String(payload);
+  };
+
+  const destroyDestination = (destination, error) => {
+    if (typeof destination.destroy === "function") {
+      destination.destroy(error);
+    }
+  };
+
+  const pipeStreamToDestination = (stream, destination) => {
+    stream.on("error", (error) => destroyDestination(destination, error));
+    stream.pipe(destination);
+  };
+
+  const createDeferredGetRequest = (path, options, execute, createStreamRequest) => {
+    let fetchStarted = false;
+    let actualPromise = null;
+
+    const startFetch = () => {
+      if (fetchStarted) {
+        return actualPromise;
+      }
+
+      fetchStarted = true;
+      actualPromise = execute("GET", path, options);
+      return actualPromise;
+    };
+
+    const startStream = (destination) => {
+      if (fetchStarted) {
+        return destination;
+      }
+
+      fetchStarted = true;
+      createStreamRequest(path, options)
+        .then((stream) => pipeStreamToDestination(stream, destination))
+        .catch((error) => destroyDestination(destination, error));
+
+      return destination;
+    };
+
+    return {
+      pipe: (destination) => startStream(destination),
+      then: (onFulfilled, onRejected) => startFetch().then(onFulfilled, onRejected),
+      catch: (onRejected) => startFetch().catch(onRejected),
+      finally: (onFinally) => startFetch().finally(onFinally),
+    };
+  };
+
   const execute = async (method, path, options = {}) => {
     const { qs, json, body, headers: requestHeaders, ...unsupportedOptions } = options;
     const expectsJson = defaultJson || json !== undefined;
@@ -172,53 +219,7 @@ const createClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
 
   const createRequest = (method) => (path, options = {}) => {
     if (method === "GET") {
-      // For GET requests, defer the fetch until we know if it's for pipe or then
-      let fetchStarted = false;
-      let actualPromise = null;
-
-      return {
-        pipe: (destination) => {
-          if (!fetchStarted) {
-            fetchStarted = true;
-            createStreamRequest(path, options)
-              .then((stream) => {
-                stream.on("error", (error) => {
-                  if (typeof destination.destroy === "function") {
-                    destination.destroy(error);
-                  }
-                });
-                stream.pipe(destination);
-              })
-              .catch((error) => {
-                if (typeof destination.destroy === "function") {
-                  destination.destroy(error);
-                }
-              });
-          }
-          return destination;
-        },
-        then: (onFulfilled, onRejected) => {
-          if (!fetchStarted) {
-            fetchStarted = true;
-            actualPromise = execute(method, path, options);
-          }
-          return actualPromise.then(onFulfilled, onRejected);
-        },
-        catch: (onRejected) => {
-          if (!fetchStarted) {
-            fetchStarted = true;
-            actualPromise = execute(method, path, options);
-          }
-          return actualPromise.catch(onRejected);
-        },
-        finally: (onFinally) => {
-          if (!fetchStarted) {
-            fetchStarted = true;
-            actualPromise = execute(method, path, options);
-          }
-          return actualPromise.finally(onFinally);
-        }
-      };
+      return createDeferredGetRequest(path, options, execute, createStreamRequest);
     }
 
     return execute(method, path, options);
@@ -269,7 +270,7 @@ const api = (
     headers,
   };
 
-  return createClient(apiRequest);
+  return apiClient(apiRequest);
 };
 
 module.exports = { api };
