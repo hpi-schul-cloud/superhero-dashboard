@@ -32,7 +32,7 @@ describe('Management controller helpers tests: ', () => {
 			const result = createPoliciesBody(policiesData);
 
 			// then
-			expect(result.length).to.be.equal(result.length);
+			expect(result.length).to.be.equal(policiesData.length);
 		});
 
 		it("should return correct title", () => {
