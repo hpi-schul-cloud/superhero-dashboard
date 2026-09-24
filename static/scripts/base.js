@@ -181,7 +181,7 @@ $(document).ready(function () {
     // Print Button
     $('.print .btn-print').click(function () {
         $(this).html("");
-        w = window.open();
+        const w = window.open();
         w.document.write($(this).parent(".print").html());
         w.print();
         w.close();
