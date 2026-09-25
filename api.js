@@ -33,17 +33,21 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
   };
 
   const buildUrl = (baseUrl, path, qs) => {
-    const absoluteUrl = /^https?:\/\//i.test(path)
-      ? new URL(path)
-      : new URL(`${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`);
+    if (/^https?:\/\//i.test(path)) {
+      throw new Error(
+        `Absolute URLs are not allowed. Received: ${path}. Only relative paths starting with "/" are permitted.`
+      );
+    }
+
+    const url = new URL(`${baseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`);
 
     if (qs && isPlainObject(qs)) {
       Object.entries(qs).forEach(([key, value]) => {
-        appendQueryParams(absoluteUrl.searchParams, key, value);
+        appendQueryParams(url.searchParams, key, value);
       });
     }
 
-    return absoluteUrl;
+    return url;
   };
 
   const parseResponseBody = async (response, expectJson) => {

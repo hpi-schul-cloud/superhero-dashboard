@@ -146,5 +146,29 @@ describe('api helper', () => {
     expect(requests[0].method).to.equal('GET');
     expect(result).to.deep.equal({ ok: true, data: [] });
   });
+
+  it('rejects absolute URLs to prevent header leakage', async () => {
+    process.env.BACKEND_URL = `http://127.0.0.1:${port}/api/`;
+    const req = { cookies: { jwt: 'test-token' } };
+
+    try {
+      await api(req).get('https://attacker.com/malicious');
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.include('Absolute URLs are not allowed');
+    }
+  });
+
+  it('rejects http absolute URLs', async () => {
+    process.env.BACKEND_URL = `http://127.0.0.1:${port}/api/`;
+    const req = { cookies: { jwt: 'test-token' } };
+
+    try {
+      await api(req).post('http://external.com/endpoint', { json: { data: 'test' } });
+      expect.fail('Should have thrown an error');
+    } catch (error) {
+      expect(error.message).to.include('Absolute URLs are not allowed');
+    }
+  });
 });
 
