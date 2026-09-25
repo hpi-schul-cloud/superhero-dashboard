@@ -83,7 +83,7 @@ const inviteWithMail = async (user, req) => {
 
 	// check raw link data
 	for (var k in rawData) {
-		if (rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === '')) return Promise.reject();
+		if (Object.hasOwn(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) return Promise.reject();
 	}
 
 	let linkData = await api(req).post('/registrationlink', { json: rawData });
@@ -545,10 +545,10 @@ const generateRegistrationLink = () => {
 					patchUser: true,
 				};
 
-				// check raw link data
-				for (var k in rawData) {
-					if (rawData.hasOwnProperty(k) && (rawData[k] === undefined || rawData[k] === '')) next();
-				}
+			// check raw link data
+			for (var k in rawData) {
+				if (Object.hasOwn(rawData, k) && (rawData[k] === undefined || rawData[k] === '')) next();
+			}
 
 				let linkData = await api(req).post('/registrationlink', { json: rawData });
 				res.json({ invitation: linkData.shortLink, currentSchool: user.schoolId });

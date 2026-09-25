@@ -52,7 +52,7 @@ router.get("/login/success", authHelper.authChecker, function (req, res) {
 
 router.get("/logout/", function (req, res) {
   api(req)
-    .del("/authentication")
+    .delete("/authentication")
     .then(() => {
       res.clearCookie("jwt");
       return res.redirect("/login/");

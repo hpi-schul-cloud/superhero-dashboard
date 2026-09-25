@@ -5,11 +5,9 @@ const uglify = require('gulp-uglify');
 const cleancss = require('clean-css');
 const map = require('vinyl-map');
 const babel = require('gulp-babel');
-const filelog = require('gulp-filelog');
 const plumber = require('gulp-plumber');
-const optimizejs = require('gulp-optimize-js');
 const concat = require('gulp-concat');
-const autoprefixer = require('gulp-autoprefixer');
+const autoprefixer = require('gulp-autoprefixer').default;
 const cCSS = new cleancss();
 
 // wrapped in a function so it works with watch (+consistency)
@@ -18,8 +16,7 @@ const minify = () => map((buff) =>
 
 const beginPipe = function(path) {
     return src(path, { allowEmpty: true })
-        .pipe(plumber())
-        .pipe(filelog());
+        .pipe(plumber());
 };
 
 function images() {
@@ -37,7 +34,8 @@ function styles() {
 }
 
 function fonts() {
-    return beginPipe('./static/fonts/**/*.*')
+    return src('./static/fonts/**/*.*', { allowEmpty: true, encoding: false })
+        .pipe(plumber())
         .pipe(dest('./build/fonts'));
 }
 
@@ -46,7 +44,6 @@ function scripts() {
         .pipe(babel({
             presets: [["@babel/preset-env", { modules: false }]],
         }))
-        .pipe(optimizejs())
         .pipe(uglify())
         .pipe(dest('./build/scripts'));
 }
@@ -65,23 +62,19 @@ function vendor_scripts() {
             compact: false,
             presets: [["@babel/preset-env", { modules: false }]],
         }))
-        .pipe(optimizejs())
         .pipe(uglify())
         .pipe(concat('all_vendor.js'))
         .pipe(dest('./build/scripts'));
 }
 
 function vendor_assets() {
-    return beginPipe([
-            './static/vendor/**/*.*', 
-            '!./static/vendor/**/*.js',
-            '!./static/vendor/**/*.{sass,scss}'
-        ])
+    return src('./static/vendor/**/*.*', { allowEmpty: true })
+        .pipe(plumber())
         .pipe(dest('./build/vendor'));
 }
 
 function clear() {
-    return src(['./build/*'], { read: false })
+    return src('./build/', { read: false, allowEmpty: true })
         .pipe(rimraf());
 }
 
@@ -94,10 +87,10 @@ exports.watch = series(all, (done) => {
     watch('./static/fonts/**/*.*', fonts);
     watch('./static/scripts/**/*.js', scripts);
     watch('./static/vendor/**/*.js', vendor_scripts);
-    watch(['./static/vendor/**/*.*', '!./static/vendor/**/*.js',
-                '!./static/vendor/**/*.{sass,scss}'], vendor_assets);
+    watch('./static/vendor/**/*.*', vendor_assets);
     done();
 });
 
 // run this if only "gulp" is run on the commandline with no task specified
 exports.default = all;
+

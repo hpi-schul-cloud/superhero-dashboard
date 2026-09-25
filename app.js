@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
 const compression = require('compression');
 
 const session = require('express-session');
@@ -43,8 +42,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view cache', true);
 
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: process.env.BODYPARSER_LIMIT || '4mb'}));
-app.use(bodyParser.urlencoded({extended: true, limit: process.env.BODYPARSER_LIMIT || '4mb'}));
+app.use(express.json({limit: process.env.BODYPARSER_LIMIT || '4mb'}));
+app.use(express.urlencoded({extended: true, limit: process.env.BODYPARSER_LIMIT || '4mb'}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'build')));
 

@@ -1,7 +1,7 @@
-const { createPoliciesBody } = require('../../../controllers/management/helpers');
-const moment = require('moment');
-const sinon = require('sinon');
-const { expect } = require('chai');
+import { createPoliciesBody } from '../../../controllers/management/helpers.js';
+import moment from 'moment';
+import sinon from 'sinon';
+import { expect } from 'chai';
 
 describe('Management controller helpers tests: ', () => {
 	describe("createPoliciesBody", () => {
@@ -32,7 +32,7 @@ describe('Management controller helpers tests: ', () => {
 			const result = createPoliciesBody(policiesData);
 
 			// then
-			expect(result.length).to.be.equal(result.length);
+			expect(result.length).to.be.equal(policiesData.length);
 		});
 
 		it("should return correct title", () => {
@@ -87,8 +87,10 @@ describe('Management controller helpers tests: ', () => {
 			const result = createPoliciesBody(policiesData);
 
 			// then
-			const expectedDateFormat1 = "01.01.2020 01:00";
-			const expectedDateFormat2 = "01.02.2020 01:00";
+			// Calculate expected dates dynamically using the same logic as the implementation
+			// This makes the test timezone-independent
+			const expectedDateFormat1 = moment(date1).format('DD.MM.YYYY HH:mm');
+			const expectedDateFormat2 = moment(date2).format('DD.MM.YYYY HH:mm');
 			expect(result[0][2]).to.equal(expectedDateFormat1);
 			expect(result[1][2]).to.equal(expectedDateFormat2);
 		});
