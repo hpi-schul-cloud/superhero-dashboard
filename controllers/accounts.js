@@ -43,13 +43,13 @@ const getTableActions = (item, path) => {
     return tableActions;
 };
 
-const getUpdateHandler = (service) => {
+const getUpdateHandler = () => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
             const { username, password, activated } = req.body;
-            await api(req, { json: true, version: 'v3' })
-                .patch(`/${service}/${id}`, {
+            await api(req, { json: true, adminApi: true })
+                .patch(`/admin/accounts/${id}`, {
                     json: {
                         username,
                         password,
@@ -63,12 +63,12 @@ const getUpdateHandler = (service) => {
     };
 };
 
-const getDetailHandler = (service) => {
+const getDetailHandler = () => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
-            const data = await api(req, { json: true, version: 'v3' })
-                .get(`/${service}/${id}`);
+            const data = await api(req, { json: true, adminApi: true })
+                .get(`/admin/accounts/${id}`);
             res.json(data);
         } catch (err) {
             next(err);
@@ -76,12 +76,12 @@ const getDetailHandler = (service) => {
     };
 };
 
-const getDeleteHandler = (service) => {
+const getDeleteHandler = () => {
     return async function (req, res, next) {
         try {
             const { id } = req.params;
-            await api(req, { json: true, version: 'v3' })
-                .delete(`/${service}/${id}`);
+            await api(req, { json: true, adminApi: true })
+                .delete(`/admin/accounts/${id}`);
 
             res.redirect(req.header('Referer'));
         } catch (err) {
@@ -97,8 +97,8 @@ router.get('/search' , function (req, res) {
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req, { json: true, version: 'v3' })
-        .get('/account', {
+    api(req, { json: true, adminApi: true })
+        .get('/admin/accounts', {
             qs: {
                 type: 'username',
                 value: req.query.q,
@@ -143,16 +143,16 @@ router.get('/search' , function (req, res) {
         });
 });
 
-router.patch('/:id', getUpdateHandler('account'));
-router.get('/:id', getDetailHandler('account'));
-router.delete('/:id', getDeleteHandler('account'));
+router.patch('/:id', getUpdateHandler());
+router.get('/:id', getDetailHandler());
+router.delete('/:id', getDeleteHandler());
 
 router.get('/account/:id' , function (req, res) {
     const itemsPerPage = 100;
     const currentPage = parseInt(req.query.p) || 1;
 
-    api(req, { json: true, version: 'v3' })
-        .get('/account', {
+    api(req, { json: true, adminApi: true })
+        .get('/admin/accounts', {
             qs: {
                 type: 'userId',
                 value: req.params.id,
