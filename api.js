@@ -245,6 +245,7 @@ const api = (
     json = true,
     version = "v1",
     adminApi = false,
+    forwardUserJwt = false,
     filesStorageApi = false,
   } = {}
 ) => {
@@ -257,6 +258,11 @@ const api = (
     headers["x-api-key"] =
       process.env.ADMIN_API_KEY ||
       "thisisasupersecureapikeythatisabsolutelysave";
+    if (forwardUserJwt && req && req.cookies && req.cookies.jwt) {
+      headers["Authorization"] =
+        (req.cookies.jwt.startsWith("Bearer ") ? "" : "Bearer ") +
+        req.cookies.jwt;
+    }
   } else if (filesStorageApi) {
     baseUrl = process.env.FILES_STORAGE_API_URL || "http://localhost:4444/api/";
     headers["Authorization"] =
