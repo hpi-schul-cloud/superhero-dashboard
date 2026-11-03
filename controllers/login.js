@@ -6,6 +6,7 @@ const express = require("express");
 const router = express.Router();
 const { api } = require("../api");
 const authHelper = require("../helpers/authentication");
+const getJwtCookieOptions = require("../helpers/jwtCookieOptions");
 
 // Login
 
@@ -17,10 +18,7 @@ router.post("/login/", function (req, res, next) {
     return api(req, { version: 'v3' })
       .post("/authentication/local-service-account", { json: data })
       .then((data) => {
-        res.cookie("jwt", data.accessToken, {
-          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-          httpOnly: true,
-        });
+        res.cookie("jwt", data.accessToken, getJwtCookieOptions(req));
         res.redirect("/login/success/");
       })
       .catch(() => {
