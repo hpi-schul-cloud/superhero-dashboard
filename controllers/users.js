@@ -414,10 +414,9 @@ router.get('/search', function (req, res) {
 
 router.get('/jwt/:id', async (req, res, next) => {
 	try {
-		const getJWT = api(req, { adminApi: true }).post('/admin/authentication/support-jwt', {
+		const getJWT = api(req, { adminApi: true, forwardUserJwt: true }).post('/admin/authentication/support-jwt', {
 			json: {
 				userId: req.params.id,
-				supportUserId: res.locals.currentUser._id,
 			},
 		});
 		const getUser = api(req).get('/users/' + req.params.id);
