@@ -18,6 +18,10 @@ const getJwtCookieOptions = (req) => {
     throw new Error('COOKIE__SECURE must be "auto", "true", or "false"');
   }
 
+  if (sameSite === "none" && !secure) {
+    throw new Error('COOKIE__SAME_SITE="none" requires COOKIE__SECURE to resolve to true');
+  }
+
   return {
     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     httpOnly: true,
