@@ -50,9 +50,13 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     return url;
   };
 
-  const parseResponseBody = async (response, expectJson) => {
+  const parseResponseBody = async (response, expectJson, responseType) => {
     if (response.status === 204 || response.status === 205) {
       return undefined;
+    }
+
+    if (responseType === "text") {
+      return response.text();
     }
 
     const contentType = response.headers.get("content-type") || "";
@@ -94,9 +98,9 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     return response.text();
   };
 
-  const createHttpError = async (response, expectJson) => {
+  const createHttpError = async (response, expectJson, responseType) => {
     let bodyParseDetails;
-    const errorBody = await parseResponseBody(response, expectJson).catch((parseError) => {
+    const errorBody = await parseResponseBody(response, expectJson, responseType).catch((parseError) => {
       bodyParseDetails = parseError.responseParseDetails;
       return undefined;
     });
@@ -192,8 +196,13 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
   };
 
   const execute = async (method, path, options = {}) => {
-    const { qs, json, body, headers: requestHeaders, ...unsupportedOptions } = options;
-    const expectsJson = defaultJson || json !== undefined;
+    const { qs, json, body, headers: requestHeaders, responseType, ...unsupportedOptions } = options;
+
+    if (responseType !== undefined && responseType !== "json" && responseType !== "text") {
+      throw new Error(`Unsupported response type: ${responseType}`);
+    }
+
+    const expectsJson = responseType ? responseType === "json" : defaultJson || json !== undefined;
 
     if (Object.keys(unsupportedOptions).length > 0) {
       throw new Error(
@@ -218,10 +227,10 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     });
 
     if (!response.ok) {
-      throw await createHttpError(response, expectsJson);
+      throw await createHttpError(response, expectsJson, responseType);
     }
 
-    return parseResponseBody(response, expectsJson);
+    return parseResponseBody(response, expectsJson, responseType);
   };
 
   const createStreamRequest = async (path, options = {}) => {
