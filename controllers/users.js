@@ -122,7 +122,10 @@ const inviteWithMail = async (user, req) => {
 
 const getCreateHandler = (service) => {
 	return async function (req, res, next) {
-		req.body.schoolId = req.query.schoolId;
+		req.body.schoolId = req.query.schoolId || req.body.classOrSchoolId;
+		if (req.body.roles !== undefined && !Array.isArray(req.body.roles)) {
+			req.body.roles = [req.body.roles];
+		}
 		if (req.body.silent !== 'true') {
 			api(req)
 				.post('/' + service + '/', {
