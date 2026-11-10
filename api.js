@@ -70,40 +70,14 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
         return undefined;
       }
 
-      try {
-        return JSON.parse(text);
-      } catch (error) {
-        const positionMatch = error.message.match(/position (\d+)/);
-        const errorPosition = positionMatch ? Number(positionMatch[1]) : undefined;
-        const contextStart = errorPosition === undefined ? undefined : Math.max(0, errorPosition - 4);
-        const contextEnd = errorPosition === undefined ? undefined : Math.min(text.length, errorPosition + 5);
-
-        error.responseParseDetails = {
-          status: response.status,
-          contentType,
-          bodyLength: text.length,
-          errorPosition,
-          contextStart,
-          nearbyCharacterCodes:
-            contextStart === undefined
-              ? undefined
-              : Array.from({ length: contextEnd - contextStart }, (_, index) =>
-                  text.charCodeAt(contextStart + index)
-                ),
-        };
-        throw error;
-      }
+      return JSON.parse(text);
     }
 
     return response.text();
   };
 
   const createHttpError = async (response, expectJson, responseType) => {
-    let bodyParseDetails;
-    const errorBody = await parseResponseBody(response, expectJson, responseType).catch((parseError) => {
-      bodyParseDetails = parseError.responseParseDetails;
-      return undefined;
-    });
+    const errorBody = await parseResponseBody(response, expectJson, responseType).catch(() => undefined);
     const error = new Error(
       errorBody?.message || response.statusText || `Request failed with status code ${response.status}`
     );
@@ -116,7 +90,6 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
       statusCode: response.status,
       headers: Object.fromEntries(response.headers.entries()),
       body: errorBody,
-      bodyParseDetails,
     };
 
     return error;

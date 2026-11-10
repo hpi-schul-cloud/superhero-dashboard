@@ -120,27 +120,6 @@ const inviteWithMail = async (user, req) => {
 		});
 };
 
-const logUserCreationApiError = (service, step, err) => {
-	const responseBody = err.response && err.response.body;
-	const upstreamError = responseBody && typeof responseBody === 'object' ? {
-		name: responseBody.name,
-		message: responseBody.message,
-		code: responseBody.code,
-		className: responseBody.className,
-	} : undefined;
-	console.error('Failed to create user through backend API', {
-		service,
-		step,
-		status: err.statusCode || err.status || (err.response && err.response.statusCode),
-		name: err.name,
-		message: err.message,
-		upstreamError,
-		responseBodyType: responseBody === null ? 'null' : typeof responseBody,
-		responseParseDetails:
-			err.responseParseDetails || (err.response && err.response.bodyParseDetails),
-	});
-};
-
 const getCreateHandler = (service) => {
 	return async function (req, res, next) {
 		req.body.schoolId = req.query.schoolId || req.body.classOrSchoolId;
@@ -158,11 +137,9 @@ const getCreateHandler = (service) => {
 					res.redirect(req.header('Referer'));
 				})
 				.catch((err) => {
-					logUserCreationApiError(service, 'users', err);
 					next(err);
 				});
 		} else {
-			let failedStep = 'hash';
 			try {
 				const hashResponse = await api(req).post('/hash/', {
 					json: {
@@ -183,7 +160,6 @@ const getCreateHandler = (service) => {
 					};
 					return res.redirect(req.header('Referer'));
 				}
-				failedStep = 'users';
 				let user = await api(req).post('/users/', {
 					json: {
 						schoolId: req.body.classOrSchoolId,
@@ -204,7 +180,6 @@ const getCreateHandler = (service) => {
 					};
 					return res.redirect(req.header('Referer'));
 				}
-				failedStep = 'registrationPins';
 				const pin = await api(req).post('/registrationPins/', {
 					json: { email: req.body.email, silent: true, byRole: req.body.byRole, importHash: importHash },
 				});
@@ -215,7 +190,6 @@ const getCreateHandler = (service) => {
 					};
 					return res.redirect(req.header('Referer'));
 				}
-				failedStep = 'registration';
 				const createdUser = await api(req).post('/registration/', {
 					json: {
 						classOrSchoolId: req.body.classOrSchoolId,
@@ -247,7 +221,6 @@ const getCreateHandler = (service) => {
 				};
 				return res.redirect(req.header('Referer'));
 			} catch (err) {
-				logUserCreationApiError(service, failedStep, err);
 				next(err);
 			}
 		}
