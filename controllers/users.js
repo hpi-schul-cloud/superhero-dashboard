@@ -137,6 +137,22 @@ const getCreateHandler = (service) => {
 					res.redirect(req.header('Referer'));
 				})
 				.catch((err) => {
+					const responseBody = err.response && err.response.body;
+					const upstreamError = responseBody && typeof responseBody === 'object' ? {
+						name: responseBody.name,
+						message: responseBody.message,
+						code: responseBody.code,
+						className: responseBody.className,
+					} : undefined;
+					console.error('Failed to create user through backend API', {
+						service,
+						status: err.statusCode || err.status || (err.response && err.response.statusCode),
+						name: err.name,
+						message: err.message,
+						upstreamError,
+						responseParseDetails:
+							err.responseParseDetails || (err.response && err.response.bodyParseDetails),
+					});
 					next(err);
 				});
 		} else {
