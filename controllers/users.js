@@ -120,6 +120,15 @@ const inviteWithMail = async (user, req) => {
 		});
 };
 
+const parseHashResponse = (response) => {
+	if (typeof response !== 'string') {
+		return response;
+	}
+
+	const trimmedResponse = response.trim();
+	return trimmedResponse.startsWith('"') ? JSON.parse(trimmedResponse) : trimmedResponse;
+};
+
 const getCreateHandler = (service) => {
 	return async function (req, res, next) {
 		req.body.schoolId = req.query.schoolId || req.body.classOrSchoolId;
@@ -148,11 +157,7 @@ const getCreateHandler = (service) => {
 					},
 					responseType: 'text',
 				});
-				const trimmedHashResponse = typeof hashResponse === 'string' ? hashResponse.trim() : hashResponse;
-				const importHash =
-					typeof trimmedHashResponse === 'string' && trimmedHashResponse.startsWith('"')
-						? JSON.parse(trimmedHashResponse)
-						: trimmedHashResponse;
+				const importHash = parseHashResponse(hashResponse);
 				if (!importHash) {
 					req.session.notification = {
 						type: 'danger',
