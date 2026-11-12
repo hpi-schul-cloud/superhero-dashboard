@@ -28,6 +28,11 @@
 
 <div class="silent-area">
     <div class="form-group">
+        <input id="force-password-change" type="checkbox" name="forcePasswordChange" value="true">
+        <label class="control-label" for="force-password-change">Passwortänderung bei der ersten Anmeldung erzwingen</label>
+        <p>Die Person muss das initiale Passwort nach der ersten Anmeldung ersetzen.</p>
+    </div>
+    <div class="form-group">
         <label class="control-label" for="password">Initiales Passwort *</label>
         <input type="password" name="password" id="password" pattern="^(?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])(?=.*[\-_!<>§$%&\/()=?\\;:,.#+*~']).{8,255}$" title="{{> "lib/forms/password-hint" plaintext=true}}" class="form-control" placeholder="********" disabled required>
     </div>

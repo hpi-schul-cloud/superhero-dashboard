@@ -162,6 +162,7 @@ const getCreateHandler = (service) => {
 						roles: Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles],
 
 						importHash: importHash,
+						forcePasswordChange: req.body.forcePasswordChange === 'true',
 					},
 				});
 				if (!user) {
