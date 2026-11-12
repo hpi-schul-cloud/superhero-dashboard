@@ -63,11 +63,6 @@ const getTableActions = (item, path) => {
 };
 
 const inviteWithMail = async (user, req) => {
-	// make single role to array
-	if (!Array.isArray(req.body.roles)) {
-		req.body.roles = [req.body.roles];
-	}
-
 	let userrole = 'student';
 	if (!req.body.roles.join('').includes('student')) {
 		userrole = 'employee';
@@ -120,9 +115,27 @@ const inviteWithMail = async (user, req) => {
 		});
 };
 
+const parseHashResponse = (response) => {
+	if (typeof response !== 'string') {
+		return response;
+	}
+
+	const trimmedResponse = response.trim();
+	if (!trimmedResponse.startsWith('"')) {
+		return trimmedResponse;
+	}
+
+	try {
+		return JSON.parse(trimmedResponse);
+	} catch {
+		return undefined;
+	}
+};
+
 const getCreateHandler = (service) => {
 	return async function (req, res, next) {
-		req.body.schoolId = req.query.schoolId;
+		req.body.schoolId = req.query.schoolId || req.body.classOrSchoolId;
+		req.body.roles = [].concat(req.body.roles ?? []);
 		if (req.body.silent !== 'true') {
 			api(req)
 				.post('/' + service + '/', {
@@ -138,12 +151,15 @@ const getCreateHandler = (service) => {
 				});
 		} else {
 			try {
-				let importHash = await api(req).post('/hash/', {
+				// The current /hash response is plain text, not JSON.
+				const hashResponse = await api(req).post('/hash/', {
 					json: {
 						toHash: req.body.email,
 						save: true,
 					},
+					responseType: 'text',
 				});
+				const importHash = parseHashResponse(hashResponse);
 				if (!importHash) {
 					req.session.notification = {
 						type: 'danger',
@@ -159,7 +175,7 @@ const getCreateHandler = (service) => {
 						lastName: req.body.lastName,
 						email: req.body.email,
 
-						roles: Array.isArray(req.body.roles) ? req.body.roles : [req.body.roles],
+						roles: req.body.roles,
 
 						importHash: importHash,
 					},
