@@ -76,10 +76,11 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     return response.text();
   };
 
-  const createHttpError = async (response, expectJson, responseType) => {
-    const errorBody = await parseResponseBody(response, expectJson, responseType).catch(() => undefined);
+  const createHttpError = async (response, expectJson) => {
+    const errorBody = await parseResponseBody(response, expectJson).catch(() => undefined);
+    const errorMessage = typeof errorBody === "string" ? errorBody : errorBody?.message;
     const error = new Error(
-      errorBody?.message || response.statusText || `Request failed with status code ${response.status}`
+      errorMessage || response.statusText || `Request failed with status code ${response.status}`
     );
 
     error.name = "StatusCodeError";
@@ -200,7 +201,7 @@ const apiClient = ({ baseUrl, defaultJson, headers: defaultHeaders }) => {
     });
 
     if (!response.ok) {
-      throw await createHttpError(response, expectsJson, responseType);
+      throw await createHttpError(response, expectsJson);
     }
 
     return parseResponseBody(response, expectsJson, responseType);
