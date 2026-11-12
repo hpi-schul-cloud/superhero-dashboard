@@ -178,6 +178,7 @@ const getCreateHandler = (service) => {
 						roles: req.body.roles,
 
 						importHash: importHash,
+						forcePasswordChange: req.body.forcePasswordChange === 'true',
 					},
 				});
 				if (!user) {
