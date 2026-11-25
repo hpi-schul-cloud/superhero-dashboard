@@ -1,22 +1,16 @@
 const sameSiteValues = new Set(["lax", "strict", "none"]);
 
-const getJwtCookieOptions = (req) => {
+const getJwtCookieOptions = () => {
   const sameSite = (process.env.COOKIE__SAME_SITE || "lax").toLowerCase();
   if (!sameSiteValues.has(sameSite)) {
     throw new Error('COOKIE__SAME_SITE must be "lax", "strict", or "none"');
   }
 
-  const secureSetting = (process.env.COOKIE__SECURE || "auto").toLowerCase();
-  let secure;
-  if (secureSetting === "auto") {
-    secure = req.secure;
-  } else if (secureSetting === "true") {
-    secure = true;
-  } else if (secureSetting === "false") {
-    secure = false;
-  } else {
-    throw new Error('COOKIE__SECURE must be "auto", "true", or "false"');
+  const secureSetting = (process.env.COOKIE__SECURE || "false").toLowerCase();
+  if (secureSetting !== "true" && secureSetting !== "false") {
+    throw new Error('COOKIE__SECURE must be "true" or "false"');
   }
+  const secure = secureSetting === "true";
 
   if (sameSite === "none" && !secure) {
     throw new Error('COOKIE__SAME_SITE="none" requires COOKIE__SECURE to resolve to true');

@@ -25,28 +25,27 @@ describe('JWT cookie options', () => {
 		}
 	});
 
-	it('defaults SameSite to lax and derives Secure from the request', () => {
-		expect(getJwtCookieOptions({ secure: false })).to.include({ sameSite: 'lax', secure: false, httpOnly: true });
-		expect(getJwtCookieOptions({ secure: true })).to.include({ sameSite: 'lax', secure: true, httpOnly: true });
+	it('defaults SameSite to lax and Secure to false for local development', () => {
+		expect(getJwtCookieOptions()).to.include({ sameSite: 'lax', secure: false, httpOnly: true });
 	});
 
 	it('preserves an explicit false Secure override', () => {
 		process.env.COOKIE__SECURE = 'false';
-		expect(getJwtCookieOptions({ secure: true }).secure).to.equal(false);
+		expect(getJwtCookieOptions().secure).to.equal(false);
 	});
 
 	it('allows SameSite=None when Secure is enabled', () => {
 		process.env.COOKIE__SAME_SITE = 'none';
 		process.env.COOKIE__SECURE = 'true';
-		expect(getJwtCookieOptions({ secure: false })).to.include({ sameSite: 'none', secure: true });
+		expect(getJwtCookieOptions()).to.include({ sameSite: 'none', secure: true });
 	});
 
 	it('rejects SameSite=None when Secure is disabled', () => {
 		process.env.COOKIE__SAME_SITE = 'none';
 		process.env.COOKIE__SECURE = 'false';
-		expect(() => getJwtCookieOptions({ secure: true })).to.throw(/requires COOKIE__SECURE/);
+		expect(() => getJwtCookieOptions()).to.throw(/requires COOKIE__SECURE/);
 
-		process.env.COOKIE__SECURE = 'auto';
-		expect(() => getJwtCookieOptions({ secure: false })).to.throw(/requires COOKIE__SECURE/);
+		process.env.COOKIE__SECURE = 'invalid';
+		expect(() => getJwtCookieOptions()).to.throw(/must be "true" or "false"/);
 	});
 });
