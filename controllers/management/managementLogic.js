@@ -6,7 +6,7 @@ const { createPoliciesBody } = require('./helpers');
 const { api } = require('../../api');
 
 const fetchReleases = (req, res, next) => {
-    api(req, { version: 'v3'}).get('/releases/fetch')
+    api(req, { version: 'v3'}).post('/releases/fetch')
         .then(() => {
             res.locals.notification = {
                 'type': 'success',
