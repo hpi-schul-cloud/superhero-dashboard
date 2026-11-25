@@ -18,7 +18,7 @@ router.post("/login/", function (req, res, next) {
     return api(req, { version: 'v3' })
       .post("/authentication/local-service-account", { json: data })
       .then((data) => {
-        res.cookie("jwt", data.accessToken, getJwtCookieOptions(req));
+        res.cookie("jwt", data.accessToken, getJwtCookieOptions());
         res.redirect("/login/success/");
       })
       .catch(() => {
